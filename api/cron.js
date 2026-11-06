@@ -1,19 +1,41 @@
 import { neon } from '@neondatabase/serverless';
+import { randomInt } from 'crypto';
 
 const sql = neon(process.env.DATABASE_URL);
 
 const MAX_KEYS = 1000; // change this when you upgrade Neon
 
+const UPPER   = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+const LOWER   = 'abcdefghijklmnopqrstuvwxyz';
+const DIGITS  = '0123456789';
+const SYMBOLS = '!@#$%&*?-_+=';
+const ALL     = UPPER + LOWER + DIGITS + SYMBOLS;
+const KEY_LENGTH = 20;
+
+function pick(chars) {
+  return chars[randomInt(chars.length)];
+}
+
 function generateKey() {
-  const part1 = Math.floor(Math.random() * 9000000 + 1000000);
-  const part2 = Math.floor(Math.random() * 9000 + 1000);
-  const secret = Math.random().toString(36).substring(2, 8).toUpperCase();
-  return `WOW-${part1}-${part2}-${secret}`;
+  // Guarantee at least one of each type
+  const chars = [pick(UPPER), pick(LOWER), pick(DIGITS), pick(SYMBOLS)];
+
+  while (chars.length < KEY_LENGTH) {
+    chars.push(pick(ALL));
+  }
+
+  // Shuffle so the guaranteed characters aren't always at the start
+  for (let i = chars.length - 1; i > 0; i--) {
+    const j = randomInt(i + 1);
+    [chars[i], chars[j]] = [chars[j], chars[i]];
+  }
+
+  return chars.join('');
 }
 
 export default async function handler(req, res) {
   try {
-    // 1. Delete expired keys (used keys after 24h, unused keys after 7 days)
+    // 1. Delete expired keys (used keys after 12h, unused keys after 7 days)
     await sql`DELETE FROM keys WHERE expires_at < NOW()`;
 
     // 1b. Clean up old one-time sessions
