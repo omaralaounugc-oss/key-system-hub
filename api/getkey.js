@@ -29,7 +29,7 @@ export default async function handler(req, res) {
     }
 
     const now = new Date();
-    const expires = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+    const expires = new Date(now.getTime() + 12 * 60 * 60 * 1000);
 
     const rows = await sql`
       UPDATE keys
