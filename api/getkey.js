@@ -20,7 +20,8 @@ export default async function handler(req, res) {
       UPDATE sessions SET used = true
       WHERE nonce = ${nonce}
         AND used = false
-        AND created_at < NOW() - INTERVAL '15 seconds'
+        AND verified = true
+        AND continued_at < NOW() - INTERVAL '15 seconds'
         AND created_at > NOW() - INTERVAL '1 hour'
       RETURNING nonce
     `;
