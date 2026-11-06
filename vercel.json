@@ -6,6 +6,8 @@
     { "src": "index2.html", "use": "@vercel/static" }
   ],
   "routes": [
+    { "src": "/api/go", "dest": "/api/go.js" },
+    { "src": "/api/check", "dest": "/api/check.js" },
     { "src": "/api/start", "dest": "/api/start.js" },
     { "src": "/api/verify", "dest": "/api/verify.js" },
     { "src": "/api/getkey", "dest": "/api/getkey.js" },
