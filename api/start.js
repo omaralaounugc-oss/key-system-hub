@@ -122,14 +122,11 @@ function page(code, nonce) {
     display:flex;align-items:center;justify-content:center;width:100%;height:56px;border-radius:16px;
     background:var(--blue);color:#fff;text-decoration:none;font:600 17px var(--font);letter-spacing:-.015em;
     box-shadow:0 8px 24px rgba(10,132,255,.38),inset 0 .5px 0 rgba(255,255,255,.35);
-    transition:transform .2s var(--ease),filter .2s,background .4s,box-shadow .4s,color .4s;
+    transition:transform .2s var(--ease),filter .2s;
   }
-  .go span{position:relative;z-index:1}
-  .go::before{content:"";position:absolute;inset:0;background:var(--blue);transform-origin:0 50%;transform:scaleX(var(--p,0));opacity:0;transition:opacity .3s}
   .go:hover{filter:brightness(1.08)}
   .go:active{transform:scale(.975);filter:brightness(.94)}
   .go.locked{background:rgba(120,120,128,.32);box-shadow:none;color:rgba(255,255,255,.78);cursor:default;pointer-events:none}
-  .go.locked::before{opacity:.9}
   .foot{margin-top:12px;text-align:center;font-size:12.5px;color:var(--label-3)}
 
   /* Toast */
@@ -245,10 +242,10 @@ function page(code, nonce) {
     go.setAttribute('href', go.getAttribute('data-href'));
     go.removeAttribute('aria-disabled');
     go.removeAttribute('role');
-    go.style.removeProperty('--p');
     goLabel.textContent = 'Continue';
     foot.textContent = 'Code copied automatically when you continue.';
   }
+  var shown = -1;
   var tick = setInterval(function(){
     var now = Date.now();
     if (!document.hidden) elapsed += now - last;
@@ -258,9 +255,12 @@ function page(code, nonce) {
       unlock();
       return;
     }
-    go.style.setProperty('--p', (elapsed / WAIT_MS).toFixed(3));
-    goLabel.textContent = 'Continue in ' + Math.ceil((WAIT_MS - elapsed) / 1000);
-  }, 100);
+    var left = Math.ceil((WAIT_MS - elapsed) / 1000);
+    if (left !== shown){
+      shown = left;
+      goLabel.textContent = 'Continue in ' + left;
+    }
+  }, 250);
   go.addEventListener('click', function(e){
     if (go.classList.contains('locked')) { e.preventDefault(); return; }
     try{ copy(); }catch(err){}
