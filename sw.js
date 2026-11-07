@@ -1,6 +1,1 @@
-self.options = {
-    "domain": "3nbf4.com",
-    "zoneId": 12204240
-}
-self.lary = ""
-importScripts('https://3nbf4.com/act/files/service-worker.min.js?r=sw')
+<meta name="monetag" content="50a1d7af29390d239f4487f64498fb6f">
