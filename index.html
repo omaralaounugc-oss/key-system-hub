@@ -5,156 +5,197 @@
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3893185157459343"
      crossorigin="anonymous"></script>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#06070a">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Key System</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --sec:rgba(235,235,245,.62); --ter:rgba(235,235,245,.34);
-    --ok:#30d158; --warn:#ff9f0a; --bad:#ff453a;
-    --font:'Inter',-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',Roboto,Helvetica,Arial,sans-serif;
-    --mono:ui-monospace,'SF Mono',SFMono-Regular,'Roboto Mono',Menlo,Consolas,monospace;
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0a0a1a;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Segoe UI', sans-serif;
+    color: white;
+    overflow: hidden;
   }
-  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  html{background:#06070a}
-  body{min-height:100vh;min-height:100dvh;font-family:var(--font);color:#fff;-webkit-font-smoothing:antialiased;
-    font-variant-numeric:tabular-nums;overflow-x:hidden}
-  /* wallpaper: the blurred backdrop behind a phone lock screen */
-  body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
-    background:
-      radial-gradient(70vmax 60vmax at 15% -5%,rgba(96,116,150,.34),transparent 62%),
-      radial-gradient(60vmax 55vmax at 105% 105%,rgba(70,78,98,.30),transparent 60%),
-      #06070a}
-  #particles{display:none}.particle{display:none}
+  #particles {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .particle {
+    position: absolute;
+    background: rgba(100, 100, 255, 0.3);
+    border-radius: 50%;
+    animation: float linear infinite;
+  }
+  @keyframes float {
+    0% { transform: translateY(100vh) scale(0); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { transform: translateY(-100px) scale(1); opacity: 0; }
+  }
+  .card {
+    position: relative;
+    z-index: 1;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 20px;
+    padding: 40px 50px;
+    width: 420px;
+    max-width: 92vw;
+    text-align: center;
+    backdrop-filter: blur(10px);
+  }
+  .subtitle { color: #aaa; font-size: 18px; font-weight: bold; letter-spacing: 1px; margin-bottom: 30px; }
+  .divider { border: none; border-top: 1px solid rgba(255,255,255,0.08); margin-bottom: 30px; }
 
-  .screen{position:relative;z-index:1;width:100%;max-width:420px;min-height:100vh;min-height:100dvh;margin:0 auto;display:flex;flex-direction:column;
-    padding:calc(env(safe-area-inset-top,0px) + 30px) 22px calc(env(safe-area-inset-bottom,0px) + 22px)}
-  .state,.view{flex:1;flex-direction:column}
-  .state{display:none}.state.active{display:flex}
-  .view{display:flex}
-  .hidden{display:none!important}
+  /* Loading state */
+  .spinner {
+    width: 50px; height: 50px;
+    border: 3px solid rgba(108,99,255,0.2);
+    border-top-color: #6c63ff;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 16px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-text { color: #aaa; font-size: 14px; }
 
-  .hero{display:flex;flex-direction:column;align-items:center;text-align:center;padding-top:clamp(8px,5vh,48px)}
-  .lock{width:22px;height:28px;margin-bottom:16px;color:#fff}
-  .cap{font-size:15px;font-weight:500;color:var(--sec)}
-  .clock{font-size:clamp(56px,18vw,80px);font-weight:200;letter-spacing:-.025em;line-height:1.04;margin-top:4px}
-  .sub{font-size:15px;line-height:1.4;color:var(--sec);margin-top:8px;max-width:30ch}
-  .big{font-size:clamp(34px,10.5vw,44px);font-weight:300;letter-spacing:-.02em;line-height:1.1;max-width:12ch}
-  .dock{margin-top:auto;padding-top:28px}
+  /* Success state */
+  .success-icon {
+    width: 60px; height: 60px;
+    background: rgba(34,197,94,0.15);
+    border-radius: 50%;
+    margin: 0 auto 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+  }
+  .success-title { color: #22c55e; font-size: 18px; font-weight: bold; margin-bottom: 6px; }
+  .success-msg { color: #aaa; font-size: 13px; margin-bottom: 20px; }
+  .key-box {
+    background: rgba(108,99,255,0.1);
+    border: 1px solid rgba(108,99,255,0.3);
+    border-radius: 10px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .key-box:hover { background: rgba(108,99,255,0.2); }
+  .key-label { font-size: 11px; color: #888; margin-bottom: 4px; text-align: left; }
+  .key-value { font-size: 15px; font-weight: bold; color: white; letter-spacing: 1px; word-break: break-all; text-align: left; }
+  .copy-icon { font-size: 20px; opacity: 0.6; }
+  .copy-hint { font-size: 11px; color: #666; margin-bottom: 20px; }
 
-  /* the banner: same one you get in the game */
-  .banner{position:relative;display:flex;align-items:flex-start;gap:12px;text-align:left;padding:14px;border-radius:24px;
-    background:rgba(52,52,56,.62);-webkit-backdrop-filter:blur(30px) saturate(1.6);backdrop-filter:blur(30px) saturate(1.6);
-    transform-origin:50% 0;animation:grow .5s cubic-bezier(.2,.9,.25,1.12) both;cursor:pointer;transition:transform .15s}
-  .banner:active{transform:scale(.97)}
-  .banner::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;
-    background:linear-gradient(135deg,rgba(255,255,255,.5),rgba(255,255,255,.1) 28%,rgba(255,255,255,.1) 72%,rgba(255,255,255,.3));
-    -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;
-    mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
-  @keyframes grow{from{opacity:0;transform:scale(.86)}to{opacity:1;transform:none}}
-  .icon{position:relative;flex:none;width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff}
-  .icon.ok{background:linear-gradient(180deg,#4fd873,#29b84f)}
-  .icon .kb{position:absolute;right:-5px;bottom:-5px;width:18px;height:18px;border-radius:6px;background:#3a3a3e;border:1.5px solid #232326;
-    display:flex;align-items:center;justify-content:center}
-  .icon .kb svg{width:10px;height:10px}
-  .icon svg.m{width:20px;height:20px}
-  .btxt{flex:1;min-width:0}
-  .btitle{display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-size:14px;font-weight:600;line-height:1.3}
-  .btitle small{font-size:12px;font-weight:400;color:var(--sec)}
-  .bbody{margin-top:2px;font-size:13.5px;line-height:1.35;color:rgba(235,235,245,.88);word-break:break-all}
-  .key-value{font-family:var(--mono);font-weight:500;letter-spacing:.2px}
-  .hint{text-align:center;font-size:12.5px;color:var(--ter);margin-top:14px;transition:color .2s}
-  .hint.copied{color:var(--ok)}
+  .expires-box {
+    background: rgba(255,255,255,0.04);
+    border-radius: 10px;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #888;
+    margin-bottom: 20px;
+  }
 
-  /* passcode entry (code page) */
-  .title{font-size:21px;font-weight:600;letter-spacing:-.01em}
-  .dots{display:flex;justify-content:center;gap:18px;margin:26px 0 10px}
-  .dot{width:13px;height:13px;border-radius:50%;border:1.5px solid rgba(255,255,255,.8);transition:background .12s,transform .12s}
-  .dot.on{background:#fff;transform:scale(1.08)}
-  .dots.shake{animation:shake .42s}
-  @keyframes shake{20%{transform:translateX(-10px)}40%{transform:translateX(9px)}60%{transform:translateX(-6px)}80%{transform:translateX(4px)}}
-  .error{min-height:20px;margin-bottom:4px;font-size:13px;line-height:1.3;color:var(--bad);text-align:center}
-  #ts{display:flex;justify-content:center;min-height:0}
-  .pad{--k:clamp(58px,9.4vh,76px);display:grid;grid-template-columns:repeat(3,var(--k));justify-content:space-between;
-    gap:clamp(10px,1.9vh,16px) 0;width:min(100%,300px);margin:8px auto 0}
-  .pad button{width:var(--k);height:var(--k);border:none;border-radius:50%;color:#fff;font:300 clamp(26px,4vh,33px)/1 var(--font);
-    background:rgba(255,255,255,.14);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);
-    display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .1s}
-  .pad button:active{background:rgba(255,255,255,.36)}
-  .pad button.t{background:none;-webkit-backdrop-filter:none;backdrop-filter:none;font:500 14px/1 var(--font)}
-  .pad button.t:active{background:rgba(255,255,255,.1)}
-  .pad svg{width:26px;height:26px}
-  .go{display:block;width:100%;height:52px;margin-top:18px;border:none;border-radius:16px;background:#fff;color:#000;
-    font:600 16px var(--font);cursor:pointer;transition:transform .15s,opacity .2s}
-  .go:active{transform:scale(.98)}
-  .go:disabled{opacity:.45;cursor:default}
-  .go.quiet{background:rgba(255,255,255,.14);color:#fff;margin-top:10px}
-  .ring{width:34px;height:34px;margin-top:26px;border:2.5px solid rgba(255,255,255,.14);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite}
-  @keyframes spin{to{transform:rotate(360deg)}}
-  :focus-visible{outline:2px solid #fff;outline-offset:3px}
-  @media (prefers-reduced-motion:reduce){.banner,.dots.shake,.ring{animation:none}}
-  @media (max-height:700px){.hero{padding-top:0}.lock{margin-bottom:10px}.dots{margin:16px 0 6px}}
+  .btn-redirect {
+    width: 100%;
+    padding: 12px;
+    background: #111;
+    border: 1px solid #333;
+    border-radius: 10px;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .btn-redirect:hover { background: #222; }
+
+  /* Error state */
+  .error-icon {
+    width: 60px; height: 60px;
+    background: rgba(239,68,68,0.15);
+    border-radius: 50%;
+    margin: 0 auto 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+  }
+  .error-title { color: #ef4444; font-size: 18px; font-weight: bold; margin-bottom: 6px; }
+  .error-msg { color: #aaa; font-size: 13px; }
+
+  .footer { margin-top: 20px; font-size: 11px; color: #333; }
+
+  .state { display: none; }
+  .state.active { display: block; }
 </style>
 </head>
 <body>
+
 <div id="particles"></div>
-<main class="screen">
+
+<div class="card">
+  <div class="subtitle">Key System</div>
+  <hr class="divider">
 
   <!-- Loading -->
-  <section id="state-loading" class="state active">
-    <div class="hero">
-      <svg class="lock" viewBox="0 0 22 28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="11.5" width="18" height="14" rx="3.5" fill="currentColor" stroke="none"/><path d="M6 11.5V8a5 5 0 0 1 10 0v3.5"/></svg>
-      <div class="title">Preparing your key</div>
-      <div class="ring" aria-hidden="true"></div>
-    </div>
-  </section>
+  <div id="state-loading" class="state active">
+    <div class="spinner"></div>
+    <div class="loading-text">Preparing your key...</div>
+  </div>
 
   <!-- Success -->
-  <section id="state-success" class="state">
-    <div class="hero">
-      <svg class="lock" viewBox="0 0 22 28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="11.5" width="18" height="14" rx="3.5" fill="currentColor" stroke="none"/><path d="M6 11.5V8a5 5 0 0 1 9.6-2"/></svg>
-      <div class="cap">Key valid for</div>
-      <div class="clock" id="countdown-display">--:--:--</div>
-      <div class="sub" id="expires-at"></div>
-    </div>
-    <div class="dock">
-      <div class="banner" onclick="copyKey()" role="button" tabindex="0">
-        <div class="icon ok"><svg class="m" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span class="kb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4.2"/><path d="M11 12l9-9M16 7l3 3"/></svg></span></div>
-        <div class="btxt">
-          <div class="btitle"><span>Your key is ready</span><small>now</small></div>
-          <div class="bbody key-value" id="key-display">-</div>
-        </div>
+  <div id="state-success" class="state">
+    <div class="success-icon">✅</div>
+    <div class="success-title">Your key is ready!</div>
+    <div class="success-msg">Copy the key and enter it in the script</div>
+
+    <div class="key-label">Your own key</div>
+    <div class="key-box" onclick="copyKey()">
+      <div>
+        <div class="key-value" id="key-display">-</div>
       </div>
-      <div class="hint" id="copy-hint">Tap to copy, then paste it into the script.</div>
+      <div class="copy-icon">📋</div>
     </div>
-  </section>
+    <div class="copy-hint" id="copy-hint">Click to copy the key</div>
+
+    <div class="expires-box">
+      <span>⏳ Valid until</span>
+      <span id="countdown-display" style="font-weight:bold; color:#6c63ff; font-size:15px; letter-spacing:2px;">--:--:--</span>
+    </div>
+  </div>
 
   <!-- Expired -->
-  <section id="state-expired" class="state">
-    <div class="hero">
-      <svg class="lock" viewBox="0 0 22 28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="11.5" width="18" height="14" rx="3.5" fill="currentColor" stroke="none"/><path d="M6 11.5V8a5 5 0 0 1 10 0v3.5"/></svg>
-      <div class="big">This key has expired</div>
-      <div class="sub">Keys last 12 hours. Get a new one to keep going.</div>
-    </div>
-    <div class="dock"><button class="go" onclick="getNewKey()">Get a new key</button></div>
-  </section>
+  <div id="state-expired" class="state">
+    <div class="success-icon" style="background:rgba(251,191,36,0.15);">⏰</div>
+    <div class="success-title" style="color:#fbbf24;">Your key has expired!</div>
+    <div class="success-msg">Get a new one by completing the quick task below</div>
+    <button class="btn-redirect" onclick="getNewKey()" style="background:linear-gradient(135deg,#6c63ff,#a78bfa);border:none;margin-top:8px;">
+      Create a new one here! →
+    </button>
+  </div>
 
   <!-- Error -->
-  <section id="state-error" class="state">
-    <div class="hero">
-      <svg class="lock" viewBox="0 0 22 28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="11.5" width="18" height="14" rx="3.5" fill="currentColor" stroke="none"/><path d="M6 11.5V8a5 5 0 0 1 10 0v3.5"/></svg>
-      <div class="big">Something went wrong</div>
-      <div class="sub" id="error-msg">No keys available at the moment</div>
-    </div>
-    <div class="dock">
-      <button class="go" onclick="location.reload()">Try again</button>
-      <button class="go quiet" onclick="getNewKey()">Get a new key</button>
-    </div>
-  </section>
-</main>
+  <div id="state-error" class="state">
+    <div class="error-icon">❌</div>
+    <div class="error-title">An error occurred</div>
+    <div class="error-msg" id="error-msg">No keys available at the moment</div>
+  </div>
+
+  <div class="footer">Key System</div>
+</div>
 
 <script>
 // ── Background particles ──────────────────────────────────────────
@@ -182,22 +223,12 @@ function showState(id) {
 function copyKey() {
   const key = document.getElementById('key-display').textContent;
   if (!key || key === '-') return;
-  const hint = document.getElementById('copy-hint');
-  const DEFAULT = 'Tap to copy, then paste it into the script.';
-  function done() {
-    hint.textContent = 'Copied';
-    hint.classList.add('copied');
-    setTimeout(() => { hint.textContent = DEFAULT; hint.classList.remove('copied'); }, 2000);
-  }
-  function fallback() {
-    const ta = document.createElement('textarea');
-    ta.value = key; ta.style.position = 'fixed'; ta.style.opacity = '0';
-    document.body.appendChild(ta); ta.select();
-    try { document.execCommand('copy'); done(); } catch (e) {}
-    ta.remove();
-  }
-  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(key).then(done, fallback);
-  else fallback();
+  navigator.clipboard.writeText(key).then(() => {
+    document.getElementById('copy-hint').textContent = '✅ Copied!';
+    setTimeout(() => {
+      document.getElementById('copy-hint').textContent = 'Click to copy the key';
+    }, 2000);
+  });
 }
 
 function getNewKey() {
@@ -279,19 +310,6 @@ function startCountdown(expiryIso) {
   document.getElementById('key-display').textContent = key;
   showState('state-success');
   startCountdown(expiry);
-})();
-</script>
-<script>
-// shows the exact expiry time under the clock, same wording as the in-game banner
-(function () {
-  const el = document.getElementById('expires-at');
-  setInterval(() => {
-    const e = localStorage.getItem('wowhub_key_expiry');
-    const d = e && new Date(e);
-    if (d && !isNaN(d)) el.textContent = 'Expires ' + d.toLocaleString(undefined, { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
-  }, 1000);
-  const b = document.querySelector('.banner');
-  b.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); copyKey(); } });
 })();
 </script>
 </body>
