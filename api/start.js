@@ -118,13 +118,18 @@ function page(code, nonce) {
   /* Action */
   .dock{padding-top:20px}
   .go{
+    position:relative;overflow:hidden;
     display:flex;align-items:center;justify-content:center;width:100%;height:56px;border-radius:16px;
     background:var(--blue);color:#fff;text-decoration:none;font:600 17px var(--font);letter-spacing:-.015em;
     box-shadow:0 8px 24px rgba(10,132,255,.38),inset 0 .5px 0 rgba(255,255,255,.35);
-    transition:transform .2s var(--ease),filter .2s;
+    transition:transform .2s var(--ease),filter .2s,background .4s,box-shadow .4s,color .4s;
   }
+  .go span{position:relative;z-index:1}
+  .go::before{content:"";position:absolute;inset:0;background:var(--blue);transform-origin:0 50%;transform:scaleX(var(--p,0));opacity:0;transition:opacity .3s}
   .go:hover{filter:brightness(1.08)}
   .go:active{transform:scale(.975);filter:brightness(.94)}
+  .go.locked{background:rgba(120,120,128,.32);box-shadow:none;color:rgba(255,255,255,.78);cursor:default;pointer-events:none}
+  .go.locked::before{opacity:.9}
   .foot{margin-top:12px;text-align:center;font-size:12.5px;color:var(--label-3)}
 
   /* Toast */
@@ -182,8 +187,8 @@ function page(code, nonce) {
   </section>
 
   <div class="dock">
-    <a class="go" id="go" href="/api/go?nonce=${nonce}">Continue</a>
-    <p class="foot">Code copied automatically when you continue.</p>
+    <a class="go locked" id="go" data-href="/api/go?nonce=${nonce}" role="link" aria-disabled="true"><span id="golabel">Continue in 5</span></a>
+    <p class="foot" id="foot">Please wait a moment. Save your code first.</p>
   </div>
 </main>
 
@@ -228,8 +233,37 @@ function page(code, nonce) {
   document.getElementById('copy').addEventListener('click', function(){
     copy().then(function(ok){ if (ok) flash(); });
   });
-  document.getElementById('go').addEventListener('click', function(){
-    try{ copy(); }catch(e){}
+  // Continue unlocks after a 5 second wait (the timer only runs while this tab is visible)
+  var WAIT_MS = 5000;
+  var go = document.getElementById('go');
+  var goLabel = document.getElementById('golabel');
+  var foot = document.getElementById('foot');
+  var elapsed = 0, last = Date.now();
+
+  function unlock(){
+    go.classList.remove('locked');
+    go.setAttribute('href', go.getAttribute('data-href'));
+    go.removeAttribute('aria-disabled');
+    go.removeAttribute('role');
+    go.style.removeProperty('--p');
+    goLabel.textContent = 'Continue';
+    foot.textContent = 'Code copied automatically when you continue.';
+  }
+  var tick = setInterval(function(){
+    var now = Date.now();
+    if (!document.hidden) elapsed += now - last;
+    last = now;
+    if (elapsed >= WAIT_MS){
+      clearInterval(tick);
+      unlock();
+      return;
+    }
+    go.style.setProperty('--p', (elapsed / WAIT_MS).toFixed(3));
+    goLabel.textContent = 'Continue in ' + Math.ceil((WAIT_MS - elapsed) / 1000);
+  }, 100);
+  go.addEventListener('click', function(e){
+    if (go.classList.contains('locked')) { e.preventDefault(); return; }
+    try{ copy(); }catch(err){}
   });
 })();
 </script>
