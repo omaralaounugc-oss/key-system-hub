@@ -3,7 +3,7 @@ import { neon } from '@neondatabase/serverless';
 const sql = neon(process.env.DATABASE_URL);
 
 const LOOT_LINK = 'https://loot-link.com/s?9diqLQbJ';
-const SITE = 'https://wowhub-webhook.vercel.app';
+const SITE = 'https://keyhub-system.vercel.app';
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
