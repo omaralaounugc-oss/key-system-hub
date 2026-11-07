@@ -1,22 +1,65 @@
 {
   "version": 2,
- "builds": [
-  { "src": "sw.js", "use": "@vercel/static" },
-  { "src": "api/*.js", "use": "@vercel/node" },
-  { "src": "index.html", "use": "@vercel/static" },
-  { "src": "index2.html", "use": "@vercel/static" }
-],
-"routes": [
-  { "src": "/api/go", "dest": "/api/go.js" },
-  { "src": "/api/check", "dest": "/api/check.js" },
-  { "src": "/api/start", "dest": "/api/start.js" },
-  { "src": "/api/verify", "dest": "/api/verify.js" },
-  { "src": "/api/getkey", "dest": "/api/getkey.js" },
-  { "src": "/api/cron", "dest": "/api/cron.js" },
-  { "src": "/index.html", "dest": "/index.html" },
-  { "src": "/index2.html", "dest": "/index2.html" },
-  { "src": "/sw.js", "dest": "/sw.js" }
-],
+  "builds": [
+    {
+      "src": "sw.js",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "api/*.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "index.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "index2.html",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/go",
+      "dest": "/api/go.js"
+    },
+    {
+      "src": "/api/check",
+      "dest": "/api/check.js"
+    },
+    {
+      "src": "/api/start",
+      "dest": "/api/start.js"
+    },
+    {
+      "src": "/api/verify",
+      "dest": "/api/verify.js"
+    },
+    {
+      "src": "/api/getkey",
+      "dest": "/api/getkey.js"
+    },
+    {
+      "src": "/api/checkkey",
+      "dest": "/api/checkkey.js"
+    },
+    {
+      "src": "/api/cron",
+      "dest": "/api/cron.js"
+    },
+    {
+      "src": "/index.html",
+      "dest": "/index.html"
+    },
+    {
+      "src": "/index2.html",
+      "dest": "/index2.html"
+    },
+    {
+      "src": "/sw.js",
+      "dest": "/sw.js"
+    }
+  ],
   "crons": [
     {
       "path": "/api/cron",
