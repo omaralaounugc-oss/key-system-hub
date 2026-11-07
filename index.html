@@ -264,8 +264,8 @@ function startCountdown(expiryIso) {
   countdownInterval = setInterval(tick, 1000);
 }
 
-// ── Main: read key from URL params (or fallback to localStorage) ──
-(function init() {
+// ── Main: read key from URL params (or fallback to localStorage), then ask the server ──
+(async function init() {
   const params = new URLSearchParams(window.location.search);
   let key    = params.get('key');
   let expiry = params.get('expiry');
@@ -277,18 +277,28 @@ function startCountdown(expiryIso) {
   }
 
   // Still nothing? User didn't complete the task
-  if (!key || !expiry) {
+  if (!key) {
     showState('state-error');
     document.getElementById('error-msg').textContent =
       'No key found. Please complete the task first.';
     return;
   }
 
-  // Key expired?
-  if (new Date(expiry) <= new Date()) {
-    localStorage.removeItem('wowhub_key');
-    localStorage.removeItem('wowhub_key_expiry');
-    showState('state-expired');
+  // The server decides if the key is real and still valid
+  try {
+    const r = await fetch('/api/checkkey?key=' + encodeURIComponent(key));
+    const d = await r.json();
+    if (!r.ok || !d.valid) {
+      localStorage.removeItem('wowhub_key');
+      localStorage.removeItem('wowhub_key_expiry');
+      history.replaceState(null, '', window.location.pathname);
+      showState('state-expired');
+      return;
+    }
+    expiry = d.expires_at;
+  } catch (e) {
+    showState('state-error');
+    document.getElementById('error-msg').textContent = 'Network error. Please refresh.';
     return;
   }
 
