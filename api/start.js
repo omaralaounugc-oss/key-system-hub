@@ -13,6 +13,7 @@ function page(code, nonce) {
 <head>
 <meta charset="UTF-8">
 <meta name="referrer" content="no-referrer-when-downgrade" />
+<meta name="clckd" content="7115760891f9ae23bf15d477c7aeebe1" />
 <meta name="1f490e831c0c639196493c282c1999b439ee0e26" content="1f490e831c0c639196493c282c1999b439ee0e26" />
 <script src="https://quge5.com/88/tag.min.js" data-zone="307027" async data-cfasync="false"></script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3893185157459343"
