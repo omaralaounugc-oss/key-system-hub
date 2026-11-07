@@ -6,6 +6,10 @@
       "use": "@vercel/static"
     },
     {
+      "src": "firebase-messaging-sw.js",
+      "use": "@vercel/static"
+    },
+    {
       "src": "api/*.js",
       "use": "@vercel/node"
     },
@@ -58,6 +62,10 @@
     {
       "src": "/sw.js",
       "dest": "/sw.js"
+    },
+    {
+      "src": "/firebase-messaging-sw.js",
+      "dest": "/firebase-messaging-sw.js"
     }
   ],
   "crons": [
