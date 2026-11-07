@@ -1,4 +1,5 @@
 import { neon } from '@neondatabase/serverless';
+import { randomBytes } from 'crypto';
 
 const sql = neon(process.env.DATABASE_URL);
 
@@ -16,10 +17,13 @@ export default async function handler(req, res) {
   }
 
   try {
+    // Secret token: it only ever exists inside the Loot Labs encrypted link,
+    // so the user can't skip the tasks by calling the next pages directly.
+    const token = randomBytes(16).toString('hex');
+
     // Continue works only ONE time per number.
-    // If the user comes back and presses it again, they start over with a new number.
     const rows = await sql`
-      UPDATE sessions SET continued_at = NOW()
+      UPDATE sessions SET continued_at = NOW(), token = ${token}
       WHERE nonce = ${nonce}
         AND continued_at IS NULL
         AND used = false
@@ -31,7 +35,7 @@ export default async function handler(req, res) {
     }
 
     // Encrypt the real destination with Loot Labs
-    const dest = `${SITE}/index2.html?nonce=${nonce}`;
+    const dest = `${SITE}/index2.html?nonce=${nonce}&t=${token}`;
     const apiUrl =
       'https://creators.lootlabs.gg/api/public/url_encryptor' +
       `?destination_url=${encodeURIComponent(dest)}` +
@@ -44,7 +48,7 @@ export default async function handler(req, res) {
 
     if (!data || typeof data.message !== 'string' || data.type === 'error') {
       // give the session back so the user can retry
-      await sql`UPDATE sessions SET continued_at = NULL WHERE nonce = ${nonce}`;
+      await sql`UPDATE sessions SET continued_at = NULL, token = NULL WHERE nonce = ${nonce}`;
       return res.status(502).send('Could not create link. Try again.');
     }
 
