@@ -1,133 +1,179 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<meta charset="UTF-8">
 <script src="https://quge5.com/88/tag.min.js" data-zone="307027" async data-cfasync="false"></script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3893185157459343"
      crossorigin="anonymous"></script>
-<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#06070a">
+<meta name="theme-color" content="#000000">
+<meta name="color-scheme" content="dark">
 <meta name="robots" content="noindex">
-<title>Key System</title>
+<title>Enter your code</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --sec:rgba(235,235,245,.62); --ter:rgba(235,235,245,.34);
-    --ok:#30d158; --warn:#ff9f0a; --bad:#ff453a;
-    --font:'Inter',-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',Roboto,Helvetica,Arial,sans-serif;
-    --mono:ui-monospace,'SF Mono',SFMono-Regular,'Roboto Mono',Menlo,Consolas,monospace;
+    --label-2:rgba(235,235,245,.60);
+    --label-3:rgba(235,235,245,.30);
+    --fill:rgba(120,120,128,.24);
+    --fill-2:rgba(120,120,128,.16);
+    --blue:#0a84ff; --green:#30d158; --red:#ff453a; --orange:#ff9f0a;
+    --font:-apple-system,BlinkMacSystemFont,'SF Pro Display','SF Pro Text','Inter','Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+    --ease:cubic-bezier(.22,1,.36,1);
   }
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  html{background:#06070a}
+  html{background:#000;-webkit-text-size-adjust:100%}
   body{min-height:100vh;min-height:100dvh;font-family:var(--font);color:#fff;-webkit-font-smoothing:antialiased;
-    font-variant-numeric:tabular-nums;overflow-x:hidden}
-  /* wallpaper: the blurred backdrop behind a phone lock screen */
-  body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
-    background:
-      radial-gradient(70vmax 60vmax at 15% -5%,rgba(96,116,150,.34),transparent 62%),
-      radial-gradient(60vmax 55vmax at 105% 105%,rgba(70,78,98,.30),transparent 60%),
-      #06070a}
-  #particles{display:none}.particle{display:none}
+    -moz-osx-font-smoothing:grayscale;font-variant-numeric:tabular-nums;overflow-x:hidden;
+    -webkit-user-select:none;user-select:none}
 
-  .screen{position:relative;z-index:1;width:100%;max-width:420px;min-height:100vh;min-height:100dvh;margin:0 auto;display:flex;flex-direction:column;
-    padding:calc(env(safe-area-inset-top,0px) + 30px) 22px calc(env(safe-area-inset-bottom,0px) + 22px)}
-  .state,.view{flex:1;flex-direction:column}
-  .state{display:none}.state.active{display:flex}
-  .view{display:flex}
+  /* Backdrop */
+  .bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;background:#000}
+  .orb{position:absolute;border-radius:50%;filter:blur(90px);opacity:.55;will-change:transform}
+  .orb.a{width:70vmax;height:70vmax;left:-25vmax;top:-30vmax;background:radial-gradient(circle,#2b4a8f 0%,transparent 68%);animation:drift 22s ease-in-out infinite alternate}
+  .orb.b{width:60vmax;height:60vmax;right:-25vmax;bottom:-28vmax;background:radial-gradient(circle,#5b2d8a 0%,transparent 68%);animation:drift 26s ease-in-out infinite alternate-reverse}
+  @keyframes drift{from{transform:translate3d(0,0,0)}to{transform:translate3d(6vmax,4vmax,0)}}
+
+  .screen{position:relative;z-index:1;width:100%;max-width:430px;min-height:100vh;min-height:100dvh;margin:0 auto;display:flex;flex-direction:column;
+    padding:calc(env(safe-area-inset-top,0px) + 22px) 20px calc(env(safe-area-inset-bottom,0px) + 18px)}
+  .view{flex:1;display:flex;flex-direction:column}
   .hidden{display:none!important}
 
-  .hero{display:flex;flex-direction:column;align-items:center;text-align:center;padding-top:clamp(8px,5vh,48px)}
-  .lock{width:22px;height:28px;margin-bottom:16px;color:#fff}
-  .cap{font-size:15px;font-weight:500;color:var(--sec)}
-  .clock{font-size:clamp(56px,18vw,80px);font-weight:200;letter-spacing:-.025em;line-height:1.04;margin-top:4px}
-  .sub{font-size:15px;line-height:1.4;color:var(--sec);margin-top:8px;max-width:30ch}
-  .big{font-size:clamp(34px,10.5vw,44px);font-weight:300;letter-spacing:-.02em;line-height:1.1;max-width:12ch}
-  .dock{margin-top:auto;padding-top:28px}
+  .hero{display:flex;flex-direction:column;align-items:center;text-align:center;padding-top:clamp(4px,3vh,28px)}
+  .badge{width:56px;height:56px;border-radius:13px;margin-bottom:16px;display:grid;place-items:center;
+    background:linear-gradient(160deg,#3a8dff 0%,#0a60ff 55%,#3b3bd6 100%);
+    box-shadow:0 10px 30px rgba(10,96,255,.35),inset 0 .5px 0 rgba(255,255,255,.45),inset 0 -.5px 0 rgba(0,0,0,.2)}
+  .badge svg{width:26px;height:26px;color:#fff}
+  .title{font-size:26px;line-height:1.15;font-weight:700;letter-spacing:-.022em}
+  .sub{font-size:15.5px;line-height:1.38;color:var(--label-2);margin-top:8px;max-width:30ch;letter-spacing:-.011em}
 
-  /* the banner: same one you get in the game */
-  .banner{position:relative;display:flex;align-items:flex-start;gap:12px;text-align:left;padding:14px;border-radius:24px;
-    background:rgba(52,52,56,.62);-webkit-backdrop-filter:blur(30px) saturate(1.6);backdrop-filter:blur(30px) saturate(1.6);
-    transform-origin:50% 0;animation:grow .5s cubic-bezier(.2,.9,.25,1.12) both;cursor:pointer;transition:transform .15s}
-  .banner:active{transform:scale(.97)}
-  .banner::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;
-    background:linear-gradient(135deg,rgba(255,255,255,.5),rgba(255,255,255,.1) 28%,rgba(255,255,255,.1) 72%,rgba(255,255,255,.3));
-    -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;
-    mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
-  @keyframes grow{from{opacity:0;transform:scale(.86)}to{opacity:1;transform:none}}
-  .icon{position:relative;flex:none;width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff}
-  .icon.ok{background:linear-gradient(180deg,#4fd873,#29b84f)}
-  .icon .kb{position:absolute;right:-5px;bottom:-5px;width:18px;height:18px;border-radius:6px;background:#3a3a3e;border:1.5px solid #232326;
-    display:flex;align-items:center;justify-content:center}
-  .icon .kb svg{width:10px;height:10px}
-  .icon svg.m{width:20px;height:20px}
-  .btxt{flex:1;min-width:0}
-  .btitle{display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-size:14px;font-weight:600;line-height:1.3}
-  .btitle small{font-size:12px;font-weight:400;color:var(--sec)}
-  .bbody{margin-top:2px;font-size:13.5px;line-height:1.35;color:rgba(235,235,245,.88);word-break:break-all}
-  .key-value{font-family:var(--mono);font-weight:500;letter-spacing:.2px}
-  .hint{text-align:center;font-size:12.5px;color:var(--ter);margin-top:14px;transition:color .2s}
-  .hint.copied{color:var(--ok)}
-
-  /* passcode entry (code page) */
-  .title{font-size:21px;font-weight:600;letter-spacing:-.01em}
-  .dots{display:flex;justify-content:center;gap:18px;margin:26px 0 10px}
-  .dot{width:13px;height:13px;border-radius:50%;border:1.5px solid rgba(255,255,255,.8);transition:background .12s,transform .12s}
-  .dot.on{background:#fff;transform:scale(1.08)}
-  .dots.shake{animation:shake .42s}
+  /* Code cells */
+  .cells{display:flex;justify-content:center;align-items:center;gap:12px;margin:24px 0 14px}
+  .group{display:flex;gap:7px}
+  .cell{position:relative;width:clamp(40px,12.4vw,48px);height:clamp(54px,15vw,62px);display:grid;place-items:center;border-radius:13px;
+    background:var(--fill);border:.5px solid rgba(255,255,255,.07);font-size:clamp(26px,8vw,31px);font-weight:600;letter-spacing:-.02em;
+    transition:background .2s,border-color .2s,transform .25s var(--ease)}
+  .cell.on{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.18);animation:pop .22s var(--ease)}
+  .cell.cur::after{content:"";width:2px;height:26px;border-radius:1px;background:var(--blue);animation:blink 1.05s steps(1) infinite}
+  @keyframes pop{from{transform:scale(.9)}to{transform:none}}
+  @keyframes blink{50%{opacity:0}}
+  .cells.shake{animation:shake .42s}
+  .cells.shake .cell{border-color:rgba(255,69,58,.55)}
   @keyframes shake{20%{transform:translateX(-10px)}40%{transform:translateX(9px)}60%{transform:translateX(-6px)}80%{transform:translateX(4px)}}
-  .error{min-height:20px;margin-bottom:4px;font-size:13px;line-height:1.3;color:var(--bad);text-align:center}
-  #ts{display:flex;justify-content:center;min-height:0}
-  .pad{--k:clamp(58px,9.4vh,76px);display:grid;grid-template-columns:repeat(3,var(--k));justify-content:space-between;
-    gap:clamp(10px,1.9vh,16px) 0;width:min(100%,300px);margin:8px auto 0}
-  .pad button{width:var(--k);height:var(--k);border:none;border-radius:50%;color:#fff;font:300 clamp(26px,4vh,33px)/1 var(--font);
-    background:rgba(255,255,255,.14);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);
-    display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .1s}
-  .pad button:active{background:rgba(255,255,255,.36)}
+
+  /* Paste pill */
+  .paste{display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 15px 0 12px;border:.5px solid rgba(255,255,255,.12);border-radius:18px;
+    background:var(--fill-2);color:#fff;font:500 15px var(--font);letter-spacing:-.012em;cursor:pointer;
+    -webkit-backdrop-filter:blur(20px) saturate(180%);backdrop-filter:blur(20px) saturate(180%);
+    transition:transform .2s var(--ease),background .2s}
+  .paste:hover{background:rgba(120,120,128,.26)}
+  .paste:active{transform:scale(.95)}
+  .paste svg{width:17px;height:17px;color:var(--blue)}
+  .note{min-height:18px;margin-top:10px;font-size:13px;line-height:1.3;color:var(--label-3);max-width:32ch}
+  .error{min-height:18px;margin-top:2px;font-size:13.5px;line-height:1.3;color:var(--red);text-align:center;font-weight:500;letter-spacing:-.008em}
+  #ts{display:flex;justify-content:center;margin-top:4px}
+
+  /* Keypad */
+  .dock{margin-top:auto;padding-top:12px}
+  .pad{--k:clamp(56px,8.8vh,74px);display:grid;grid-template-columns:repeat(3,var(--k));justify-content:space-between;
+    gap:clamp(9px,1.6vh,14px) 0;width:min(100%,292px);margin:0 auto}
+  .pad button{width:var(--k);height:var(--k);border:none;border-radius:50%;color:#fff;font-family:var(--font);
+    background:rgba(255,255,255,.13);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:background .35s}
+  .pad button:active{background:rgba(255,255,255,.34);transition:none}
+  .pad b{font-size:clamp(26px,4vh,32px);font-weight:300;line-height:1}
+  .pad small{font-size:9.5px;font-weight:600;letter-spacing:.14em;line-height:1;margin-top:3px;color:rgba(255,255,255,.75);min-height:9px}
   .pad button.t{background:none;-webkit-backdrop-filter:none;backdrop-filter:none;font:500 14px/1 var(--font)}
   .pad button.t:active{background:rgba(255,255,255,.1)}
   .pad svg{width:26px;height:26px}
-  .go{display:block;width:100%;height:52px;margin-top:18px;border:none;border-radius:16px;background:#fff;color:#000;
-    font:600 16px var(--font);cursor:pointer;transition:transform .15s,opacity .2s}
-  .go:active{transform:scale(.98)}
-  .go:disabled{opacity:.45;cursor:default}
-  .go.quiet{background:rgba(255,255,255,.14);color:#fff;margin-top:10px}
-  .ring{width:34px;height:34px;margin-top:26px;border:2.5px solid rgba(255,255,255,.14);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite}
+
+  .go{display:flex;align-items:center;justify-content:center;width:100%;height:56px;margin-top:16px;border:none;border-radius:16px;
+    background:var(--blue);color:#fff;font:600 17px var(--font);letter-spacing:-.015em;cursor:pointer;
+    box-shadow:0 8px 24px rgba(10,132,255,.38),inset 0 .5px 0 rgba(255,255,255,.35);
+    transition:transform .2s var(--ease),opacity .25s,filter .2s,box-shadow .25s}
+  .go:hover{filter:brightness(1.08)}
+  .go:active{transform:scale(.975);filter:brightness(.94)}
+  .go:disabled{opacity:.5;cursor:default;transform:none}
+  .go.idle{background:rgba(120,120,128,.32);box-shadow:none;color:rgba(255,255,255,.55)}
+
+  /* Loading */
+  .loading{align-items:center;justify-content:center;text-align:center;gap:6px}
+  .ring{width:38px;height:38px;margin:22px auto 0;border:2.5px solid rgba(255,255,255,.14);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite}
   @keyframes spin{to{transform:rotate(360deg)}}
-  :focus-visible{outline:2px solid #fff;outline-offset:3px}
-  @media (prefers-reduced-motion:reduce){.banner,.dots.shake,.ring{animation:none}}
-  @media (max-height:700px){.hero{padding-top:0}.lock{margin-bottom:10px}.dots{margin:16px 0 6px}}
+
+  /* Toast */
+  .toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 14px);z-index:5;transform:translate(-50%,-140%);opacity:0;
+    display:flex;align-items:center;gap:8px;height:42px;padding:0 16px 0 12px;border-radius:21px;font-size:14px;font-weight:500;
+    background:rgba(40,40,44,.78);border:.5px solid rgba(255,255,255,.14);
+    -webkit-backdrop-filter:blur(24px) saturate(180%);backdrop-filter:blur(24px) saturate(180%);box-shadow:0 10px 30px rgba(0,0,0,.5);
+    transition:transform .5s var(--ease),opacity .3s;pointer-events:none}
+  .toast svg{width:18px;height:18px;color:var(--green)}
+  .toast.show{transform:translate(-50%,0);opacity:1}
+
+  :focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+  @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+  @media (max-height:700px){.badge{display:none}.cells{margin:16px 0 10px}}
 </style>
 </head>
 <body>
+<div class="bg" aria-hidden="true"><div class="orb a"></div><div class="orb b"></div></div>
+
+<div class="toast" id="toast" role="status" aria-live="polite">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+  Code pasted
+</div>
+
 <main class="screen">
-  <div id="loading" class="view hidden">
-    <div class="hero">
-      <svg class="lock" viewBox="0 0 22 28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="11.5" width="18" height="14" rx="3.5" fill="currentColor" stroke="none"/><path d="M6 11.5V8a5 5 0 0 1 10 0v3.5"/></svg>
-      <div class="title">Preparing your key</div>
-      <div class="ring" aria-hidden="true"></div>
+  <div id="loading" class="view loading hidden">
+    <div class="badge" style="margin:0 auto" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="10.5" width="15" height="10" rx="2.5" fill="currentColor" stroke="none"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg>
     </div>
+    <div class="title">Preparing your key</div>
+    <div class="sub">This only takes a moment.</div>
+    <div class="ring" aria-hidden="true"></div>
   </div>
 
   <div id="form" class="view">
     <div class="hero">
-      <svg class="lock" viewBox="0 0 22 28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="11.5" width="18" height="14" rx="3.5" fill="currentColor" stroke="none"/><path d="M6 11.5V8a5 5 0 0 1 10 0v3.5"/></svg>
-      <div class="title">Enter your number</div>
-      <div class="sub">The 6 digits you saved earlier.</div>
-      <div class="dots" id="dots" role="img" aria-label="6 digit number"><i class="dot"></i><i class="dot"></i><i class="dot"></i><i class="dot"></i><i class="dot"></i><i class="dot"></i></div>
+      <div class="badge" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="10.5" width="15" height="10" rx="2.5" fill="currentColor" stroke="none"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg>
+      </div>
+      <div class="title">Enter your code</div>
+      <div class="sub">Type or paste the 6 digits you saved on the last page.</div>
+
+      <div class="cells" id="cells" role="img" aria-label="Code: 0 of 6 digits entered">
+        <span class="group"><i class="cell"></i><i class="cell"></i><i class="cell"></i></span>
+        <span class="group"><i class="cell"></i><i class="cell"></i><i class="cell"></i></span>
+      </div>
+
+      <button type="button" class="paste" id="paste">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4.5" width="14" height="17" rx="3"/><path d="M9 4.5V4a1.5 1.5 0 0 1 1.5-1.5h3A1.5 1.5 0 0 1 15 4v.5"/></svg>
+        Paste code
+      </button>
+      <div class="note" id="note" role="status" aria-live="polite"></div>
       <div class="error" id="error" role="alert"></div>
       <div id="ts"></div>
     </div>
+
     <div class="dock">
       <input id="code" type="text" inputmode="numeric" maxlength="6" autocomplete="off" placeholder="------" readonly tabindex="-1" aria-hidden="true" style="position:absolute;opacity:0;pointer-events:none;width:1px;height:1px">
       <div class="pad">
-        <button type="button" data-d="1">1</button><button type="button" data-d="2">2</button><button type="button" data-d="3">3</button>
-        <button type="button" data-d="4">4</button><button type="button" data-d="5">5</button><button type="button" data-d="6">6</button>
-        <button type="button" data-d="7">7</button><button type="button" data-d="8">8</button><button type="button" data-d="9">9</button>
-        <button type="button" class="t" id="forgot">Start over</button><button type="button" data-d="0">0</button><button type="button" class="t" id="del" aria-label="Delete"><svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 6h13a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H10L3.5 14z"/><path d="M15 11l6 6M21 11l-6 6"/></svg></button>
+        <button type="button" data-d="1"><b>1</b><small></small></button>
+        <button type="button" data-d="2"><b>2</b><small>ABC</small></button>
+        <button type="button" data-d="3"><b>3</b><small>DEF</small></button>
+        <button type="button" data-d="4"><b>4</b><small>GHI</small></button>
+        <button type="button" data-d="5"><b>5</b><small>JKL</small></button>
+        <button type="button" data-d="6"><b>6</b><small>MNO</small></button>
+        <button type="button" data-d="7"><b>7</b><small>PQRS</small></button>
+        <button type="button" data-d="8"><b>8</b><small>TUV</small></button>
+        <button type="button" data-d="9"><b>9</b><small>WXYZ</small></button>
+        <button type="button" class="t" id="forgot">Start over</button>
+        <button type="button" data-d="0"><b>0</b><small></small></button>
+        <button type="button" class="t" id="del" aria-label="Delete"><svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 6h13a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H10L3.5 14z"/><path d="M15 11l6 6M21 11l-6 6"/></svg></button>
       </div>
-      <button class="go" id="submit">Get my key</button>
+      <button class="go idle" id="submit">Get my key</button>
     </div>
   </div>
 </main>
@@ -259,32 +305,96 @@
 })();
 </script>
 <script>
-// passcode UI: the real input stays as the source of truth, this only draws the dots and the keypad
+// UI layer: the hidden input stays the source of truth; this draws the cells, keypad, paste and feedback.
 (function () {
   const input = document.getElementById('code');
-  const dots = document.getElementById('dots');
+  const cellsWrap = document.getElementById('cells');
+  const cells = cellsWrap.querySelectorAll('.cell');
   const errorEl = document.getElementById('error');
-  const dotEls = dots.querySelectorAll('.dot');
+  const note = document.getElementById('note');
   const form = document.getElementById('form');
-  function draw() { dotEls.forEach((d, i) => d.classList.toggle('on', i < input.value.length)); }
-  function set(v) { input.value = v.slice(0, 6); input.dispatchEvent(new Event('input', { bubbles: true })); draw(); }
+  const goBtn = document.getElementById('submit');
+  const toast = document.getElementById('toast');
+  let toastTimer;
+
+  function draw() {
+    const v = input.value;
+    cells.forEach((c, i) => {
+      c.textContent = v[i] || '';
+      c.classList.toggle('on', i < v.length);
+      c.classList.toggle('cur', i === v.length && v.length < 6);
+    });
+    goBtn.classList.toggle('idle', v.length < 6);
+    cellsWrap.setAttribute('aria-label', 'Code: ' + v.length + ' of 6 digits entered');
+  }
+  function set(v) {
+    input.value = String(v).replace(/\D/g, '').slice(0, 6);
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    note.textContent = '';
+    draw();
+  }
+
+  // Find a 6-digit code in arbitrary pasted text
+  function extract(text) {
+    const s = String(text || '');
+    const m = s.match(/(?:^|\D)(\d{6})(?:\D|$)/);
+    if (m) return m[1];
+    const all = s.replace(/\D/g, '');
+    return all.length === 6 ? all : '';
+  }
+  function showToast() {
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 1700);
+  }
+  function accept(code) {
+    set(code);
+    if (navigator.vibrate) { try { navigator.vibrate(8); } catch (e) {} }
+    showToast();
+  }
+
+  // Keypad
   document.querySelectorAll('.pad [data-d]').forEach(b =>
     b.addEventListener('click', () => set(input.value + b.dataset.d)));
   document.getElementById('del').addEventListener('click', () => set(input.value.slice(0, -1)));
+
+  // Paste button
+  document.getElementById('paste').addEventListener('click', async () => {
+    note.textContent = '';
+    try {
+      if (!navigator.clipboard || !navigator.clipboard.readText) throw new Error('unsupported');
+      const text = await navigator.clipboard.readText();
+      const code = extract(text);
+      if (code) { accept(code); return; }
+      const n = (text || '').replace(/\D/g, '').length;
+      note.textContent = n ? 'Your clipboard has ' + n + ' digits, not 6.' : 'No 6 digit code found in your clipboard.';
+    } catch (e) {
+      note.textContent = 'Clipboard access was blocked. Use the keypad, or press Ctrl/\u2318 + V.';
+    }
+  });
+
+  // Keyboard + system paste (Ctrl/Cmd+V)
   document.addEventListener('keydown', (e) => {
     if (form.classList.contains('hidden') || e.ctrlKey || e.metaKey || e.altKey) return;
     if (/^\d$/.test(e.key)) set(input.value + e.key);
     else if (e.key === 'Backspace') set(input.value.slice(0, -1));
-    else if (e.key === 'Enter') document.getElementById('submit').click();
+    else if (e.key === 'Enter') goBtn.click();
   });
   document.addEventListener('paste', (e) => {
-    const t = (e.clipboardData && e.clipboardData.getData('text') || '').replace(/\D/g, '');
-    if (t) { e.preventDefault(); set(t); }
+    const text = (e.clipboardData && e.clipboardData.getData('text')) || '';
+    const digits = text.replace(/\D/g, '');
+    if (!digits) return;
+    e.preventDefault();
+    const code = extract(text);
+    if (code) accept(code); else set(digits);
   });
+
+  // Shake on error
   new MutationObserver(() => {
     if (!errorEl.textContent) return;
-    dots.classList.remove('shake'); void dots.offsetWidth; dots.classList.add('shake');
+    cellsWrap.classList.remove('shake'); void cellsWrap.offsetWidth; cellsWrap.classList.add('shake');
   }).observe(errorEl, { childList: true, characterData: true, subtree: true });
+
   draw();
 })();
 </script>
