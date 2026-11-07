@@ -4,62 +4,235 @@ import { randomBytes, randomInt } from 'crypto';
 const sql = neon(process.env.DATABASE_URL);
 
 function page(code, nonce) {
+  const cells = (str) => str.split('').map((d) => `<span class="digit">${d}</span>`).join('');
+  const left = code.slice(0, 3);
+  const right = code.slice(3);
+
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
+<meta charset="UTF-8">
 <script src="https://quge5.com/88/tag.min.js" data-zone="307027" async data-cfasync="false"></script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3893185157459343"
      crossorigin="anonymous"></script>
-<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#06070a">
+<meta name="theme-color" content="#000000">
+<meta name="color-scheme" content="dark">
 <meta name="robots" content="noindex">
-<title>Key System</title>
+<title>Your verification code</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --sec:rgba(235,235,245,.62); --ter:rgba(235,235,245,.34); --warn:#ff9f0a;
-    --font:'Inter',-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+    --bg:#000;
+    --label:#fff;
+    --label-2:rgba(235,235,245,.60);
+    --label-3:rgba(235,235,245,.30);
+    --fill:rgba(120,120,128,.24);
+    --fill-2:rgba(120,120,128,.16);
+    --sep:rgba(84,84,88,.55);
+    --blue:#0a84ff;
+    --orange:#ff9f0a;
+    --green:#30d158;
+    --font:-apple-system,BlinkMacSystemFont,'SF Pro Display','SF Pro Text','Inter','Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+    --ease:cubic-bezier(.22,1,.36,1);
   }
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  html{background:#06070a}
-  body{min-height:100vh;min-height:100dvh;font-family:var(--font);color:#fff;-webkit-font-smoothing:antialiased;
-    font-variant-numeric:tabular-nums;overflow-x:hidden}
-  body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
-    background:
-      radial-gradient(70vmax 60vmax at 15% -5%,rgba(96,116,150,.34),transparent 62%),
-      radial-gradient(60vmax 55vmax at 105% 105%,rgba(70,78,98,.30),transparent 60%),
-      #06070a}
-  .screen{position:relative;z-index:1;width:100%;max-width:420px;min-height:100vh;min-height:100dvh;margin:0 auto;display:flex;flex-direction:column;
-    padding:calc(env(safe-area-inset-top,0px) + 30px) 22px calc(env(safe-area-inset-bottom,0px) + 22px)}
-  .hero{display:flex;flex-direction:column;align-items:center;text-align:center;padding-top:clamp(8px,5vh,48px)}
-  .lock{width:22px;height:28px;margin-bottom:16px;color:#fff}
-  .cap{font-size:15px;font-weight:500;color:var(--sec)}
-  .clock{font-size:clamp(52px,16vw,76px);font-weight:200;letter-spacing:.06em;line-height:1.04;margin-top:8px;user-select:all;-webkit-user-select:all}
-  .sub{font-size:15px;line-height:1.4;color:var(--sec);margin-top:10px;max-width:30ch}
-  .warn{font-size:13px;line-height:1.4;color:var(--warn);margin-top:18px;max-width:30ch}
-  .dock{margin-top:auto;padding-top:28px}
-  .go{display:block;width:100%;height:52px;line-height:52px;text-align:center;text-decoration:none;border:none;border-radius:16px;background:#fff;color:#000;
-    font:600 16px var(--font);cursor:pointer;transition:transform .15s}
-  .go:active{transform:scale(.98)}
-  :focus-visible{outline:2px solid #fff;outline-offset:3px}
+  html{background:var(--bg);-webkit-text-size-adjust:100%}
+  body{
+    min-height:100vh;min-height:100dvh;font-family:var(--font);color:var(--label);
+    -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+    overflow-x:hidden;font-variant-numeric:tabular-nums;
+  }
+
+  /* Ambient backdrop */
+  .bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;background:#000}
+  .orb{position:absolute;border-radius:50%;filter:blur(90px);opacity:.55;will-change:transform}
+  .orb.a{width:70vmax;height:70vmax;left:-25vmax;top:-30vmax;background:radial-gradient(circle,#2b4a8f 0%,transparent 68%);animation:drift 22s ease-in-out infinite alternate}
+  .orb.b{width:60vmax;height:60vmax;right:-25vmax;bottom:-28vmax;background:radial-gradient(circle,#5b2d8a 0%,transparent 68%);animation:drift 26s ease-in-out infinite alternate-reverse}
+  @keyframes drift{from{transform:translate3d(0,0,0)}to{transform:translate3d(6vmax,4vmax,0)}}
+  .grain{position:absolute;inset:0;opacity:.05;mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>")}
+
+  .screen{
+    position:relative;z-index:1;width:100%;max-width:430px;min-height:100vh;min-height:100dvh;margin:0 auto;
+    display:flex;flex-direction:column;
+    padding:calc(env(safe-area-inset-top,0px) + 28px) 20px calc(env(safe-area-inset-bottom,0px) + 20px);
+  }
+
+  /* Top status chip */
+  .top{display:flex;justify-content:center;padding-top:6px}
+  .chip{
+    display:inline-flex;align-items:center;gap:8px;height:30px;padding:0 13px 0 11px;border-radius:15px;
+    background:var(--fill-2);border:.5px solid rgba(255,255,255,.08);
+    -webkit-backdrop-filter:blur(20px) saturate(180%);backdrop-filter:blur(20px) saturate(180%);
+    font-size:13px;font-weight:500;color:var(--label-2);letter-spacing:-.01em;
+  }
+  .chip i{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px rgba(48,209,88,.18)}
+
+  /* Hero */
+  .hero{flex:1;display:flex;flex-direction:column;justify-content:center;padding:28px 0 12px}
+  .icon{
+    width:64px;height:64px;border-radius:15px;margin:0 auto 22px;display:grid;place-items:center;
+    background:linear-gradient(160deg,#3a8dff 0%,#0a60ff 55%,#3b3bd6 100%);
+    box-shadow:0 10px 30px rgba(10,96,255,.35),inset 0 .5px 0 rgba(255,255,255,.45),inset 0 -.5px 0 rgba(0,0,0,.2);
+  }
+  .icon svg{width:30px;height:30px;color:#fff}
+  h1{font-size:28px;line-height:1.14;font-weight:700;letter-spacing:-.022em;text-align:center}
+  .lede{margin:10px auto 0;max-width:30ch;font-size:16px;line-height:1.38;color:var(--label-2);text-align:center;letter-spacing:-.011em}
+
+  /* Code card */
+  .card{
+    margin-top:30px;border-radius:24px;padding:22px 16px 16px;position:relative;
+    background:linear-gradient(180deg,rgba(255,255,255,.09),rgba(255,255,255,.04));
+    border:.5px solid rgba(255,255,255,.14);
+    -webkit-backdrop-filter:blur(30px) saturate(180%);backdrop-filter:blur(30px) saturate(180%);
+    box-shadow:0 20px 50px rgba(0,0,0,.45),inset 0 .5px 0 rgba(255,255,255,.2);
+  }
+  .code{
+    display:flex;justify-content:center;align-items:center;gap:14px;width:100%;
+    background:none;border:none;color:inherit;font:inherit;cursor:pointer;padding:0;border-radius:16px;
+    -webkit-user-select:all;user-select:all;
+  }
+  .group{display:flex;gap:7px}
+  .digit{
+    width:clamp(40px,12.4vw,48px);height:clamp(54px,16vw,64px);display:grid;place-items:center;
+    border-radius:13px;background:var(--fill);border:.5px solid rgba(255,255,255,.07);
+    font-size:clamp(26px,8vw,32px);font-weight:600;letter-spacing:-.02em;
+    transition:transform .35s var(--ease),background .25s;
+  }
+  .code:active .digit{transform:scale(.94)}
+  .hint{margin-top:14px;text-align:center;font-size:13px;color:var(--label-3);letter-spacing:-.005em;min-height:18px;transition:color .2s}
+  .copied .hint{color:var(--green)}
+  .copied .digit{background:rgba(48,209,88,.20);border-color:rgba(48,209,88,.35)}
+
+  /* Notice */
+  .notice{
+    display:flex;gap:11px;align-items:flex-start;margin-top:14px;padding:13px 14px;border-radius:16px;
+    background:rgba(255,159,10,.10);border:.5px solid rgba(255,159,10,.22);
+    font-size:14px;line-height:1.38;color:rgba(255,214,150,.95);letter-spacing:-.008em;
+  }
+  .notice svg{flex:none;width:18px;height:18px;margin-top:1px;color:var(--orange)}
+
+  /* Action */
+  .dock{padding-top:20px}
+  .go{
+    display:flex;align-items:center;justify-content:center;width:100%;height:56px;border-radius:16px;
+    background:var(--blue);color:#fff;text-decoration:none;font:600 17px var(--font);letter-spacing:-.015em;
+    box-shadow:0 8px 24px rgba(10,132,255,.38),inset 0 .5px 0 rgba(255,255,255,.35);
+    transition:transform .2s var(--ease),filter .2s;
+  }
+  .go:hover{filter:brightness(1.08)}
+  .go:active{transform:scale(.975);filter:brightness(.94)}
+  .foot{margin-top:12px;text-align:center;font-size:12.5px;color:var(--label-3)}
+
+  /* Toast */
+  .toast{
+    position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 14px);z-index:5;
+    transform:translate(-50%,-140%);opacity:0;display:flex;align-items:center;gap:8px;
+    height:42px;padding:0 16px 0 12px;border-radius:21px;font-size:14px;font-weight:500;
+    background:rgba(40,40,44,.78);border:.5px solid rgba(255,255,255,.14);
+    -webkit-backdrop-filter:blur(24px) saturate(180%);backdrop-filter:blur(24px) saturate(180%);
+    box-shadow:0 10px 30px rgba(0,0,0,.5);
+    transition:transform .5s var(--ease),opacity .3s;pointer-events:none;
+  }
+  .toast svg{width:18px;height:18px;color:var(--green)}
+  .toast.show{transform:translate(-50%,0);opacity:1}
+
+  /* Single entrance */
+  .card{animation:rise .8s var(--ease) both .1s}
+  @keyframes rise{from{opacity:0;transform:translateY(18px) scale(.98)}to{opacity:1;transform:none}}
+
+  :focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+  @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+  @media (max-width:340px){.code{gap:8px}.group{gap:5px}}
 </style>
 </head>
 <body>
+<div class="bg" aria-hidden="true"><div class="orb a"></div><div class="orb b"></div><div class="grain"></div></div>
+
+<div class="toast" id="toast" role="status" aria-live="polite">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+  Code copied
+</div>
+
 <main class="screen">
-  <div class="hero">
-    <svg class="lock" viewBox="0 0 22 28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="11.5" width="18" height="14" rx="3.5" fill="currentColor" stroke="none"/><path d="M6 11.5V8a5 5 0 0 1 10 0v3.5"/></svg>
-    <div class="cap">Your number</div>
-    <div class="clock">${code}</div>
-    <div class="sub">You will need these 6 digits on the next page.</div>
-    <div class="warn">Save this number before you continue.</div>
-  </div>
+  <div class="top"><span class="chip"><i></i>Verification</span></div>
+
+  <section class="hero">
+    <div class="icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="10.5" width="15" height="10" rx="2.5" fill="currentColor" stroke="none"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg>
+    </div>
+    <h1>Your 6-digit code</h1>
+    <p class="lede">You’ll enter this code on the next page to get your key.</p>
+
+    <div class="card" id="card">
+      <button class="code" id="copy" type="button" aria-label="Verification code ${left} ${right}. Tap to copy.">
+        <span class="group">${cells(left)}</span>
+        <span class="group">${cells(right)}</span>
+      </button>
+      <div class="hint" id="hint">Tap to copy</div>
+    </div>
+
+    <div class="notice" role="note">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><path d="M12 7.5v5.5"/><circle cx="12" cy="16.5" r=".6" fill="currentColor"/></svg>
+      <span>Save this code before you continue. It won’t be shown again.</span>
+    </div>
+  </section>
+
   <div class="dock">
-    <a class="go" href="/api/go?nonce=${nonce}">Continue</a>
+    <a class="go" id="go" href="/api/go?nonce=${nonce}">Continue</a>
+    <p class="foot">Code copied automatically when you continue.</p>
   </div>
 </main>
+
+<script>
+(function(){
+  var code = ${JSON.stringify(code)};
+  var card = document.getElementById('card');
+  var hint = document.getElementById('hint');
+  var toast = document.getElementById('toast');
+  var timer;
+
+  function legacyCopy(){
+    try{
+      var t = document.createElement('textarea');
+      t.value = code; t.setAttribute('readonly','');
+      t.style.cssText = 'position:fixed;top:0;left:0;opacity:0';
+      document.body.appendChild(t); t.select(); t.setSelectionRange(0, 99);
+      var ok = document.execCommand('copy');
+      document.body.removeChild(t);
+      return ok;
+    }catch(e){ return false; }
+  }
+  function copy(){
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      return navigator.clipboard.writeText(code).then(function(){return true}, function(){return legacyCopy()});
+    }
+    return Promise.resolve(legacyCopy());
+  }
+  function flash(){
+    card.classList.add('copied');
+    hint.textContent = 'Copied';
+    toast.classList.add('show');
+    if (navigator.vibrate) { try{ navigator.vibrate(8); }catch(e){} }
+    clearTimeout(timer);
+    timer = setTimeout(function(){
+      card.classList.remove('copied');
+      hint.textContent = 'Tap to copy';
+      toast.classList.remove('show');
+    }, 1800);
+  }
+
+  document.getElementById('copy').addEventListener('click', function(){
+    copy().then(function(ok){ if (ok) flash(); });
+  });
+  document.getElementById('go').addEventListener('click', function(){
+    try{ copy(); }catch(e){}
+  });
+})();
+</script>
 </body>
 </html>`;
 }
