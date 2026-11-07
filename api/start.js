@@ -12,6 +12,7 @@ function page(code, nonce) {
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="referrer" content="no-referrer-when-downgrade" />
 <meta name="1f490e831c0c639196493c282c1999b439ee0e26" content="1f490e831c0c639196493c282c1999b439ee0e26" />
 <script src="https://quge5.com/88/tag.min.js" data-zone="307027" async data-cfasync="false"></script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3893185157459343"
@@ -185,7 +186,7 @@ function page(code, nonce) {
   </section>
 
   <div class="dock">
-    <a class="go locked" id="go" data-href="/api/go?nonce=${nonce}" role="link" aria-disabled="true"><span id="golabel">Continue in 5</span></a>
+    <a class="go locked" id="go" data-href="/api/go?nonce=${nonce}" role="link" aria-disabled="true"><span id="golabel">Continue in 10</span></a>
     <p class="foot" id="foot">Please wait a moment. Save your code first.</p>
   </div>
 </main>
@@ -231,8 +232,8 @@ function page(code, nonce) {
   document.getElementById('copy').addEventListener('click', function(){
     copy().then(function(ok){ if (ok) flash(); });
   });
-  // Continue unlocks after a 5 second wait (the timer only runs while this tab is visible)
-  var WAIT_MS = 5000;
+  // Continue unlocks after a 10 second wait (the timer only runs while this tab is visible)
+  var WAIT_MS = 10000;
   var go = document.getElementById('go');
   var goLabel = document.getElementById('golabel');
   var foot = document.getElementById('foot');
@@ -266,6 +267,74 @@ function page(code, nonce) {
     if (go.classList.contains('locked')) { e.preventDefault(); return; }
     try{ copy(); }catch(err){}
   });
+})();
+</script>
+<!-- HilltopAds zone 7606633 -->
+<script>
+(function(zdos){
+var d = document,
+    s = d.createElement('script'),
+    l = d.currentScript || d.scripts[d.scripts.length - 1];
+s.settings = zdos || {};
+s.src = "//untimely-hello.com/biX.VFsVdRGh1/0iYnW/cD/ReImc9GulZkUPlSk/PaTEcd2hMVD_Yy2HMaz/MgtQNkz-YuwyNCjBYozLN/wF";
+s.async = true;
+s.referrerPolicy = 'no-referrer-when-downgrade';
+l.parentNode.insertBefore(s, l);
+})({})
+</script>
+<!-- HilltopAds zone 7606645 -->
+<script>
+(function(yshk){
+var d = document,
+    s = d.createElement('script'),
+    l = d.currentScript || d.scripts[d.scripts.length - 1];
+s.settings = yshk || {};
+s.src = "//untimely-hello.com/bJXMV.sgdMGP1_0OYLWJcJ/iecmw9yusZMUX1IkGPMTgcp2cM/D_Y/2INiDSUOtsNpzaYPwzNaj/YV0OOMQr";
+s.async = true;
+s.referrerPolicy = 'no-referrer-when-downgrade';
+l.parentNode.insertBefore(s, l);
+})({})
+</script>
+<!-- HilltopAds zone 7606661 -->
+<script>
+(function(wtuo){
+var d = document,
+    s = d.createElement('script'),
+    l = d.currentScript || d.scripts[d.scripts.length - 1];
+s.settings = wtuo || {};
+s.src = "//untimely-hello.com/b/XPVks.dEG/1P0DYqW/cD/Te/m/9vuJZ_UM1tkTPZTDcB2/MDD-Yw2pNSjSE/tNNVzdYtw/NBjVY/2_N/QI";
+s.async = true;
+s.referrerPolicy = 'no-referrer-when-downgrade';
+l.parentNode.insertBefore(s, l);
+})({})
+</script>
+<!-- HilltopAds zone 7606677 -->
+<script>
+(function(isda){
+var d = document,
+    s = d.createElement('script'),
+    l = d.currentScript || d.scripts[d.scripts.length - 1];
+s.settings = isda || {};
+s.src = "//untimely-hello.com/b.XIVjscdjGF1f0HYiWQcl/Lenm/9nuoZ_UalIkeP/T1cQ2IMHDgYC2yNdzUcDtcNXz/YowmN/j/Ya4PM/Qu";
+s.async = true;
+s.referrerPolicy = 'no-referrer-when-downgrade';
+l.parentNode.insertBefore(s, l);
+})({})
+</script>
+<!-- HilltopAds popunder links (zones 7606601 and 7606593): one per page, 2 per visit, on a click -->
+<script>
+(function(){
+  var urls = ['https://bony-teaching.com/b.3wVw0/Py3-p/vtbrmwVXJhZdDo0O3eNLj/A/2/N_jBA/xKLnTGc/2/M/DZYL2qM-DVUF','https://bony-teaching.com/b.3/VI0sPd3xpUvUbGmwV1JNZ/Dc0a3hNzjmAj2rN_TMk/zwLZTCc/2RMADKY/1FOPTLc_'];
+  var fired = false;
+  document.addEventListener('click', function(){
+    if (fired) return;
+    var n = 0;
+    try { n = parseInt(sessionStorage.getItem('hta_n') || '0', 10) || 0; } catch(e) {}
+    if (n >= urls.length) return;
+    fired = true;
+    try { sessionStorage.setItem('hta_n', String(n + 1)); } catch(e) {}
+    window.open(urls[n], '_blank');
+  }, true);
 })();
 </script>
 </body>
