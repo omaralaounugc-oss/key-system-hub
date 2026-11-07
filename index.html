@@ -45,6 +45,12 @@
   .big{font-size:clamp(34px,10.5vw,44px);font-weight:300;letter-spacing:-.02em;line-height:1.1;max-width:12ch}
   .dock{margin-top:auto;padding-top:28px}
 
+  /* success screen: clock + key message sit together in the middle of the screen */
+  #state-success,#state-expired,#state-error{justify-content:center}
+  #state-success .hero,#state-expired .hero,#state-error .hero{padding-top:0}
+  .mid{padding-top:clamp(26px,5vh,42px)}
+  .mid .go:first-child{margin-top:0}
+
   /* the banner: same one you get in the game */
   .banner{position:relative;display:flex;align-items:flex-start;gap:12px;text-align:left;padding:14px;border-radius:24px;
     background:rgba(52,52,56,.62);-webkit-backdrop-filter:blur(30px) saturate(1.6);backdrop-filter:blur(30px) saturate(1.6);
@@ -120,7 +126,7 @@
       <div class="clock" id="countdown-display">--:--:--</div>
       <div class="sub" id="expires-at"></div>
     </div>
-    <div class="dock">
+    <div class="mid">
       <div class="banner" onclick="copyKey()" role="button" tabindex="0">
         <div class="icon ok"><svg class="m" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span class="kb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4.2"/><path d="M11 12l9-9M16 7l3 3"/></svg></span></div>
         <div class="btxt">
@@ -139,7 +145,7 @@
       <div class="big">This key has expired</div>
       <div class="sub">Keys last 12 hours. Get a new one to keep going.</div>
     </div>
-    <div class="dock"><button class="go" onclick="getNewKey()">Get a new key</button></div>
+    <div class="mid"><button class="go" onclick="getNewKey()">Get a new key</button></div>
   </section>
 
   <!-- Error -->
@@ -149,7 +155,7 @@
       <div class="big">Something went wrong</div>
       <div class="sub" id="error-msg">No keys available at the moment</div>
     </div>
-    <div class="dock">
+    <div class="mid">
       <button class="go" onclick="location.reload()">Try again</button>
       <button class="go quiet" onclick="getNewKey()">Get a new key</button>
     </div>
