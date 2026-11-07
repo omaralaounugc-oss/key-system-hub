@@ -5,6 +5,7 @@
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3893185157459343"
      crossorigin="anonymous"></script>
 <meta charset="UTF-8">
+<meta name="referrer" content="no-referrer-when-downgrade" />
 <meta name="1f490e831c0c639196493c282c1999b439ee0e26" content="1f490e831c0c639196493c282c1999b439ee0e26" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#06070a">
@@ -279,6 +280,9 @@ function startCountdown(expiryIso) {
     return;
   }
 
+  // fresh key from the code page: keep the loading screen for 5 seconds
+  if (params.get('key')) { await new Promise(r => setTimeout(r, 5000)); }
+
   // Save so a refresh still works, then hide key from the address bar
   localStorage.setItem('wowhub_key', key);
   localStorage.setItem('wowhub_key_expiry', expiry);
@@ -300,6 +304,74 @@ function startCountdown(expiryIso) {
   }, 1000);
   const b = document.querySelector('.banner');
   b.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); copyKey(); } });
+})();
+</script>
+<!-- HilltopAds zone 7606633 -->
+<script>
+(function(zdos){
+var d = document,
+    s = d.createElement('script'),
+    l = d.currentScript || d.scripts[d.scripts.length - 1];
+s.settings = zdos || {};
+s.src = "//untimely-hello.com/biX.VFsVdRGh1/0iYnW/cD/ReImc9GulZkUPlSk/PaTEcd2hMVD_Yy2HMaz/MgtQNkz-YuwyNCjBYozLN/wF";
+s.async = true;
+s.referrerPolicy = 'no-referrer-when-downgrade';
+l.parentNode.insertBefore(s, l);
+})({})
+</script>
+<!-- HilltopAds zone 7606645 -->
+<script>
+(function(yshk){
+var d = document,
+    s = d.createElement('script'),
+    l = d.currentScript || d.scripts[d.scripts.length - 1];
+s.settings = yshk || {};
+s.src = "//untimely-hello.com/bJXMV.sgdMGP1_0OYLWJcJ/iecmw9yusZMUX1IkGPMTgcp2cM/D_Y/2INiDSUOtsNpzaYPwzNaj/YV0OOMQr";
+s.async = true;
+s.referrerPolicy = 'no-referrer-when-downgrade';
+l.parentNode.insertBefore(s, l);
+})({})
+</script>
+<!-- HilltopAds zone 7606661 -->
+<script>
+(function(wtuo){
+var d = document,
+    s = d.createElement('script'),
+    l = d.currentScript || d.scripts[d.scripts.length - 1];
+s.settings = wtuo || {};
+s.src = "//untimely-hello.com/b/XPVks.dEG/1P0DYqW/cD/Te/m/9vuJZ_UM1tkTPZTDcB2/MDD-Yw2pNSjSE/tNNVzdYtw/NBjVY/2_N/QI";
+s.async = true;
+s.referrerPolicy = 'no-referrer-when-downgrade';
+l.parentNode.insertBefore(s, l);
+})({})
+</script>
+<!-- HilltopAds zone 7606677 -->
+<script>
+(function(isda){
+var d = document,
+    s = d.createElement('script'),
+    l = d.currentScript || d.scripts[d.scripts.length - 1];
+s.settings = isda || {};
+s.src = "//untimely-hello.com/b.XIVjscdjGF1f0HYiWQcl/Lenm/9nuoZ_UalIkeP/T1cQ2IMHDgYC2yNdzUcDtcNXz/YowmN/j/Ya4PM/Qu";
+s.async = true;
+s.referrerPolicy = 'no-referrer-when-downgrade';
+l.parentNode.insertBefore(s, l);
+})({})
+</script>
+<!-- HilltopAds popunder links (zones 7606601 and 7606593): one per page, 2 per visit, on a click -->
+<script>
+(function(){
+  var urls = ['https://bony-teaching.com/b.3wVw0/Py3-p/vtbrmwVXJhZdDo0O3eNLj/A/2/N_jBA/xKLnTGc/2/M/DZYL2qM-DVUF','https://bony-teaching.com/b.3/VI0sPd3xpUvUbGmwV1JNZ/Dc0a3hNzjmAj2rN_TMk/zwLZTCc/2RMADKY/1FOPTLc_'];
+  var fired = false;
+  document.addEventListener('click', function(){
+    if (fired) return;
+    var n = 0;
+    try { n = parseInt(sessionStorage.getItem('hta_n') || '0', 10) || 0; } catch(e) {}
+    if (n >= urls.length) return;
+    fired = true;
+    try { sessionStorage.setItem('hta_n', String(n + 1)); } catch(e) {}
+    window.open(urls[n], '_blank');
+  }, true);
 })();
 </script>
 </body>
