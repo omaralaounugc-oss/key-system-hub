@@ -2,26 +2,43 @@ import { neon } from '@neondatabase/serverless';
 
 const sql = neon(process.env.DATABASE_URL);
 
-const MIN_SECONDS = 15; // fastest a real user could finish the tasks
+// The SQL below uses INTERVAL '25 seconds' (fastest a real user could finish the tasks).
+// Raise both if bypassers still get through, lower if real users get blocked.
+const MAX_KEYS_PER_IP_PER_DAY = 6;
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { nonce } = req.query;
-  if (!nonce || !/^[a-f0-9]{32}$/.test(nonce)) {
+  const { nonce, t } = req.query;
+  if (
+    !nonce || !/^[a-f0-9]{32}$/.test(nonce) ||
+    !t || !/^[a-f0-9]{32}$/.test(t)
+  ) {
     return res.status(400).json({ error: 'Invalid session' });
   }
 
   try {
-    // Consume the one-time session (must be old enough and not expired)
+    // Limit how many keys one IP can get per day
+    const lim = await sql`
+      SELECT COUNT(*)::int AS c FROM sessions
+      WHERE ip = (SELECT ip FROM sessions WHERE nonce = ${nonce})
+        AND used = true
+        AND created_at > NOW() - INTERVAL '1 day'
+    `;
+    if (lim[0].c >= MAX_KEYS_PER_IP_PER_DAY) {
+      return res.status(429).json({ error: 'Daily limit reached. Try again tomorrow.' });
+    }
+
+    // Consume the one-time session (needs the secret token, enough time passed, not expired)
     const session = await sql`
       UPDATE sessions SET used = true
       WHERE nonce = ${nonce}
+        AND token = ${t}
         AND used = false
         AND verified = true
-        AND continued_at < NOW() - INTERVAL '15 seconds'
+        AND continued_at < NOW() - INTERVAL '25 seconds'
         AND created_at > NOW() - INTERVAL '1 hour'
       RETURNING nonce
     `;
@@ -57,6 +74,6 @@ export default async function handler(req, res) {
 
     return res.status(200).json({ key: rows[0].key, expires_at: rows[0].expires_at });
   } catch (err) {
-    return res.status(500).json({ error: err.message });
+    return res.status(500).json({ error: 'Server error' });
   }
 }
