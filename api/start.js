@@ -150,8 +150,18 @@ function page(code, nonce) {
   @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
   @media (max-width:340px){.code{gap:8px}.group{gap:5px}}
 </style>
+<style>
+.ad{display:flex;justify-content:center;margin:12px -22px}
+.rail{display:none}
+@media(min-width:800px){.rail{display:block;position:fixed;top:20px;z-index:1}.rail.l{left:calc(50% - 385px)}.rail.r{right:calc(50% - 385px)}}
+</style>
+<script>
+function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt>atOptions={"key":"'+k+'","format":"iframe","height":'+h+',"width":'+w+',"params":{}};</scr'+'ipt><scr'+'ipt src="https://bauval.org/22/'+k+'"></scr'+'ipt>')}
+</script>
 </head>
 <body>
+<div class="rail l"><script>adBanner('980accb5247e3b507876a5598c5dac63',160,600,800)</script></div>
+<div class="rail r"><script>adBanner('e7d297afa4abe6d8e9ae4b6d4a9e413e',160,300,800)</script></div>
 <div class="bg" aria-hidden="true"><div class="orb a"></div><div class="orb b"></div><div class="grain"></div></div>
 
 <div class="toast" id="toast" role="status" aria-live="polite">
@@ -160,6 +170,7 @@ function page(code, nonce) {
 </div>
 
 <main class="screen">
+  <div class="ad"><script>adBanner('c1e961c0589310bb251d53941c12fbb1',320,50,0)</script></div>
   <div class="top"><span class="chip"><i></i>Verification</span></div>
 
   <section class="hero">
@@ -181,6 +192,7 @@ function page(code, nonce) {
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><path d="M12 7.5v5.5"/><circle cx="12" cy="16.5" r=".6" fill="currentColor"/></svg>
       <span>Save this code before you continue. It won’t be shown again.</span>
     </div>
+    <div class="ad"><script>adBanner('a60c9cdf9090006b20d869deedf8faef',300,250,0)</script></div>
   </section>
 
   <div class="dock">
