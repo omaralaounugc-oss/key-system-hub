@@ -152,16 +152,19 @@ function page(code, nonce) {
 </style>
 <style>
 .ad{display:flex;justify-content:center;margin:12px -22px}
+.wide{display:none}.support{display:block;text-align:center;margin:14px 0 4px;font-size:13px;color:rgba(235,235,245,.6);text-decoration:underline}
+@media(min-width:840px){.wide{display:flex;justify-content:center;margin:10px auto}}
 .rail{display:none}
-@media(min-width:800px){.rail{display:block;position:fixed;top:20px;z-index:1}.rail.l{left:calc(50% - 385px)}.rail.r{right:calc(50% - 385px)}}
+@media(min-width:840px){.rail{display:block;position:fixed;top:120px;z-index:1}.rail.l{left:calc(50% - 405px)}.rail.r{right:calc(50% - 405px)}}
 </style>
 <script>
 function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt>atOptions={"key":"'+k+'","format":"iframe","height":'+h+',"width":'+w+',"params":{}};</scr'+'ipt><scr'+'ipt src="https://bauval.org/22/'+k+'"></scr'+'ipt>')}
 </script>
 </head>
 <body>
-<div class="rail l"><script>adBanner('980accb5247e3b507876a5598c5dac63',160,600,800)</script></div>
-<div class="rail r"><script>adBanner('e7d297afa4abe6d8e9ae4b6d4a9e413e',160,300,800)</script></div>
+<div class="rail l"><script>adBanner('980accb5247e3b507876a5598c5dac63',160,600,840)</script></div>
+<div class="rail r"><script>adBanner('e7d297afa4abe6d8e9ae4b6d4a9e413e',160,300,840)</script></div>
+<div class="wide"><script>adBanner('a973ad4d1946ecff433073faf4287a75',728,90,840)</script></div>
 <div class="bg" aria-hidden="true"><div class="orb a"></div><div class="orb b"></div><div class="grain"></div></div>
 
 <div class="toast" id="toast" role="status" aria-live="polite">
@@ -199,7 +202,9 @@ function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt
     <a class="go locked" id="go" data-href="/api/go?nonce=${nonce}" role="link" aria-disabled="true"><span id="golabel">Continue in 5</span></a>
     <p class="foot" id="foot">Please wait a moment. Save your code first.</p>
   </div>
+<a class="support" href="https://araplhn.org/4/f807188adb57a12ed0dc88c5f090b8f3" target="_blank" rel="noopener sponsored">Support us: visit our sponsor (optional)</a>
 </main>
+<div class="wide"><script>adBanner('cc5ea8dc8c31159728959dc71eef513f',468,60,840)</script></div>
 
 <script>
 (function(){
