@@ -39,6 +39,7 @@
     <div id="form">
       <div class="msg">Enter the number you saved earlier.</div>
       <input id="code" type="text" inputmode="numeric" maxlength="6" autocomplete="off" placeholder="------">
+      <div id="ts" style="display:flex;justify-content:center;margin-bottom:12px;"></div>
       <div class="error" id="error"></div>
       <button id="submit">Submit</button>
       <div class="forgot">Forgot it? <a id="forgot">Start over</a></div>
@@ -49,6 +50,7 @@
 (function () {
   const params = new URLSearchParams(window.location.search);
   const nonce = params.get('nonce');
+  const t = params.get('t');
 
   const form = document.getElementById('form');
   const loading = document.getElementById('loading');
@@ -73,7 +75,7 @@
   }
 
   // No session? Start from the beginning.
-  if (!nonce) { restart(); return; }
+  if (!nonce || !t) { restart(); return; }
 
   function goToKey(key, expiresAt) {
     window.location.replace(
@@ -90,11 +92,38 @@
   });
   btn.addEventListener('click', submit);
 
+  // Cloudflare Turnstile (free). Paste your SITE key here to turn it on.
+  const TURNSTILE_SITE_KEY = '';
+  let tsToken = '';
+  let tsWidget = null;
+  if (TURNSTILE_SITE_KEY) {
+    window.onTurnstileLoad = function () {
+      tsWidget = turnstile.render('#ts', {
+        sitekey: TURNSTILE_SITE_KEY,
+        theme: 'dark',
+        callback: (tk) => { tsToken = tk; },
+        'expired-callback': () => { tsToken = ''; }
+      });
+    };
+    const sc = document.createElement('script');
+    sc.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=onTurnstileLoad';
+    sc.async = true;
+    document.head.appendChild(sc);
+  }
+  function resetTurnstile() {
+    tsToken = '';
+    if (TURNSTILE_SITE_KEY && window.turnstile && tsWidget !== null) turnstile.reset(tsWidget);
+  }
+
   async function submit() {
     const code = input.value.trim();
     errorEl.textContent = '';
     if (code.length !== 6) {
       errorEl.textContent = 'Enter the 6 digit number.';
+      return;
+    }
+    if (TURNSTILE_SITE_KEY && !tsToken) {
+      errorEl.textContent = 'Please complete the security check.';
       return;
     }
 
@@ -104,9 +133,10 @@
       const r1 = await fetch('/api/check', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nonce, code })
+        body: JSON.stringify({ nonce, code, t, ts: tsToken })
       });
       const d1 = await r1.json();
+      resetTurnstile();
 
       if (!r1.ok) {
         errorEl.textContent = d1.error || 'Something went wrong.';
@@ -119,7 +149,7 @@
       form.classList.add('hidden');
       loading.classList.remove('hidden');
 
-      const r2 = await fetch('/api/getkey?nonce=' + encodeURIComponent(nonce));
+      const r2 = await fetch('/api/getkey?nonce=' + encodeURIComponent(nonce) + '&t=' + encodeURIComponent(t));
       const d2 = await r2.json();
 
       if (!r2.ok || !d2.key) {
