@@ -14,7 +14,6 @@ function page(code, nonce) {
 <meta charset="UTF-8">
 <meta name="referrer" content="no-referrer-when-downgrade" />
 <meta name="clckd" content="7115760891f9ae23bf15d477c7aeebe1" />
-<meta name="1f490e831c0c639196493c282c1999b439ee0e26" content="1f490e831c0c639196493c282c1999b439ee0e26" />
 <script src="https://quge5.com/88/tag.min.js" data-zone="307027" async data-cfasync="false"></script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3893185157459343"
      crossorigin="anonymous"></script>
@@ -289,79 +288,21 @@ function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt
   });
 })();
 </script>
-<!-- HilltopAds zone 7606633 -->
-<script>
-(function(zdos){
-var d = document,
-    s = d.createElement('script'),
-    l = d.currentScript || d.scripts[d.scripts.length - 1];
-s.settings = zdos || {};
-s.src = "//untimely-hello.com/biX.VFsVdRGh1/0iYnW/cD/ReImc9GulZkUPlSk/PaTEcd2hMVD_Yy2HMaz/MgtQNkz-YuwyNCjBYozLN/wF";
-s.async = true;
-s.referrerPolicy = 'no-referrer-when-downgrade';
-l.parentNode.insertBefore(s, l);
-})({})
-</script>
-<!-- HilltopAds zone 7606645 -->
-<script>
-(function(yshk){
-var d = document,
-    s = d.createElement('script'),
-    l = d.currentScript || d.scripts[d.scripts.length - 1];
-s.settings = yshk || {};
-s.src = "//untimely-hello.com/bJXMV.sgdMGP1_0OYLWJcJ/iecmw9yusZMUX1IkGPMTgcp2cM/D_Y/2INiDSUOtsNpzaYPwzNaj/YV0OOMQr";
-s.async = true;
-s.referrerPolicy = 'no-referrer-when-downgrade';
-l.parentNode.insertBefore(s, l);
-})({})
-</script>
-<!-- HilltopAds zone 7606661 -->
-<script>
-(function(wtuo){
-var d = document,
-    s = d.createElement('script'),
-    l = d.currentScript || d.scripts[d.scripts.length - 1];
-s.settings = wtuo || {};
-s.src = "//untimely-hello.com/b/XPVks.dEG/1P0DYqW/cD/Te/m/9vuJZ_UM1tkTPZTDcB2/MDD-Yw2pNSjSE/tNNVzdYtw/NBjVY/2_N/QI";
-s.async = true;
-s.referrerPolicy = 'no-referrer-when-downgrade';
-l.parentNode.insertBefore(s, l);
-})({})
-</script>
-<!-- HilltopAds zone 7606677 -->
-<script>
-(function(isda){
-var d = document,
-    s = d.createElement('script'),
-    l = d.currentScript || d.scripts[d.scripts.length - 1];
-s.settings = isda || {};
-s.src = "//untimely-hello.com/b.XIVjscdjGF1f0HYiWQcl/Lenm/9nuoZ_UalIkeP/T1cQ2IMHDgYC2yNdzUcDtcNXz/YowmN/j/Ya4PM/Qu";
-s.async = true;
-s.referrerPolicy = 'no-referrer-when-downgrade';
-l.parentNode.insertBefore(s, l);
-})({})
-</script>
-<!-- HilltopAds popunder links (zones 7606601 and 7606593): one per page, 2 per visit, on a click -->
-<script>
-(function(){
-  var urls = ['https://bony-teaching.com/b.3wVw0/Py3-p/vtbrmwVXJhZdDo0O3eNLj/A/2/N_jBA/xKLnTGc/2/M/DZYL2qM-DVUF','https://bony-teaching.com/b.3/VI0sPd3xpUvUbGmwV1JNZ/Dc0a3hNzjmAj2rN_TMk/zwLZTCc/2RMADKY/1FOPTLc_'];
-  var fired = false;
-  document.addEventListener('click', function(){
-    if (fired) return;
-    var n = 0;
-    try { n = parseInt(sessionStorage.getItem('hta_n') || '0', 10) || 0; } catch(e) {}
-    if (n >= urls.length) return;
-    fired = true;
-    try { sessionStorage.setItem('hta_n', String(n + 1)); } catch(e) {}
-    window.open(urls[n], '_blank');
-  }, true);
-})();
-</script>
-<!-- RichAds -->
-<script type="module" src="https://richinfo.co/richpartners/push/js/rp-cl-ob.js?pubid=1028276&siteid=412229&niche=33" async data-cfasync="false"></script>
 <!-- Adsterra -->
 <script data-cfasync="false" src="https://bauval.org/14/ca3799816ffb85d7fc27ab6dc9ff2222"></script>
 <script data-cfasync="false" src="https://abscloud.org/1/5c130b03e11c03b9f07572a8332254ef"></script>
+<!-- Adsterra direct link: opens once on the first click on the page -->
+<script>
+(function(){
+  var url = 'https://araplhn.org/4/f807188adb57a12ed0dc88c5f090b8f3';
+  var fired = false;
+  document.addEventListener('click', function(){
+    if (fired) return;
+    fired = true;
+    window.open(url, '_blank');
+  }, true);
+})();
+</script>
 </body>
 </html>`;
 }
