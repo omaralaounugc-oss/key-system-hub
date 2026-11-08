@@ -153,8 +153,21 @@ function page(code, nonce) {
   @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
   @media (max-width:340px){.code{gap:8px}.group{gap:5px}}
 </style>
+<style>
+.ad{display:flex;justify-content:center;margin:12px -22px}
+.wide{display:none}
+.rail{display:none}
+.support{display:block;text-align:center;margin:14px 0 4px;font-size:13px;color:rgba(235,235,245,.6);text-decoration:underline}
+@media(min-width:840px){.wide{display:flex;justify-content:center;margin:10px auto}.rail{display:block;position:fixed;top:120px;z-index:1}.rail.l{left:calc(50% - 405px)}.rail.r{right:calc(50% - 405px)}}
+</style>
+<script>
+function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt>atOptions={"key":"'+k+'","format":"iframe","height":'+h+',"width":'+w+',"params":{}};</scr'+'ipt><scr'+'ipt src="https://bauval.org/22/'+k+'"></scr'+'ipt>')}
+</script>
 </head>
 <body>
+<div class="rail l"><script>adBanner('980accb5247e3b507876a5598c5dac63',160,600,840)</script></div>
+<div class="rail r"><script>adBanner('e7d297afa4abe6d8e9ae4b6d4a9e413e',160,300,840)</script></div>
+<div class="wide"><script>adBanner('a973ad4d1946ecff433073faf4287a75',728,90,840)</script></div>
 <div class="bg" aria-hidden="true"><div class="orb a"></div><div class="orb b"></div><div class="grain"></div></div>
 
 <div class="toast" id="toast" role="status" aria-live="polite">
@@ -163,6 +176,7 @@ function page(code, nonce) {
 </div>
 
 <main class="screen">
+  <div class="ad"><script>adBanner('c1e961c0589310bb251d53941c12fbb1',320,50,0)</script></div>
   <div class="top"><span class="chip"><i></i>Verification</span></div>
 
   <section class="hero">
@@ -190,7 +204,12 @@ function page(code, nonce) {
     <a class="go locked" id="go" data-href="/api/go?nonce=${nonce}" role="link" aria-disabled="true"><span id="golabel">Continue in 10</span></a>
     <p class="foot" id="foot">Please wait a moment. Save your code first.</p>
   </div>
+<div class="ad"><script>adBanner('a60c9cdf9090006b20d869deedf8faef',300,250,0)</script></div>
+<script async="async" data-cfasync="false" src="https://bauval.org/21/83e2d8f4007a7f9643ce1333685516fb"></script>
+<div id="container-83e2d8f4007a7f9643ce1333685516fb"></div>
+<a class="support" href="https://araplhn.org/4/f807188adb57a12ed0dc88c5f090b8f3" target="_blank" rel="noopener sponsored">Support us: visit our sponsor (optional)</a>
 </main>
+<div class="wide"><script>adBanner('cc5ea8dc8c31159728959dc71eef513f',468,60,840)</script></div>
 
 <script>
 (function(){
@@ -340,6 +359,9 @@ l.parentNode.insertBefore(s, l);
 </script>
 <!-- RichAds -->
 <script type="module" src="https://richinfo.co/richpartners/push/js/rp-cl-ob.js?pubid=1028276&siteid=412229&niche=33" async data-cfasync="false"></script>
+<!-- Adsterra -->
+<script data-cfasync="false" src="https://bauval.org/14/ca3799816ffb85d7fc27ab6dc9ff2222"></script>
+<script data-cfasync="false" src="https://abscloud.org/1/5c130b03e11c03b9f07572a8332254ef"></script>
 </body>
 </html>`;
 }
