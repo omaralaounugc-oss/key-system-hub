@@ -11,6 +11,12 @@ function page(code, nonce) {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
+<script async src="https://www.googletagmanager.com/gtm.js?id=GTM-MF9MT7J6"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+</script>
 <meta charset="UTF-8">
 <meta name="referrer" content="no-referrer-when-downgrade" />
 <meta name="clckd" content="7115760891f9ae23bf15d477c7aeebe1" />
