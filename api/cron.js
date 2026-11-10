@@ -3,7 +3,7 @@ import { randomInt } from 'crypto';
 
 const sql = neon(process.env.DATABASE_URL);
 
-const MAX_KEYS = 1000; // change this when you upgrade Neon
+const MAX_KEYS = 3000; // change this when you upgrade Neon
 
 const UPPER   = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 const LOWER   = 'abcdefghijklmnopqrstuvwxyz';
