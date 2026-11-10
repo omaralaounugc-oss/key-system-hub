@@ -35,7 +35,7 @@ function generateKey() {
 
 export default async function handler(req, res) {
   try {
-    // 1. Delete expired keys (used keys after 12h, unused keys after 7 days)
+    // 1. Delete expired keys (used keys after 12h, unused keys after ~7 days)
     await sql`DELETE FROM keys WHERE expires_at < NOW()`;
 
     // 1b. Clean up old one-time sessions
@@ -50,14 +50,17 @@ export default async function handler(req, res) {
       return res.status(200).json({ success: true, added: 0, total });
     }
 
-    // 3. Create only the missing keys, in one single query
-    const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
+    // 3. Create only the missing keys, in one single query.
+    // Each unused key gets a slightly different expiry (6 to 7 days) so they don't all
+    // expire at the same moment and leave the pool empty until the next cron run.
+    const DAY = 24 * 60 * 60 * 1000;
     const newKeys = Array.from({ length: missing }, generateKey);
+    const expiries = newKeys.map(() => new Date(Date.now() + 6 * DAY + Math.random() * DAY).toISOString());
 
     await sql`
       INSERT INTO keys (key, expires_at, used)
-      SELECT k, ${expires}::timestamptz, false
-      FROM unnest(${newKeys}::text[]) AS k
+      SELECT t.k, t.e::timestamptz, false
+      FROM unnest(${newKeys}::text[], ${expiries}::text[]) AS t(k, e)
       ON CONFLICT (key) DO NOTHING
     `;
 
