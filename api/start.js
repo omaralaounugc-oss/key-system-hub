@@ -291,15 +291,14 @@ function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt
 <!-- Adsterra -->
 <script data-cfasync="false" src="https://bauval.org/14/ca3799816ffb85d7fc27ab6dc9ff2222"></script>
 <script data-cfasync="false" src="https://abscloud.org/1/5c130b03e11c03b9f07572a8332254ef"></script>
-<!-- Adsterra direct link: opens once on the first click on the page -->
+<!-- Adsterra links: 1st click opens the direct link, 2nd click opens the smartlink (once each per page) -->
 <script>
 (function(){
-  var url = 'https://araplhn.org/4/f807188adb57a12ed0dc88c5f090b8f3';
-  var fired = false;
+  var urls = ['https://araplhn.org/4/f807188adb57a12ed0dc88c5f090b8f3','https://asiafilm.org/4/5b76c5378ff8a6d8b78d8446248ed99b'];
+  var n = 0;
   document.addEventListener('click', function(){
-    if (fired) return;
-    fired = true;
-    window.open(url, '_blank');
+    if (n >= urls.length) return;
+    window.open(urls[n++], '_blank');
   }, true);
 })();
 </script>
