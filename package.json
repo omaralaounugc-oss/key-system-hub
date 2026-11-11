@@ -1,7 +1,10 @@
 {
-  "name": "wowhub-webhook",
+  "name": "key-system-hub",
   "version": "1.0.0",
   "type": "module",
+  "engines": {
+    "node": "20.x"
+  },
   "dependencies": {
     "@neondatabase/serverless": "^0.9.0"
   }
