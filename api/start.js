@@ -8,21 +8,54 @@ function noHubPage() {
 }
 
 // ====== PUT YOUR VIDEO LINKS HERE ======
-// YouTube link (watch / youtu.be / embed) or a direct .mp4 link. Leave '' to show "coming soon".
+// YouTube link, TikTok link, or a direct .mp4 link. Leave '' to show "coming soon".
 const VIDEO_LOOTLABS = 'https://vt.tiktok.com/ZSpmkuE1w/';
 const VIDEO_WORKINK  = '/videos/workink.mp4';
 // =======================================
 
-function embed(url) {
-  if (!url) return '<div class="soon">Video coming soon</div>';
-  const yt = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/);
-  if (yt) {
-    return '<iframe src="https://www.youtube.com/embed/' + yt[1] + '?rel=0&playsinline=1" allow="accelerometer; encrypted-media; picture-in-picture; fullscreen" allowfullscreen loading="lazy"></iframe>';
-  }
-  return '<video src="' + url.replace(/"/g, '&quot;') + '" controls playsinline preload="metadata"></video>';
+const ttCache = new Map();
+
+// TikTok needs the numeric video id. Short links (vt.tiktok.com/xxxx) are resolved on the server.
+async function tiktokId(url) {
+  let m = url.match(/tiktok\.com\/.*?\/video\/(\d+)/) || url.match(/tiktok\.com\/embed(?:\/v2)?\/(\d+)/);
+  if (m) return m[1];
+  if (!/^https?:\/\/(?:[a-z]+\.)?tiktok\.com\//i.test(url)) return null;
+  if (ttCache.has(url)) return ttCache.get(url);
+  try {
+    const r = await fetch(url, {
+      redirect: 'follow',
+      signal: AbortSignal.timeout(4000),
+      headers: { 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36' }
+    });
+    let id = (r.url.match(/\/video\/(\d+)/) || [])[1];
+    if (!id) id = ((await r.text()).match(/\/video\/(\d+)/) || [])[1];
+    if (id) { ttCache.set(url, id); return id; }
+  } catch (e) {}
+  return null;
 }
 
-function tutorialPage(hub) {
+async function embed(url) {
+  if (!url) return '<div class="frame"><div class="soon">Video coming soon</div></div>';
+  const safe = url.replace(/"/g, '&quot;');
+
+  const yt = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/);
+  if (yt) {
+    return '<div class="frame"><iframe src="https://www.youtube.com/embed/' + yt[1] + '?rel=0&playsinline=1" allow="accelerometer; encrypted-media; picture-in-picture; fullscreen" allowfullscreen loading="lazy"></iframe></div>';
+  }
+
+  if (/tiktok\.com/i.test(url)) {
+    const id = await tiktokId(url);
+    if (id) {
+      return '<div class="frame tt"><iframe src="https://www.tiktok.com/embed/v2/' + id + '" allow="encrypted-media; fullscreen" allowfullscreen loading="lazy"></iframe></div>';
+    }
+    // Could not resolve the id: show a clean button to open it on TikTok instead of a broken player.
+    return '<div class="frame"><a class="soon" href="' + safe + '" target="_blank" rel="noopener" style="color:#fff;text-decoration:none">Watch on TikTok</a></div>';
+  }
+
+  return '<div class="frame"><video src="' + safe + '" controls playsinline preload="metadata"></video></div>';
+}
+
+function tutorialPage(hub, lootHtml, workHtml) {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -67,6 +100,7 @@ function tutorialPage(hub) {
   .vid.work .dot{background:linear-gradient(160deg,#34d399,#059669)}
   .frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:16px;overflow:hidden;background:#0b0b0f;border:.5px solid var(--sep)}
   .frame iframe,.frame video{position:absolute;inset:0;width:100%;height:100%;border:0}
+  .frame.tt{aspect-ratio:auto;height:min(640px,150vw);max-width:340px;margin:0 auto}
   .soon{position:absolute;inset:0;display:grid;place-items:center;color:var(--label-2);font-size:14px}
   .cta{display:flex;align-items:center;justify-content:center;width:100%;height:54px;margin-top:6px;border-radius:16px;font-size:17px;font-weight:600;color:#fff;text-decoration:none;background:linear-gradient(160deg,#3a8dff,#0a60ff);box-shadow:0 10px 26px rgba(10,96,255,.35);transition:transform .25s var(--ease)}
   .cta:active{transform:scale(.98)}
@@ -88,12 +122,12 @@ function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt
 
   <section class="vid loot">
     <h2><span class="dot">L</span>How to get the key with LootLabs</h2>
-    <div class="frame">${embed(VIDEO_LOOTLABS)}</div>
+    ${lootHtml}
   </section>
 
   <section class="vid work">
     <h2><span class="dot">W</span>How to get the key with Work.ink</h2>
-    <div class="frame">${embed(VIDEO_WORKINK)}</div>
+    ${workHtml}
   </section>
 
   <a class="cta" href="/api/choose?hub=${hub}">Continue</a>
@@ -111,5 +145,6 @@ export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
   const hub = String(req.query.hub || '').toLowerCase();
   if (!isHub(hub)) return res.status(200).send(noHubPage());
-  return res.status(200).send(tutorialPage(hub));
+  const [lootHtml, workHtml] = await Promise.all([embed(VIDEO_LOOTLABS), embed(VIDEO_WORKINK)]);
+  return res.status(200).send(tutorialPage(hub, lootHtml, workHtml));
 }
