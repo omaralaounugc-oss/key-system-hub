@@ -17,22 +17,25 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Secret token: it only ever exists inside the Loot Labs encrypted link,
-    // so the user can't skip the tasks by calling the next pages directly.
-    const token = randomBytes(16).toString('hex');
+    const newToken = randomBytes(16).toString('hex');
 
-    // Continue works only ONE time per number.
+    // Safe to press Continue more than once: the first press saves the token,
+    // later presses reuse the SAME token instead of sending the user back to start.
     const rows = await sql`
-      UPDATE sessions SET continued_at = NOW(), token = ${token}
+      UPDATE sessions
+      SET continued_at = COALESCE(continued_at, NOW()),
+          token = COALESCE(token, ${newToken})
       WHERE nonce = ${nonce}
-        AND continued_at IS NULL
         AND used = false
         AND created_at > NOW() - INTERVAL '30 minutes'
-      RETURNING nonce
+      RETURNING token
     `;
+
     if (!rows || rows.length === 0) {
       return res.redirect(302, '/api/start');
     }
+
+    const token = rows[0].token;
 
     // Encrypt the real destination with Loot Labs
     const dest = `${SITE}/index2.html?nonce=${nonce}&t=${token}`;
@@ -47,8 +50,6 @@ export default async function handler(req, res) {
     try { data = JSON.parse(text); } catch { data = null; }
 
     if (!data || typeof data.message !== 'string' || data.type === 'error') {
-      // give the session back so the user can retry
-      await sql`UPDATE sessions SET continued_at = NULL, token = NULL WHERE nonce = ${nonce}`;
       return res.status(502).send('Could not create link. Try again.');
     }
 
