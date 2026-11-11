@@ -9,7 +9,7 @@ function noHubPage() {
 
 // ====== PUT YOUR VIDEO LINKS HERE ======
 // YouTube link, TikTok link, or a direct .mp4 link. Leave '' to show "coming soon".
-const VIDEO_LOOTLABS = 'https://files.catbox.moe/vn2d9w.mp4';
+const VIDEO_LOOTLABS = '/videos/lootlabs_tutorail.mp4';
 const VIDEO_WORKINK  = '/videos/workink.mp4';
 // =======================================
 
