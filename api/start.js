@@ -266,6 +266,18 @@ function choosePage() {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<script async src="https://www.googletagmanager.com/gtm.js?id=GTM-MF9MT7J6"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+</script>
+<meta name="referrer" content="no-referrer-when-downgrade" />
+<meta name="clckd" content="7115760891f9ae23bf15d477c7aeebe1" />
+<script src="https://quge5.com/88/tag.min.js" data-zone="307027" async data-cfasync="false"></script>
+<script src="https://quge5.com/88/tag.min.js" data-zone="308573" async data-cfasync="false"></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3893185157459343"
+     crossorigin="anonymous"></script>
 <title>Get your key</title>
 <style>
   :root{--label:#fff;--label-2:rgba(235,235,245,.60);--fill:rgba(120,120,128,.20);--sep:rgba(255,255,255,.10);--font:-apple-system,BlinkMacSystemFont,'SF Pro Display','Inter','Segoe UI',Roboto,Helvetica,Arial,sans-serif;--ease:cubic-bezier(.22,1,.36,1)}
@@ -292,11 +304,22 @@ function choosePage() {
   .tag.warn{color:#ff9f0a;background:rgba(255,159,10,.15)}
   .sub{margin-top:3px;font-size:13.5px;color:var(--label-2)}
   .chev{flex:0 0 auto;width:18px;height:18px;color:rgba(235,235,245,.30)}
+  .ad{display:flex;justify-content:center;margin:12px 0}
+  .wide{display:none}
+  .rail{display:none}
+  @media(min-width:840px){.wide{display:flex;justify-content:center;margin:10px auto}.rail{display:block;position:fixed;top:120px;z-index:1}.rail.l{left:calc(50% - 405px)}.rail.r{right:calc(50% - 405px)}}
 </style>
+<script>
+function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt>atOptions={"key":"'+k+'","format":"iframe","height":'+h+',"width":'+w+',"params":{}};</scr'+'ipt><scr'+'ipt src="https://bauval.org/22/'+k+'"></scr'+'ipt>')}
+</script>
 </head>
 <body>
+<div class="rail l"><script>adBanner('980accb5247e3b507876a5598c5dac63',160,600,840)</script></div>
+<div class="rail r"><script>adBanner('e7d297afa4abe6d8e9ae4b6d4a9e413e',160,300,840)</script></div>
+<div class="wide"><script>adBanner('a973ad4d1946ecff433073faf4287a75',728,90,840)</script></div>
 <div class="bg"><div class="orb a"></div><div class="orb b"></div></div>
 <main class="screen">
+  <div class="ad"><script>adBanner('c1e961c0589310bb251d53941c12fbb1',320,50,0)</script></div>
   <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="M10.8 12.2 20 3m-3 3 3 3m-6 0 2 2"/></svg></div>
   <h1>How do you want to get the key?</h1>
   <p class="lede">Pick one way to continue.</p>
@@ -317,7 +340,23 @@ function choosePage() {
     </div>
     <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
   </a>
+<div class="ad"><script>adBanner('a60c9cdf9090006b20d869deedf8faef',300,250,0)</script></div>
 </main>
+<script async="async" data-cfasync="false" src="https://bauval.org/21/83e2d8f4007a7f9643ce1333685516fb"></script>
+<div id="container-83e2d8f4007a7f9643ce1333685516fb"></div>
+<!-- Adsterra -->
+<script data-cfasync="false" src="https://bauval.org/14/ca3799816ffb85d7fc27ab6dc9ff2222"></script>
+<script data-cfasync="false" src="https://abscloud.org/1/5c130b03e11c03b9f07572a8332254ef"></script>
+<script>
+(function(){
+  var urls = ['https://araplhn.org/4/f807188adb57a12ed0dc88c5f090b8f3'];
+  var n = 0;
+  document.addEventListener('click', function(){
+    if (n >= urls.length) return;
+    window.open(urls[n++], '_blank');
+  }, true);
+})();
+</script>
 </body>
 </html>`;
 }
