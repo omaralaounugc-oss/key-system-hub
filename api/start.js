@@ -1,3 +1,12 @@
+// Any hub name works: it comes from the link (?hub=NAME). Letters, numbers, - and _ only.
+const isHub = (h) => typeof h === 'string' && /^[a-z0-9_-]{1,24}$/.test(h);
+
+function noHubPage() {
+  return `<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Key</title>
+<style>body{margin:0;min-height:100vh;display:grid;place-items:center;background:#000;color:#fff;font-family:-apple-system,'Inter',Segoe UI,sans-serif;text-align:center;padding:24px}</style></head>
+<body><p>Open this page from the link inside your script.</p></body></html>`;
+}
+
 // ====== PUT YOUR VIDEO LINKS HERE ======
 // YouTube link (watch / youtu.be / embed) or a direct .mp4 link. Leave '' to show "coming soon".
 const VIDEO_LOOTLABS = '/videos/lootlabs.mp4';
@@ -13,13 +22,14 @@ function embed(url) {
   return '<video src="' + url.replace(/"/g, '&quot;') + '" controls playsinline preload="metadata"></video>';
 }
 
-function tutorialPage() {
+function tutorialPage(hub) {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Key Tutorial</title>
+<script>try{var k=JSON.parse(localStorage.getItem('wowhub_keys')||'{}')['${hub}'];if(k&&new Date(k.expiry)>new Date())location.replace('/index.html?hub=${hub}')}catch(e){}</script>
 <style>
   :root{--label:#fff;--label-2:rgba(235,235,245,.60);--fill:rgba(120,120,128,.20);--sep:rgba(255,255,255,.10);--font:-apple-system,BlinkMacSystemFont,'SF Pro Display','Inter','Segoe UI',Roboto,Helvetica,Arial,sans-serif;--ease:cubic-bezier(.22,1,.36,1)}
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -86,7 +96,7 @@ function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt
     <div class="frame">${embed(VIDEO_WORKINK)}</div>
   </section>
 
-  <a class="cta" href="/api/choose">Continue</a>
+  <a class="cta" href="/api/choose?hub=${hub}">Continue</a>
   <div class="ad"><script>adBanner('a60c9cdf9090006b20d869deedf8faef',300,250,0)</script></div>
 </main>
 </body>
@@ -99,5 +109,7 @@ export default async function handler(req, res) {
   }
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
   res.setHeader('Cache-Control', 'no-store');
-  return res.status(200).send(tutorialPage());
+  const hub = String(req.query.hub || '').toLowerCase();
+  if (!isHub(hub)) return res.status(200).send(noHubPage());
+  return res.status(200).send(tutorialPage(hub));
 }
