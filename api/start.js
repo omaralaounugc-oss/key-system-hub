@@ -1,27 +1,25 @@
-import { randomBytes } from 'crypto';
-void randomBytes;
+// ====== PUT YOUR VIDEO LINKS HERE ======
+// YouTube link (watch / youtu.be / embed) or a direct .mp4 link. Leave '' to show "coming soon".
+const VIDEO_LOOTLABS = '';
+const VIDEO_WORKINK  = '';
+// =======================================
 
-const WORKINK_LINK = 'https://work.ink/3a3P/key-system';
+function embed(url) {
+  if (!url) return '<div class="soon">Video coming soon</div>';
+  const yt = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/);
+  if (yt) {
+    return '<iframe src="https://www.youtube.com/embed/' + yt[1] + '?rel=0&playsinline=1" allow="accelerometer; encrypted-media; picture-in-picture; fullscreen" allowfullscreen loading="lazy"></iframe>';
+  }
+  return '<video src="' + url.replace(/"/g, '&quot;') + '" controls playsinline preload="metadata"></video>';
+}
 
-function choosePage() {
+function tutorialPage() {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<script async src="https://www.googletagmanager.com/gtm.js?id=GTM-MF9MT7J6"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-</script>
-<meta name="referrer" content="no-referrer-when-downgrade" />
-<meta name="clckd" content="7115760891f9ae23bf15d477c7aeebe1" />
-<script src="https://quge5.com/88/tag.min.js" data-zone="307027" async data-cfasync="false"></script>
-<script src="https://quge5.com/88/tag.min.js" data-zone="308573" async data-cfasync="false"></script>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3893185157459343"
-     crossorigin="anonymous"></script>
-<title>Get your key</title>
+<title>Key Tutorial</title>
 <style>
   :root{--label:#fff;--label-2:rgba(235,235,245,.60);--fill:rgba(120,120,128,.20);--sep:rgba(255,255,255,.10);--font:-apple-system,BlinkMacSystemFont,'SF Pro Display','Inter','Segoe UI',Roboto,Helvetica,Arial,sans-serif;--ease:cubic-bezier(.22,1,.36,1)}
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -51,57 +49,46 @@ function choosePage() {
   .wide{display:none}
   .rail{display:none}
   @media(min-width:840px){.wide{display:flex;justify-content:center;margin:10px auto}.rail{display:block;position:fixed;top:120px;z-index:1}.rail.l{left:calc(50% - 405px)}.rail.r{right:calc(50% - 405px)}}
+
+  .vid{margin:0 0 22px}
+  .vid h2{font-size:17px;font-weight:600;letter-spacing:-.01em;margin:0 0 10px;display:flex;align-items:center;gap:10px}
+  .vid h2 .dot{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;font-size:13px;font-weight:800;color:#fff}
+  .vid.loot .dot{background:linear-gradient(160deg,#ffb13b,#ff7a00)}
+  .vid.work .dot{background:linear-gradient(160deg,#34d399,#059669)}
+  .frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:16px;overflow:hidden;background:#0b0b0f;border:.5px solid var(--sep)}
+  .frame iframe,.frame video{position:absolute;inset:0;width:100%;height:100%;border:0}
+  .soon{position:absolute;inset:0;display:grid;place-items:center;color:var(--label-2);font-size:14px}
+  .cta{display:flex;align-items:center;justify-content:center;width:100%;height:54px;margin-top:6px;border-radius:16px;font-size:17px;font-weight:600;color:#fff;text-decoration:none;background:linear-gradient(160deg,#3a8dff,#0a60ff);box-shadow:0 10px 26px rgba(10,96,255,.35);transition:transform .25s var(--ease)}
+  .cta:active{transform:scale(.98)}
 </style>
 <script>
 function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt>atOptions={"key":"'+k+'","format":"iframe","height":'+h+',"width":'+w+',"params":{}};</scr'+'ipt><scr'+'ipt src="https://bauval.org/22/'+k+'"></scr'+'ipt>')}
 </script>
 </head>
 <body>
+<div class="bg"><div class="orb a"></div><div class="orb b"></div></div>
 <div class="rail l"><script>adBanner('980accb5247e3b507876a5598c5dac63',160,600,840)</script></div>
 <div class="rail r"><script>adBanner('e7d297afa4abe6d8e9ae4b6d4a9e413e',160,300,840)</script></div>
 <div class="wide"><script>adBanner('a973ad4d1946ecff433073faf4287a75',728,90,840)</script></div>
-<div class="bg"><div class="orb a"></div><div class="orb b"></div></div>
-<main class="screen">
+<main class="screen" style="justify-content:flex-start">
   <div class="ad"><script>adBanner('c1e961c0589310bb251d53941c12fbb1',320,50,0)</script></div>
   <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="M10.8 12.2 20 3m-3 3 3 3m-6 0 2 2"/></svg></div>
-  <h1>How do you want to get the key?</h1>
-  <p class="lede">Pick one way to continue.</p>
+  <h1>Key Tutorial</h1>
+  <p class="lede">Watch how to get the key, then press Continue.</p>
 
-  <a class="opt loot" href="/api/go" id="loot">
-    <div class="logo">L</div>
-    <div class="txt">
-      <div class="name">LootLabs <span class="tag warn">may be broken now</span></div>
-    </div>
-    <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
-  </a>
+  <section class="vid loot">
+    <h2><span class="dot">L</span>How to get the key with LootLabs</h2>
+    <div class="frame">${embed(VIDEO_LOOTLABS)}</div>
+  </section>
 
-  <a class="opt work" href="${WORKINK_LINK}">
-    <div class="logo">W</div>
-    <div class="txt">
-      <div class="name">Work.ink</div>
-      <div class="sub">lil hard to get</div>
-    </div>
-    <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
-  </a>
-<div class="ad"><script>adBanner('a60c9cdf9090006b20d869deedf8faef',300,250,0)</script></div>
+  <section class="vid work">
+    <h2><span class="dot">W</span>How to get the key with Work.ink</h2>
+    <div class="frame">${embed(VIDEO_WORKINK)}</div>
+  </section>
+
+  <a class="cta" href="/api/choose">Continue</a>
+  <div class="ad"><script>adBanner('a60c9cdf9090006b20d869deedf8faef',300,250,0)</script></div>
 </main>
-<script async="async" data-cfasync="false" src="https://bauval.org/21/83e2d8f4007a7f9643ce1333685516fb"></script>
-<div id="container-83e2d8f4007a7f9643ce1333685516fb"></div>
-<!-- Adsterra -->
-<script data-cfasync="false" src="https://bauval.org/14/ca3799816ffb85d7fc27ab6dc9ff2222"></script>
-<script data-cfasync="false" src="https://abscloud.org/1/5c130b03e11c03b9f07572a8332254ef"></script>
-<script>
-(function(){
-  var urls = ['https://araplhn.org/4/f807188adb57a12ed0dc88c5f090b8f3'];
-  var n = 0;
-  var go = false;
-  document.querySelectorAll('a.opt').forEach(function(a){ a.addEventListener('click', function(e){ if (go) { e.preventDefault(); return; } go = true; setTimeout(function(){ go = false; }, 8000); }); });
-  document.addEventListener('click', function(){
-    if (n >= urls.length) return;
-    window.open(urls[n++], '_blank');
-  }, true);
-})();
-</script>
 </body>
 </html>`;
 }
@@ -112,5 +99,5 @@ export default async function handler(req, res) {
   }
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
   res.setHeader('Cache-Control', 'no-store');
-  return res.status(200).send(choosePage());
+  return res.status(200).send(tutorialPage());
 }
