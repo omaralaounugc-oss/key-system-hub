@@ -27,50 +27,25 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { key, hwid } = req.body;
+    const { key, hwid, hub } = req.body;
+    const REQUIRE_HUB = false; // set true after both hub scripts send "hub"
 
     if (!key) return res.status(400).json({ error: 'No key provided' });
     if (!hwid) return res.status(400).json({ error: 'No hwid provided' });
+    if (REQUIRE_HUB && !hub) return res.status(400).json({ error: 'No hub provided' });
 
-    const rows = await sql`
-      SELECT key, expires_at, hwid, activated_at
-      FROM keys WHERE key = ${key}
-    `;
+    const rows = await sql`SELECT key, expires_at, hwid, hub FROM keys WHERE key = ${key}`;
+    if (!rows || rows.length === 0) return res.status(403).json({ valid: false, message: 'Invalid key' });
 
-    if (!rows || rows.length === 0) {
-      return res.status(403).json({ valid: false, message: 'Invalid key' });
-    }
+    const data = rows[0];
+    if (hub && data.hub !== hub) return res.status(403).json({ valid: false, message: 'This key is for another hub' });
+    if (new Date() > new Date(data.expires_at)) return res.status(403).json({ valid: false, message: 'Key expired' });
 
-        const data = rows[0];
-
-    // Check expiry (timer started when the key was shown)
-    if (new Date() > new Date(data.expires_at)) {
-      return res.status(403).json({ valid: false, message: 'Key expired' });
-    }
-
-    // First use: only bind the device, do NOT touch the timer
     if (!data.hwid) {
       await sql`UPDATE keys SET hwid = ${hwid} WHERE key = ${key}`;
       return res.status(200).json({ valid: true });
     }
-
-    // Check device
-    if (data.hwid !== hwid) {
-      return res.status(403).json({ valid: false, message: 'Key used on another device' });
-    }
-
-    return res.status(200).json({ valid: true });
-
-    // Check expiry
-    if (new Date() > new Date(data.expires_at)) {
-      return res.status(403).json({ valid: false, message: 'Key expired' });
-    }
-
-    // Check device
-    if (data.hwid !== hwid) {
-      return res.status(403).json({ valid: false, message: 'Key used on another device' });
-    }
-
+    if (data.hwid !== hwid) return res.status(403).json({ valid: false, message: 'Key used on another device' });
     return res.status(200).json({ valid: true });
   } catch (err) {
     return res.status(500).json({ error: err.message });
