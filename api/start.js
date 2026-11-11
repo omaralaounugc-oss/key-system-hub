@@ -1,7 +1,7 @@
 // ====== PUT YOUR VIDEO LINKS HERE ======
 // YouTube link (watch / youtu.be / embed) or a direct .mp4 link. Leave '' to show "coming soon".
-const VIDEO_LOOTLABS = '';
-const VIDEO_WORKINK  = '';
+const VIDEO_LOOTLABS = '/videos/lootlabs.mp4';
+const VIDEO_WORKINK  = '/videos/workink.mp4';
 // =======================================
 
 function embed(url) {
