@@ -137,7 +137,10 @@ function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt
 
 <script>
 // Add a hub here (and in the api files) to give it its own key card.
-const HUBS = [['hub1', 'Hub 1'], ['hub2', 'Hub 2']];
+// Hubs are not hardcoded: the hub name comes from the link (?hub=NAME) and from keys already saved in this browser.
+const HUB_RE = /^[a-z0-9_-]{1,24}$/;
+const nameOf = (id) => id.charAt(0).toUpperCase() + id.slice(1);
+let HUBS = []; // [[id, name], ...] filled in init()
 const LS = 'wowhub_keys'; // { hub1: {key, expiry}, hub2: {key, expiry} }
 
 const $ = (id) => document.getElementById(id);
@@ -188,6 +191,7 @@ function copyKey(key) {
 function render() {
   const list = $('list');
   list.textContent = '';
+  if (!HUBS.length) list.append(el('div', 'sub', 'Open this page from the link inside your script to get a key.'));
   // the hub you came for goes first
   const order = HUBS.slice().sort((a, b) => (b[0] === focus) - (a[0] === focus));
   order.forEach(([id, name]) => {
@@ -238,8 +242,10 @@ function tick() {
   const p = new URLSearchParams(window.location.search);
   const nonce = p.get('nonce'), t = p.get('t');
   focus = p.get('hub');
-  if (!HUBS.some((h) => h[0] === focus)) focus = null;
+  if (!HUB_RE.test(focus || '')) focus = null;
   store = load();
+  const rebuild = () => { const ids = Object.keys(store).filter((i) => HUB_RE.test(i)); if (focus && !ids.includes(focus)) ids.push(focus); HUBS = ids.map((i) => [i, nameOf(i)]); };
+  rebuild();
   localStorage.removeItem('wowhub_key');          // old single-key storage
   localStorage.removeItem('wowhub_key_expiry');
 
@@ -252,6 +258,7 @@ function tick() {
       store[d.hub] = { key: d.key, expiry: d.expires_at };
       focus = d.hub;
       save();
+      rebuild();
     } catch (e) { return showError('Network error. Please refresh.'); }
   } else {
     // Return visit: ask the server which saved keys are still valid for their hub.
@@ -269,6 +276,7 @@ function tick() {
     save();
   }
 
+  rebuild();
   history.replaceState(null, '', window.location.pathname + (focus ? '?hub=' + focus : ''));
   render();
   showState('state-keys');
