@@ -6,7 +6,8 @@
     { "src": "index.html", "use": "@vercel/static" },
     { "src": "index1.html", "use": "@vercel/static" },
     { "src": "index2.html", "use": "@vercel/static" },
-    { "src": "index3.html", "use": "@vercel/static" }
+    { "src": "index3.html", "use": "@vercel/static" },
+    { "src": "videos/*", "use": "@vercel/static" }
   ],
   "routes": [
     { "src": "/api/go", "dest": "/api/go.js" },
@@ -22,6 +23,7 @@
     { "src": "/index1.html", "dest": "/index1.html" },
     { "src": "/index2.html", "dest": "/index2.html" },
     { "src": "/index3.html", "dest": "/index3.html" },
+    { "src": "/videos/(.*)", "dest": "/videos/$1" },
     { "src": "/sw.js", "dest": "/sw.js" }
   ],
   "crons": [
