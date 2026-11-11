@@ -203,7 +203,7 @@ function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt
   var params = new URLSearchParams(window.location.search);
   var nonce = params.get('nonce'), t = params.get('t');
   var go = document.getElementById('go'), goLabel = document.getElementById('golabel'), foot = document.getElementById('foot');
-  function restart(){ window.location.replace('/api/start?m=loot'); }
+  function restart(){ window.location.replace('/api/start'); }
   try {
     var ck = localStorage.getItem('wowhub_key'), ce = localStorage.getItem('wowhub_key_expiry');
     if (ck && ce) {
