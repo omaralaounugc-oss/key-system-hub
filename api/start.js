@@ -9,7 +9,7 @@ function noHubPage() {
 
 // ====== PUT YOUR VIDEO LINKS HERE ======
 // YouTube link (watch / youtu.be / embed) or a direct .mp4 link. Leave '' to show "coming soon".
-const VIDEO_LOOTLABS = 'https://youtu.be/wTgDABtKgKw';
+const VIDEO_LOOTLABS = 'https://youtu.be/IAM0t-tz6dI';
 const VIDEO_WORKINK  = '/videos/workink.mp4';
 // =======================================
 
