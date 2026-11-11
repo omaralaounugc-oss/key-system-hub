@@ -180,7 +180,7 @@ function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="10.5" width="15" height="10" rx="2.5" fill="currentColor" stroke="none"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg>
     </div>
     <h1>Almost there</h1>
-    <p class="lede">You are back from the task. One short wait, then the next step.</p>
+    <p class="lede">One short wait, then the next step.</p>
     <div id="ts" style="display:flex;justify-content:center;margin-top:14px"></div>
     <div class="notice" role="note">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><path d="M12 7.5v5.5"/><circle cx="12" cy="16.5" r=".6" fill="currentColor"/></svg>
@@ -203,7 +203,7 @@ function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt
   var params = new URLSearchParams(window.location.search);
   var nonce = params.get('nonce'), t = params.get('t');
   var go = document.getElementById('go'), goLabel = document.getElementById('golabel'), foot = document.getElementById('foot');
-  function restart(){ window.location.replace('/api/start?m=loot'); }
+  function restart(){ window.location.replace('/api/start'); }
   try {
     var ck = localStorage.getItem('wowhub_key'), ce = localStorage.getItem('wowhub_key_expiry');
     if (ck && ce) {
