@@ -258,9 +258,80 @@ function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt
 </html>`;
 }
 
+const WORKINK_LINK = 'https://work.ink/3a3P/key-system';
+
+function choosePage() {
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Get your key</title>
+<style>
+  :root{--label:#fff;--label-2:rgba(235,235,245,.60);--fill:rgba(120,120,128,.20);--sep:rgba(255,255,255,.10);--font:-apple-system,BlinkMacSystemFont,'SF Pro Display','Inter','Segoe UI',Roboto,Helvetica,Arial,sans-serif;--ease:cubic-bezier(.22,1,.36,1)}
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html{background:#000}
+  body{min-height:100vh;min-height:100dvh;font-family:var(--font);color:var(--label);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  .bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;background:#000}
+  .orb{position:absolute;border-radius:50%;filter:blur(90px);opacity:.55}
+  .orb.a{width:70vmax;height:70vmax;left:-25vmax;top:-30vmax;background:radial-gradient(circle,#2b4a8f 0%,transparent 68%)}
+  .orb.b{width:60vmax;height:60vmax;right:-25vmax;bottom:-28vmax;background:radial-gradient(circle,#5b2d8a 0%,transparent 68%)}
+  .screen{position:relative;z-index:1;width:100%;max-width:430px;min-height:100vh;min-height:100dvh;margin:0 auto;display:flex;flex-direction:column;justify-content:center;padding:calc(env(safe-area-inset-top,0px) + 28px) 20px calc(env(safe-area-inset-bottom,0px) + 28px)}
+  .icon{width:64px;height:64px;border-radius:15px;margin:0 auto 22px;display:grid;place-items:center;background:linear-gradient(160deg,#3a8dff 0%,#0a60ff 55%,#3b3bd6 100%);box-shadow:0 10px 30px rgba(10,96,255,.35)}
+  .icon svg{width:30px;height:30px;color:#fff}
+  h1{font-size:26px;line-height:1.15;font-weight:700;letter-spacing:-.02em;text-align:center}
+  .lede{margin:10px auto 26px;font-size:15px;color:var(--label-2);text-align:center}
+  .opt{display:flex;align-items:center;gap:14px;width:100%;padding:16px;margin-bottom:12px;border-radius:18px;text-decoration:none;color:inherit;background:var(--fill);border:.5px solid var(--sep);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);transition:transform .25s var(--ease),background .25s var(--ease)}
+  .opt:active{transform:scale(.98);background:rgba(120,120,128,.32)}
+  .logo{flex:0 0 46px;height:46px;border-radius:12px;display:grid;place-items:center;font-weight:800;font-size:20px;color:#fff}
+  .loot .logo{background:linear-gradient(160deg,#ffb13b,#ff7a00)}
+  .work .logo{background:linear-gradient(160deg,#34d399,#059669)}
+  .txt{flex:1;min-width:0}
+  .name{font-size:17px;font-weight:600;letter-spacing:-.01em;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .tag{font-size:11.5px;font-weight:600;padding:3px 8px;border-radius:8px;letter-spacing:0}
+  .tag.warn{color:#ff9f0a;background:rgba(255,159,10,.15)}
+  .sub{margin-top:3px;font-size:13.5px;color:var(--label-2)}
+  .chev{flex:0 0 auto;width:18px;height:18px;color:rgba(235,235,245,.30)}
+</style>
+</head>
+<body>
+<div class="bg"><div class="orb a"></div><div class="orb b"></div></div>
+<main class="screen">
+  <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="M10.8 12.2 20 3m-3 3 3 3m-6 0 2 2"/></svg></div>
+  <h1>How do you want to get the key?</h1>
+  <p class="lede">Pick one way to continue.</p>
+
+  <a class="opt loot" href="/api/start?m=loot">
+    <div class="logo">L</div>
+    <div class="txt">
+      <div class="name">LootLabs <span class="tag warn">may be broken now</span></div>
+    </div>
+    <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+  </a>
+
+  <a class="opt work" href="${WORKINK_LINK}">
+    <div class="logo">W</div>
+    <div class="txt">
+      <div class="name">Work.ink</div>
+      <div class="sub">lil hard to get</div>
+    </div>
+    <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+  </a>
+</main>
+</body>
+</html>`;
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  // Choice screen first. Only ?m=loot starts the LootLabs flow.
+  if (req.query.m !== 'loot') {
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    res.setHeader('Cache-Control', 'no-store');
+    return res.status(200).send(choosePage());
   }
 
   try {
