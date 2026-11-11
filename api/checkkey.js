@@ -2,7 +2,8 @@ import { neon } from '@neondatabase/serverless';
 
 const sql = neon(process.env.DATABASE_URL);
 
-const HUBS = ['hub1', 'hub2']; // keep in sync with the other files
+// Any hub name works: it comes from the link (?hub=NAME). Letters, numbers, - and _ only.
+const isHub = (h) => typeof h === 'string' && /^[a-z0-9_-]{1,24}$/.test(h);
 
 // Used by index.html: a saved key is shown only if the server issued it for that hub and it is still valid.
 export default async function handler(req, res) {
@@ -13,7 +14,7 @@ export default async function handler(req, res) {
   }
 
   const { key, hub } = req.query;
-  if (!key || typeof key !== 'string' || key.length > 64 || !HUBS.includes(hub)) {
+  if (!key || typeof key !== 'string' || key.length > 64 || !isHub(hub)) {
     return res.status(400).json({ valid: false });
   }
 
