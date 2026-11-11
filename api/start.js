@@ -230,7 +230,14 @@ function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt
     var left = Math.ceil((WAIT_MS - elapsed) / 1000);
     if (left !== shown){ shown = left; goLabel.textContent = 'Continue in ' + left; }
   }, 250);
-  go.addEventListener('click', function(e){ if (go.classList.contains('locked')) e.preventDefault(); });
+  var clicked = false;
+  go.addEventListener('click', function(e){
+    if (go.classList.contains('locked') || clicked){ e.preventDefault(); return; }
+    clicked = true;
+    goLabel.textContent = 'Loading...';
+    go.classList.add('locked');
+    setTimeout(function(){ clicked = false; go.classList.remove('locked'); goLabel.textContent = 'Continue'; }, 8000);
+  });
 })();
 </script>
 <!-- Adsterra -->
