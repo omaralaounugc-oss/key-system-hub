@@ -203,16 +203,16 @@ function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt
   var params = new URLSearchParams(window.location.search);
   var nonce = params.get('nonce'), t = params.get('t');
   var go = document.getElementById('go'), goLabel = document.getElementById('golabel'), foot = document.getElementById('foot');
-  function restart(){ window.location.replace('/api/choose'); }
+  function restart(){ window.location.replace('/api/choose' + (hub ? '?hub=' + hub : '')); }
+  var hub = params.get('hub') || '';
+  if (!/^[a-z0-9_-]{1,24}$/.test(hub)) hub = '';
   try {
-    var ck = localStorage.getItem('wowhub_key'), ce = localStorage.getItem('wowhub_key_expiry');
-    if (ck && ce) {
-      if (new Date(ce) > new Date()) { window.location.replace('/index.html'); return; }
-      localStorage.removeItem('wowhub_key'); localStorage.removeItem('wowhub_key_expiry');
-    }
+    var all = JSON.parse(localStorage.getItem('wowhub_keys') || '{}');
+    var k = all[hub];
+    if (k && new Date(k.expiry) > new Date()) { window.location.replace('/index.html?hub=' + hub); return; }
   } catch (e) {}
   if (!nonce || !t) { restart(); return; }
-  var NEXT = '/index3.html?nonce=' + encodeURIComponent(nonce) + '&t=' + encodeURIComponent(t);
+  var NEXT = '/index3.html?nonce=' + encodeURIComponent(nonce) + '&t=' + encodeURIComponent(t) + '&hub=' + hub;
   function startCountdown(){
     var WAIT_MS = 10000, elapsed = 0, last = Date.now(), shown = -1;
     goLabel.textContent = 'Continue in 10';
