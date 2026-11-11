@@ -28,7 +28,7 @@ function page(code, nonce) {
 <meta name="theme-color" content="#000000">
 <meta name="color-scheme" content="dark">
 <meta name="robots" content="noindex">
-<title>Your verification code</title>
+<title>Step 1 of 4</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -183,125 +183,63 @@ function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt
 
 <main class="screen">
   <div class="ad"><script>adBanner('c1e961c0589310bb251d53941c12fbb1',320,50,0)</script></div>
-  <div class="top"><span class="chip"><i></i>Verification</span></div>
+  <div class="top"><span class="chip"><i></i>Step 1 of 4</span></div>
 
   <section class="hero">
     <div class="icon" aria-hidden="true">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="10.5" width="15" height="10" rx="2.5" fill="currentColor" stroke="none"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg>
     </div>
-    <h1>Your 6-digit code</h1>
-    <p class="lede">You’ll enter this code on the next page to get your key.</p>
-
-    <div class="card" id="card">
-      <button class="code" id="copy" type="button" aria-label="Verification code ${left} ${right}. Tap to copy.">
-        <span class="group">${cells(left)}</span>
-        <span class="group">${cells(right)}</span>
-      </button>
-      <div class="hint" id="hint">Tap to copy</div>
-    </div>
-
+    <h1>Get your key</h1>
+    <p class="lede">Finish the steps and your key will appear on the last page.</p>
     <div class="notice" role="note">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><path d="M12 7.5v5.5"/><circle cx="12" cy="16.5" r=".6" fill="currentColor"/></svg>
-      <span>Save this code before you continue. It won’t be shown again.</span>
+      <span>Step 1 of 4. Press Continue when the timer ends.</span>
     </div>
   </section>
 
   <div class="dock">
     <a class="go locked" id="go" data-href="/api/go?nonce=${nonce}" role="link" aria-disabled="true"><span id="golabel">Continue in 10</span></a>
-    <p class="foot" id="foot">Please wait a moment. Save your code first.</p>
+    <p class="foot" id="foot">Please wait a moment.</p>
   </div>
 <div class="ad"><script>adBanner('a60c9cdf9090006b20d869deedf8faef',300,250,0)</script></div>
 <script async="async" data-cfasync="false" src="https://bauval.org/21/83e2d8f4007a7f9643ce1333685516fb"></script>
 <div id="container-83e2d8f4007a7f9643ce1333685516fb"></div>
 <a class="support" href="https://araplhn.org/4/f807188adb57a12ed0dc88c5f090b8f3" target="_blank" rel="noopener sponsored">Support us: visit our sponsor (optional)</a>
 </main>
-<div class="wide"><script>adBanner('cc5ea8dc8c31159728959dc71eef513f',468,60,840)</script></div>
 
 <script>
 (function(){
-  var code = ${JSON.stringify(code)};
-  var card = document.getElementById('card');
-  var hint = document.getElementById('hint');
-  var toast = document.getElementById('toast');
-  var timer;
-
-  function legacyCopy(){
-    try{
-      var t = document.createElement('textarea');
-      t.value = code; t.setAttribute('readonly','');
-      t.style.cssText = 'position:fixed;top:0;left:0;opacity:0';
-      document.body.appendChild(t); t.select(); t.setSelectionRange(0, 99);
-      var ok = document.execCommand('copy');
-      document.body.removeChild(t);
-      return ok;
-    }catch(e){ return false; }
-  }
-  function copy(){
-    if (navigator.clipboard && navigator.clipboard.writeText){
-      return navigator.clipboard.writeText(code).then(function(){return true}, function(){return legacyCopy()});
-    }
-    return Promise.resolve(legacyCopy());
-  }
-  function flash(){
-    card.classList.add('copied');
-    hint.textContent = 'Copied';
-    toast.classList.add('show');
-    if (navigator.vibrate) { try{ navigator.vibrate(8); }catch(e){} }
-    clearTimeout(timer);
-    timer = setTimeout(function(){
-      card.classList.remove('copied');
-      hint.textContent = 'Tap to copy';
-      toast.classList.remove('show');
-    }, 1800);
-  }
-
-  document.getElementById('copy').addEventListener('click', function(){
-    copy().then(function(ok){ if (ok) flash(); });
-  });
-  // Continue unlocks after a 10 second wait (the timer only runs while this tab is visible)
   var WAIT_MS = 10000;
   var go = document.getElementById('go');
   var goLabel = document.getElementById('golabel');
   var foot = document.getElementById('foot');
-  var elapsed = 0, last = Date.now();
-
+  var elapsed = 0, last = Date.now(), shown = -1;
   function unlock(){
     go.classList.remove('locked');
     go.setAttribute('href', go.getAttribute('data-href'));
     go.removeAttribute('aria-disabled');
     go.removeAttribute('role');
     goLabel.textContent = 'Continue';
-    foot.textContent = 'Code copied automatically when you continue.';
+    foot.textContent = '';
   }
-  var shown = -1;
   var tick = setInterval(function(){
     var now = Date.now();
     if (!document.hidden) elapsed += now - last;
     last = now;
-    if (elapsed >= WAIT_MS){
-      clearInterval(tick);
-      unlock();
-      return;
-    }
+    if (elapsed >= WAIT_MS){ clearInterval(tick); unlock(); return; }
     var left = Math.ceil((WAIT_MS - elapsed) / 1000);
-    if (left !== shown){
-      shown = left;
-      goLabel.textContent = 'Continue in ' + left;
-    }
+    if (left !== shown){ shown = left; goLabel.textContent = 'Continue in ' + left; }
   }, 250);
-  go.addEventListener('click', function(e){
-    if (go.classList.contains('locked')) { e.preventDefault(); return; }
-    try{ copy(); }catch(err){}
-  });
+  go.addEventListener('click', function(e){ if (go.classList.contains('locked')) e.preventDefault(); });
 })();
 </script>
 <!-- Adsterra -->
 <script data-cfasync="false" src="https://bauval.org/14/ca3799816ffb85d7fc27ab6dc9ff2222"></script>
 <script data-cfasync="false" src="https://abscloud.org/1/5c130b03e11c03b9f07572a8332254ef"></script>
-<!-- Adsterra links: 1st click opens the direct link, 2nd click opens the smartlink (once each per page) -->
+<!-- Adsterra direct link: opens on the first click on the page (once per page) -->
 <script>
 (function(){
-  var urls = ['https://araplhn.org/4/f807188adb57a12ed0dc88c5f090b8f3','https://asiafilm.org/4/5b76c5378ff8a6d8b78d8446248ed99b'];
+  var urls = ['https://araplhn.org/4/f807188adb57a12ed0dc88c5f090b8f3'];
   var n = 0;
   document.addEventListener('click', function(){
     if (n >= urls.length) return;
