@@ -3,7 +3,7 @@ import { randomBytes, randomInt } from 'crypto';
 
 const sql = neon(process.env.DATABASE_URL);
 
-const LOOT_LINK = 'https://loot-link.com/s?9diqLQbJ';
+const LOOT_LINK = 'https://lootdest.org/s?BeIF65tP';
 const SITE = 'https://keyhub-system.vercel.app';
 
 export default async function handler(req, res) {
