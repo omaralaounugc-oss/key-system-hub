@@ -2,7 +2,8 @@ import { neon } from '@neondatabase/serverless';
 
 const sql = neon(process.env.DATABASE_URL);
 
-const HUBS = ['hub1', 'hub2']; // keep in sync with the other files
+// Any hub name works: it comes from the link (?hub=NAME). Letters, numbers, - and _ only.
+const isHub = (h) => typeof h === 'string' && /^[a-z0-9_-]{1,24}$/.test(h);
 const MAX_KEYS_PER_IP_PER_DAY = 6;
 
 export default async function handler(req, res) {
@@ -44,7 +45,7 @@ export default async function handler(req, res) {
     }
 
     const hub = session[0].hub;
-    if (!HUBS.includes(hub)) {
+    if (!isHub(hub)) {
       await sql`UPDATE sessions SET used = false WHERE nonce = ${nonce}`;
       return res.status(400).json({ error: 'Unknown hub. Please start again.' });
     }
