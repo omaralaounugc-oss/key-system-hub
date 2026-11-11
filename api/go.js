@@ -42,7 +42,7 @@ export default async function handler(req, res) {
     `;
 
     if (!rows || rows.length === 0) {
-      return res.redirect(302, '/api/start');
+      return res.redirect(302, '/api/choose');
     }
 
     const token = rows[0].token;
