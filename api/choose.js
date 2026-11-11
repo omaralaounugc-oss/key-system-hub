@@ -1,6 +1,8 @@
+// Any hub name works: it comes from the link (?hub=NAME). Letters, numbers, - and _ only.
+const isHub = (h) => typeof h === 'string' && /^[a-z0-9_-]{1,24}$/.test(h);
 const WORKINK_LINK = 'https://work.ink/3a3P/key-system';
 
-function choosePage() {
+function choosePage(hub) {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -64,7 +66,7 @@ function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt
   <h1>How do you want to get the key?</h1>
   <p class="lede">Pick one way to continue.</p>
 
-  <a class="opt loot" href="/api/go" id="loot">
+  <a class="opt loot" href="/api/go?hub=${hub}" id="loot">
     <div class="logo">L</div>
     <div class="txt">
       <div class="name">LootLabs <span class="tag warn">may be broken now</span></div>
@@ -107,7 +109,11 @@ export default async function handler(req, res) {
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
+  const hub = String(req.query.hub || '').toLowerCase();
+  if (!isHub(hub)) return res.redirect(302, '/api/start');
+  // Work.ink sends people back to /api/begin, which reads the hub from this cookie
+  res.setHeader('Set-Cookie', `hub=${hub}; Path=/; Max-Age=3600; SameSite=Lax; Secure`);
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
   res.setHeader('Cache-Control', 'no-store');
-  return res.status(200).send(choosePage());
+  return res.status(200).send(choosePage(hub));
 }
