@@ -3,7 +3,9 @@ import { randomInt } from 'crypto';
 
 const sql = neon(process.env.DATABASE_URL);
 
-const MAX_KEYS = 3000; // change this when you upgrade Neon
+// PUT YOUR HUB NAMES HERE (same names you use in the links: /api/start?hub=NAME). Lowercase letters, numbers, - and _.
+const HUBS = ['hub1', 'hub2'];
+const MAX_KEYS_PER_HUB = 1500; // x2 hubs = the old 3000 total
 
 const UPPER   = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 const LOWER   = 'abcdefghijklmnopqrstuvwxyz';
@@ -35,36 +37,27 @@ function generateKey() {
 
 export default async function handler(req, res) {
   try {
-    // 1. Delete expired keys (used keys after 12h, unused keys after ~7 days)
     await sql`DELETE FROM keys WHERE expires_at < NOW()`;
-
-    // 1b. Clean up old one-time sessions
     await sql`DELETE FROM sessions WHERE created_at < NOW() - INTERVAL '1 day'`;
 
-    // 2. Count what's left
-    const result = await sql`SELECT COUNT(*)::int AS count FROM keys`;
-    const total = result[0].count;
-    const missing = MAX_KEYS - total;
-
-    if (missing <= 0) {
-      return res.status(200).json({ success: true, added: 0, total });
-    }
-
-    // 3. Create only the missing keys, in one single query.
-    // Each unused key gets a slightly different expiry (6 to 7 days) so they don't all
-    // expire at the same moment and leave the pool empty until the next cron run.
     const DAY = 24 * 60 * 60 * 1000;
-    const newKeys = Array.from({ length: missing }, generateKey);
-    const expiries = newKeys.map(() => new Date(Date.now() + 6 * DAY + Math.random() * DAY).toISOString());
+    const report = {};
+    for (const hub of HUBS) {
+      const c = await sql`SELECT COUNT(*)::int AS count FROM keys WHERE hub = ${hub}`;
+      const missing = MAX_KEYS_PER_HUB - c[0].count;
+      report[hub] = Math.max(missing, 0);
+      if (missing <= 0) continue;
 
-    await sql`
-      INSERT INTO keys (key, expires_at, used)
-      SELECT t.k, t.e::timestamptz, false
-      FROM unnest(${newKeys}::text[], ${expiries}::text[]) AS t(k, e)
-      ON CONFLICT (key) DO NOTHING
-    `;
-
-    return res.status(200).json({ success: true, added: missing, total: MAX_KEYS });
+      const newKeys = Array.from({ length: missing }, generateKey);
+      const expiries = newKeys.map(() => new Date(Date.now() + 6 * DAY + Math.random() * DAY).toISOString());
+      await sql`
+        INSERT INTO keys (key, expires_at, used, hub)
+        SELECT t.k, t.e::timestamptz, false, ${hub}
+        FROM unnest(${newKeys}::text[], ${expiries}::text[]) AS t(k, e)
+        ON CONFLICT (key) DO NOTHING
+      `;
+    }
+    return res.status(200).json({ success: true, added: report });
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
