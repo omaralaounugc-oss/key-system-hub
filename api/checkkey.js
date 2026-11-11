@@ -2,7 +2,9 @@ import { neon } from '@neondatabase/serverless';
 
 const sql = neon(process.env.DATABASE_URL);
 
-// Used by index.html: only shows a key if the server really issued it and it is still valid.
+const HUBS = ['hub1', 'hub2']; // keep in sync with the other files
+
+// Used by index.html: a saved key is shown only if the server issued it for that hub and it is still valid.
 export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
 
@@ -10,16 +12,16 @@ export default async function handler(req, res) {
     return res.status(405).json({ valid: false });
   }
 
-  const key = req.query.key;
-  if (!key || typeof key !== 'string' || key.length > 64) {
+  const { key, hub } = req.query;
+  if (!key || typeof key !== 'string' || key.length > 64 || !HUBS.includes(hub)) {
     return res.status(400).json({ valid: false });
   }
 
   try {
-    const rows = await sql
+    const rows = await sql`
       SELECT expires_at FROM keys
-      WHERE key = ${key} AND used = true AND expires_at > NOW()
-    ;
+      WHERE key = ${key} AND hub = ${hub} AND used = true AND expires_at > NOW()
+    `;
     if (!rows || rows.length === 0) {
       return res.status(404).json({ valid: false });
     }
