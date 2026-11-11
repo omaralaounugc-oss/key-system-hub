@@ -10,7 +10,7 @@ function noHubPage() {
 // ====== PUT YOUR VIDEO LINKS HERE ======
 // YouTube link, TikTok link, or a direct .mp4 link. Leave '' to show "coming soon".
 const VIDEO_LOOTLABS = '/videos/lootlabs_tutorail.mp4';
-const VIDEO_WORKINK  = '/videos/workink.mp4';
+const VIDEO_WORKINK  = '/https://youtube.com/watch?v=_qnaJSubhFU&si=lD9hX4UxiSMZZD8_';
 // =======================================
 
 const ttCache = new Map();
