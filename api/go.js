@@ -13,7 +13,7 @@ export default async function handler(req, res) {
 
   const { nonce } = req.query;
   if (!nonce || !/^[a-f0-9]{32}$/.test(nonce)) {
-    return res.redirect(302, '/api/start');
+    return res.redirect(302, '/api/start?m=loot');
   }
 
   try {
@@ -32,7 +32,7 @@ export default async function handler(req, res) {
     `;
 
     if (!rows || rows.length === 0) {
-      return res.redirect(302, '/api/start');
+      return res.redirect(302, '/api/start?m=loot');
     }
 
     const token = rows[0].token;
