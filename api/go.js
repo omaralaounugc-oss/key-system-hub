@@ -3,6 +3,7 @@ import { randomBytes, randomInt } from 'crypto';
 
 const sql = neon(process.env.DATABASE_URL);
 
+const HUBS = ['hub1', 'hub2']; // keep in sync with the other files
 const LOOT_LINK = 'https://lootdest.org/s?BeIF65tP';
 const SITE = 'https://keyhub-system.vercel.app';
 
@@ -16,7 +17,10 @@ export default async function handler(req, res) {
     const newToken = randomBytes(16).toString('hex');
 
     if (!nonce || !/^[a-f0-9]{32}$/.test(nonce)) {
-      // Fresh visitor from the choice page: make a session here.
+      // Fresh visitor: the hub must be known before we make a session.
+      const hubQ = String(req.query.hub || '').toLowerCase();
+      if (!HUBS.includes(hubQ)) return res.redirect(302, '/api/start');
+
       const ip = (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || 'unknown';
       const recent = await sql`
         SELECT COUNT(*)::int AS c FROM sessions
@@ -27,10 +31,9 @@ export default async function handler(req, res) {
       }
       nonce = randomBytes(16).toString('hex');
       const code = String(randomInt(100000, 1000000));
-      await sql`INSERT INTO sessions (nonce, ip, code) VALUES (${nonce}, ${ip}, ${code})`;
+      await sql`INSERT INTO sessions (nonce, ip, code, hub) VALUES (${nonce}, ${ip}, ${code}, ${hubQ})`;
     }
 
-    // Safe to open more than once: the same token is reused.
     const rows = await sql`
       UPDATE sessions
       SET continued_at = COALESCE(continued_at, NOW()),
@@ -38,17 +41,17 @@ export default async function handler(req, res) {
       WHERE nonce = ${nonce}
         AND used = false
         AND created_at > NOW() - INTERVAL '30 minutes'
-      RETURNING token
+      RETURNING token, hub
     `;
 
     if (!rows || rows.length === 0) {
-      return res.redirect(302, '/api/choose');
+      return res.redirect(302, '/api/start');
     }
 
-    const token = rows[0].token;
+    const { token, hub } = rows[0];
 
-    // After LootLabs, the player lands on Step 1 of 4 (inside our site).
-    const dest = `${SITE}/index1.html?nonce=${nonce}&t=${token}`;
+    // hub in the URL is only for the UI; getkey always reads the hub from the session.
+    const dest = `${SITE}/index1.html?nonce=${nonce}&t=${token}&hub=${hub}`;
     const apiUrl =
       'https://creators.lootlabs.gg/api/public/url_encryptor' +
       `?destination_url=${encodeURIComponent(dest)}` +
