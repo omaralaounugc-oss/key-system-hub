@@ -3,7 +3,8 @@ import { randomBytes, randomInt } from 'crypto';
 
 const sql = neon(process.env.DATABASE_URL);
 
-const HUBS = ['hub1', 'hub2']; // keep in sync with the other files
+// Any hub name works: it comes from the link (?hub=NAME). Letters, numbers, - and _ only.
+const isHub = (h) => typeof h === 'string' && /^[a-z0-9_-]{1,24}$/.test(h);
 
 // Work.ink destination: https://keyhub-system.vercel.app/api/begin
 // The hub comes from ?hub=... or from the "hub" cookie that /api/choose sets.
@@ -15,7 +16,7 @@ export default async function handler(req, res) {
   try {
     const fromCookie = ((req.headers.cookie || '').match(/(?:^|;\s*)hub=([a-z0-9]+)/) || [])[1];
     const hub = String(req.query.hub || fromCookie || '').toLowerCase();
-    if (!HUBS.includes(hub)) return res.redirect(302, '/api/start');
+    if (!isHub(hub)) return res.redirect(302, '/api/start');
 
     const ip = (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || 'unknown';
     const recent = await sql`
