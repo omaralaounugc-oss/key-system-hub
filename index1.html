@@ -30,7 +30,6 @@
     --label-3:rgba(235,235,245,.30);
     --fill:rgba(120,120,128,.24);
     --fill-2:rgba(120,120,128,.16);
-    --sep:rgba(84,84,88,.55);
     --blue:#0a84ff;
     --orange:#ff9f0a;
     --green:#30d158;
@@ -78,30 +77,6 @@
   .icon svg{width:30px;height:30px;color:#fff}
   h1{font-size:28px;line-height:1.14;font-weight:700;letter-spacing:-.022em;text-align:center}
   .lede{margin:10px auto 0;max-width:30ch;font-size:16px;line-height:1.38;color:var(--label-2);text-align:center;letter-spacing:-.011em}
-
-  .card{
-    margin-top:30px;border-radius:24px;padding:22px 16px 16px;position:relative;
-    background:linear-gradient(180deg,rgba(255,255,255,.09),rgba(255,255,255,.04));
-    border:.5px solid rgba(255,255,255,.14);
-    -webkit-backdrop-filter:blur(30px) saturate(180%);backdrop-filter:blur(30px) saturate(180%);
-    box-shadow:0 20px 50px rgba(0,0,0,.45),inset 0 .5px 0 rgba(255,255,255,.2);
-  }
-  .code{
-    display:flex;justify-content:center;align-items:center;gap:14px;width:100%;
-    background:none;border:none;color:inherit;font:inherit;cursor:pointer;padding:0;border-radius:16px;
-    -webkit-user-select:all;user-select:all;
-  }
-  .group{display:flex;gap:7px}
-  .digit{
-    width:clamp(40px,12.4vw,48px);height:clamp(54px,16vw,64px);display:grid;place-items:center;
-    border-radius:13px;background:var(--fill);border:.5px solid rgba(255,255,255,.07);
-    font-size:clamp(26px,8vw,32px);font-weight:600;letter-spacing:-.02em;
-    transition:transform .35s var(--ease),background .25s;
-  }
-  .code:active .digit{transform:scale(.94)}
-  .hint{margin-top:14px;text-align:center;font-size:13px;color:var(--label-3);letter-spacing:-.005em;min-height:18px;transition:color .2s}
-  .copied .hint{color:var(--green)}
-  .copied .digit{background:rgba(48,209,88,.20);border-color:rgba(48,209,88,.35)}
 
   .notice{
     display:flex;gap:11px;align-items:flex-start;margin-top:14px;padding:13px 14px;border-radius:16px;
@@ -217,7 +192,6 @@ function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt
     </div>
     <h1>Welcome</h1>
     <p class="lede">Finish the steps and your key will appear on the last page.</p>
-    <div id="ts" style="display:flex;justify-content:center;margin-top:14px"></div>
     <div class="notice" role="note">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><path d="M12 7.5v5.5"/><circle cx="12" cy="16.5" r=".6" fill="currentColor"/></svg>
       <span>Step 1 of 4. Please do not close this page.</span>
@@ -305,33 +279,23 @@ function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt
     }, 250);
   }
   
-  var TURNSTILE_SITE_KEY = '0x4AAAAAAF3dS3Ln8Bfv2fv1';
-  var tsToken = '', tsWidget = null, started = false;
-  function resetTurnstile(){ tsToken = ''; if (window.turnstile && tsWidget !== null) turnstile.reset(tsWidget); }
   async function verifyStep(){
-    if (started) return;
-    started = true;
     try {
       var r = await fetch('/api/check', { method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nonce: nonce, t: t, step: 1, ts: tsToken }) });
+        body: JSON.stringify({ nonce: nonce, t: t, step: 1 }) }); // Removed ts: tsToken
       var d = await r.json();
       if (!r.ok) {
         foot.textContent = d.error || 'Something went wrong.';
-        if (d.restart) setTimeout(restart, 2000); else { started = false; resetTurnstile(); }
+        if (d.restart) setTimeout(restart, 2000);
         return;
       }
       startCountdown();
-    } catch (e) { foot.textContent = 'Network error. Please refresh.'; started = false; }
+    } catch (e) { foot.textContent = 'Network error. Please refresh.'; }
   }
-  window.onTurnstileLoad = function(){
-    tsWidget = turnstile.render('#ts', { sitekey: TURNSTILE_SITE_KEY, theme: 'dark',
-      callback: function(tk){ tsToken = tk; verifyStep(); },
-      'expired-callback': function(){ tsToken = ''; } });
-  };
-  var sc = document.createElement('script');
-  sc.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=onTurnstileLoad';
-  sc.async = true;
-  document.head.appendChild(sc);
+
+  // Automatically start the backend check on load, no turnstile needed.
+  verifyStep();
+  
 })();
 </script>
 <!-- Adsterra -->
