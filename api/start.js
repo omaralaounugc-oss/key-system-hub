@@ -66,12 +66,12 @@ function tutorialPage(hub, lootHtml, workHtml) {
 <style>
   :root{--font:-apple-system,BlinkMacSystemFont,'SF Pro Display','Inter','Segoe UI',Roboto,Helvetica,Arial,sans-serif;--ease:cubic-bezier(.22,1,.36,1)}
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  html,body{height:100%;background:#000}
-  body{font-family:var(--font);color:#fff;-webkit-font-smoothing:antialiased;overflow:hidden}
+  html{background:#000}
+  body{min-height:100vh;min-height:100dvh;font-family:var(--font);color:#fff;-webkit-font-smoothing:antialiased;overflow-x:hidden}
   :focus-visible{outline:3px solid #fff;outline-offset:3px}
 
   /* Continue covers the whole screen */
-  .cta{position:fixed;top:0;left:0;width:100vw;height:100vh;height:100dvh;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;
+  .cta{position:fixed;top:0;left:0;width:100vw;height:100vh;height:100dvh;z-index:5;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;
     padding:clamp(130px,26vh,210px) 24px 32px;text-align:center;text-decoration:none;color:#fff;
     background:linear-gradient(160deg,#3a8dff 0%,#0a60ff 55%,#3b3bd6 100%);transition:filter .2s}
   .cta:hover{filter:brightness(1.08)}
@@ -79,6 +79,13 @@ function tutorialPage(hub, lootHtml, workHtml) {
   .cta-t{font-size:clamp(48px,14vw,120px);font-weight:800;letter-spacing:-.03em;line-height:1}
   .cta-t .arr{margin-left:.15em}
   .cta-s{font-size:clamp(16px,3.6vw,24px);font-weight:500;color:rgba(255,255,255,.82)}
+
+  /* Ads (same slots as before) */
+  .screen{position:relative;z-index:1;width:100%;max-width:430px;min-height:100vh;min-height:100dvh;margin:0 auto;display:flex;flex-direction:column;justify-content:space-between;padding:calc(env(safe-area-inset-top,0px) + 28px) 20px calc(env(safe-area-inset-bottom,0px) + 28px)}
+  .ad{display:flex;justify-content:center;margin:12px 0}
+  .wide{display:none}
+  .rail{display:none}
+  @media(min-width:840px){.wide{display:flex;justify-content:center;margin:10px auto}.rail{display:block;position:fixed;top:120px;z-index:1}.rail.l{left:calc(50% - 405px)}.rail.r{right:calc(50% - 405px)}}
 
   /* Two tutorial buttons on top of it */
   .tuts{position:fixed;top:0;left:0;right:0;z-index:10;display:flex;flex-wrap:wrap;justify-content:center;gap:12px;
@@ -121,8 +128,19 @@ function tutorialPage(hub, lootHtml, workHtml) {
   body.lock{overflow:hidden}
   @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
+<script>
+function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt>atOptions={"key":"'+k+'","format":"iframe","height":'+h+',"width":'+w+',"params":{}};</scr'+'ipt><scr'+'ipt src="https://bauval.org/22/'+k+'"></scr'+'ipt>')}
+</script>
 </head>
 <body>
+<div class="rail l"><script>adBanner('980accb5247e3b507876a5598c5dac63',160,600,840)</script></div>
+<div class="rail r"><script>adBanner('e7d297afa4abe6d8e9ae4b6d4a9e413e',160,300,840)</script></div>
+<div class="wide"><script>adBanner('a973ad4d1946ecff433073faf4287a75',728,90,840)</script></div>
+<main class="screen">
+  <div class="ad"><script>adBanner('c1e961c0589310bb251d53941c12fbb1',320,50,0)</script></div>
+  <div class="ad"><script>adBanner('a60c9cdf9090006b20d869deedf8faef',300,250,0)</script></div>
+</main>
+
 <a class="cta" href="/api/choose?hub=${hub}">
   <span class="cta-t">Continue<span class="arr" aria-hidden="true">&rarr;</span></span>
   <span class="cta-s">Need help? Open a tutorial at the top.</span>
