@@ -73,10 +73,10 @@ function tutorialPage(hub, lootHtml, workHtml) {
   .orb.a{width:70vmax;height:70vmax;left:-25vmax;top:-30vmax;background:radial-gradient(circle,#2b4a8f 0%,transparent 68%)}
   .orb.b{width:60vmax;height:60vmax;right:-25vmax;bottom:-28vmax;background:radial-gradient(circle,#5b2d8a 0%,transparent 68%)}
   .screen{position:relative;z-index:1;width:100%;max-width:none;min-height:100vh;min-height:100dvh;margin:0 auto;display:flex;flex-direction:column;justify-content:center;padding:calc(env(safe-area-inset-top,0px) + 16px) 10px calc(env(safe-area-inset-bottom,0px) + 20px)}
-  .icon{width:64px;height:64px;border-radius:15px;margin:0 auto 22px;display:grid;place-items:center;background:linear-gradient(160deg,#3a8dff 0%,#0a60ff 55%,#3b3bd6 100%);box-shadow:0 10px 30px rgba(10,96,255,.35)}
+  .icon{width:60px;height:60px;border-radius:16px;margin:8px auto 16px;display:grid;place-items:center;background:linear-gradient(160deg,#3a8dff 0%,#0a60ff 55%,#3b3bd6 100%);box-shadow:0 10px 30px rgba(10,96,255,.35)}
   .icon svg{width:30px;height:30px;color:#fff}
-  h1{font-size:26px;line-height:1.15;font-weight:700;letter-spacing:-.02em;text-align:center}
-  .lede{margin:10px auto 26px;font-size:15px;color:var(--label-2);text-align:center}
+  h1{font-size:clamp(30px,6vw,44px);line-height:1.1;font-weight:800;letter-spacing:-.025em;text-align:center}
+  .lede{margin:10px auto 30px;font-size:clamp(16px,3.4vw,20px);color:var(--label-2);text-align:center}
   .opt{display:flex;align-items:center;gap:14px;width:100%;padding:16px;margin-bottom:12px;border-radius:18px;text-decoration:none;color:inherit;background:var(--fill);border:.5px solid var(--sep);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);transition:transform .25s var(--ease),background .25s var(--ease)}
   .opt:active{transform:scale(.98);background:rgba(120,120,128,.32)}
   .logo{flex:0 0 46px;height:46px;border-radius:12px;display:grid;place-items:center;font-weight:800;font-size:20px;color:#fff}
@@ -88,20 +88,22 @@ function tutorialPage(hub, lootHtml, workHtml) {
   .tag.warn{color:#ff9f0a;background:rgba(255,159,10,.15)}
   .sub{margin-top:3px;font-size:13.5px;color:var(--label-2)}
   .chev{flex:0 0 auto;width:18px;height:18px;color:rgba(235,235,245,.30)}
-  .ad{display:flex;justify-content:center;margin:12px 0}
+  .ad{display:flex;justify-content:center;margin:18px 0}
   .wide{display:none}
   @media(min-width:840px){.wide{display:flex;justify-content:center;margin:10px auto}}
 
-  .vid{margin:0 0 20px}
-  .vid h2{font-size:19px;font-weight:600;letter-spacing:-.01em;margin:0 0 10px;display:flex;align-items:center;gap:10px}
-  .vid h2 .dot{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;font-size:13px;font-weight:800;color:#fff}
+  .vid{margin:0 0 28px}
+  .vid h2{font-size:clamp(19px,3.6vw,26px);font-weight:700;letter-spacing:-.015em;margin:0 0 12px;padding:0 4px;display:flex;align-items:center;gap:12px}
+  .vid h2 .dot{flex:none;width:38px;height:38px;border-radius:11px;display:grid;place-items:center;font-size:18px;font-weight:800;color:#fff;box-shadow:0 6px 18px rgba(0,0,0,.35)}
   .vid.loot .dot{background:linear-gradient(160deg,#ffb13b,#ff7a00)}
   .vid.work .dot{background:linear-gradient(160deg,#34d399,#059669)}
-  .frame{position:relative;width:100%;height:calc(100vh - 100px);height:calc(100dvh - 100px);min-height:260px;border-radius:16px;overflow:hidden;background:#000;border:.5px solid var(--sep)}
+  .frame{position:relative;width:100%;height:calc(100vh - 100px);height:calc(100dvh - 100px);min-height:260px;border-radius:22px;overflow:hidden;background:#000;border:1px solid rgba(255,255,255,.14);box-shadow:0 24px 70px rgba(0,0,0,.6)}
   .frame iframe,.frame video{position:absolute;inset:0;width:100%;height:100%;border:0;object-fit:contain;background:#000}
   .frame.tt{max-width:min(100%,560px);margin:0 auto}
   .soon{position:absolute;inset:0;display:grid;place-items:center;color:var(--label-2);font-size:14px}
-  .cta{display:flex;align-items:center;justify-content:center;width:100%;height:88px;margin-top:6px;border-radius:22px;font-size:26px;font-weight:700;color:#fff;text-decoration:none;background:linear-gradient(160deg,#3a8dff,#0a60ff);box-shadow:0 10px 26px rgba(10,96,255,.35);transition:transform .25s var(--ease)}
+  .cta{display:flex;align-items:center;justify-content:center;gap:14px;width:100%;height:clamp(84px,12vh,104px);margin-top:6px;border-radius:26px;font-size:clamp(24px,4.4vw,34px);font-weight:800;letter-spacing:-.01em;color:#fff;text-decoration:none;background:linear-gradient(160deg,#4a9bff,#0a60ff 60%,#3b3bd6);box-shadow:0 14px 40px rgba(10,96,255,.5),inset 0 1px 0 rgba(255,255,255,.35);transition:transform .25s var(--ease),filter .2s}
+  .cta::after{content:"\\2192";font-size:1.15em;line-height:1}
+  .cta:hover{filter:brightness(1.08)}
   .cta:active{transform:scale(.98)}
 </style>
 <script>
