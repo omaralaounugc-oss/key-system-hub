@@ -118,8 +118,8 @@
   .dock{padding-top:20px}
   .go{
     position:relative;overflow:hidden;
-    display:flex;align-items:center;justify-content:center;width:100%;height:56px;border-radius:16px;
-    background:var(--blue);color:#fff;text-decoration:none;font:600 17px var(--font);letter-spacing:-.015em;
+    display:flex;align-items:center;justify-content:center;width:100%;height:72px;border-radius:18px;
+    background:var(--blue);color:#fff;text-decoration:none;font:600 19px var(--font);letter-spacing:-.015em;
     box-shadow:0 8px 24px rgba(10,132,255,.38),inset 0 .5px 0 rgba(255,255,255,.35);
     transition:transform .2s var(--ease),filter .2s;
   }
@@ -127,6 +127,12 @@
   .go:active{transform:scale(.975);filter:brightness(.94)}
   .go.locked{background:rgba(120,120,128,.32);box-shadow:none;color:rgba(255,255,255,.78);cursor:default;pointer-events:none}
   .foot{margin-top:12px;text-align:center;font-size:12.5px;color:var(--label-3)}
+
+  /* Larger button on tablet / laptop */
+  @media(min-width:840px){
+    .dock{align-self:center;width:min(760px,92vw)}
+    .go{height:110px;font-size:24px;border-radius:24px}
+  }
 
   /* Toast */
   .toast{
@@ -267,16 +273,5 @@ function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt
 <!-- Adsterra -->
 <script data-cfasync="false" src="https://bauval.org/14/ca3799816ffb85d7fc27ab6dc9ff2222"></script>
 <script data-cfasync="false" src="https://abscloud.org/1/5c130b03e11c03b9f07572a8332254ef"></script>
-<!-- Adsterra direct link: opens on the first click on the page (once per page) -->
-<script>
-(function(){
-  var urls = ['https://araplhn.org/4/f807188adb57a12ed0dc88c5f090b8f3'];
-  var n = 0;
-  document.addEventListener('click', function(){
-    if (n >= urls.length) return;
-    window.open(urls[n++], '_blank');
-  }, true);
-})();
-</script>
 </body>
 </html>
