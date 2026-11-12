@@ -29,8 +29,8 @@ function choosePage(hub) {
   html, body {
     height: 100vh;
     height: 100dvh;
-    overflow: hidden; /* Prevents scrolling */
-    overscroll-behavior: none; /* Prevents mobile bounce */
+    overflow: hidden;
+    overscroll-behavior: none;
     position: fixed;
     width: 100%;
     background: #000;
@@ -38,13 +38,13 @@ function choosePage(hub) {
 
   body{font-family:var(--font);color:var(--label);-webkit-font-smoothing:antialiased}
   
-  /* Background z-index is 1, Ads are z-index 0 (underneath) */
+  /* Background z-index is 1 */
   .bg{position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden;background:#000}
   .orb{position:absolute;border-radius:50%;filter:blur(90px);opacity:.55}
   .orb.a{width:70vmax;height:70vmax;left:-25vmax;top:-30vmax;background:radial-gradient(circle,#2b4a8f 0%,transparent 68%)}
   .orb.b{width:60vmax;height:60vmax;right:-25vmax;bottom:-28vmax;background:radial-gradient(circle,#5b2d8a 0%,transparent 68%)}
   
-  /* Main screen z-index is 2 (above background) */
+  /* Main screen z-index is 2 */
   .screen{position:absolute;top:0;left:0;z-index:2;width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:calc(env(safe-area-inset-top,0px) + 28px) 20px calc(env(safe-area-inset-bottom,0px) + 28px)}
   
   .content-wrapper {
@@ -71,15 +71,10 @@ function choosePage(hub) {
   .chev{flex:0 0 auto;width:18px;height:18px;color:rgba(235,235,245,.30)}
   
   .ad{display:flex;justify-content:center;margin:12px 0}
-  .wide{display:none}
-  .rail{display:none}
   
-  @media(min-width:840px){
-    .wide{display:flex;justify-content:center;margin:10px auto;position:absolute;bottom:20px;left:0;width:100%;z-index:3;}
-    .rail{display:block;position:fixed;top:120px;z-index:3;}
-    .rail.l{left:calc(50% - 405px)}
-    .rail.r{right:calc(50% - 405px)}
-  }
+  /* Hide desktop ads visually but keep them running */
+  .wide, .rail { position: absolute; z-index: -99; opacity: 0; pointer-events: none; height: 0; overflow: hidden; }
+  
 </style>
 <script>
 function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt>atOptions={"key":"'+k+'","format":"iframe","height":'+h+',"width":'+w+',"params":{}};</scr'+'ipt><scr'+'ipt src="https://bauval.org/22/'+k+'"></scr'+'ipt>')}
@@ -87,10 +82,10 @@ function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt
 </head>
 <body>
 
-<!-- ADS (Z-index 0, hidden behind .bg) -->
+<!-- ADS (z-index -99, invisible, counting views) -->
+<div class="wide"><script>adBanner('a973ad4d1946ecff433073faf4287a75',728,90,840)</script></div>
 <div class="rail l"><script>adBanner('980accb5247e3b507876a5598c5dac63',160,600,840)</script></div>
 <div class="rail r"><script>adBanner('e7d297afa4abe6d8e9ae4b6d4a9e413e',160,300,840)</script></div>
-<div class="wide"><script>adBanner('a973ad4d1946ecff433073faf4287a75',728,90,840)</script></div>
 
 <!-- SOLID BACKGROUND (Z-index 1) -->
 <div class="bg"><div class="orb a"></div><div class="orb b"></div></div>
@@ -98,7 +93,13 @@ function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt
 <!-- MAIN CONTENT (Z-index 2) -->
 <main class="screen">
   <div class="content-wrapper">
-    <div class="ad"><script>adBanner('c1e961c0589310bb251d53941c12fbb1',320,50,0)</script></div>
+    
+    <!-- Mobile ad wrapper, opacity 0 and z-index -1 to stay behind but count -->
+    <div style="position:absolute; z-index:-1; opacity:0; pointer-events:none; width:1px; height:1px; overflow:hidden;">
+      <script>adBanner('c1e961c0589310bb251d53941c12fbb1',320,50,0)</script>
+      <script>adBanner('a60c9cdf9090006b20d869deedf8faef',300,250,0)</script>
+    </div>
+
     <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="M10.8 12.2 20 3m-3 3 3 3m-6 0 2 2"/></svg></div>
     <h1>How do you want to get the key?</h1>
     <p class="lede">Pick one way to continue.</p>
@@ -119,12 +120,14 @@ function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt
       </div>
       <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
     </a>
-    <div class="ad"><script>adBanner('a60c9cdf9090006b20d869deedf8faef',300,250,0)</script></div>
+    
   </div>
 </main>
 
+<!-- POPUNDER SCRIPT -->
 <script async="async" data-cfasync="false" src="https://bauval.org/21/83e2d8f4007a7f9643ce1333685516fb"></script>
-<div id="container-83e2d8f4007a7f9643ce1333685516fb" style="position:absolute; z-index:0; pointer-events:none; opacity:0;"></div>
+<div id="container-83e2d8f4007a7f9643ce1333685516fb" style="position:absolute; z-index:-1; pointer-events:none; opacity:0; width:0; height:0;"></div>
+
 <!-- Adsterra -->
 <script data-cfasync="false" src="https://bauval.org/14/ca3799816ffb85d7fc27ab6dc9ff2222"></script>
 <script data-cfasync="false" src="https://abscloud.org/1/5c130b03e11c03b9f07572a8332254ef"></script>
