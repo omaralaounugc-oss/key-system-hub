@@ -90,8 +90,7 @@ function tutorialPage(hub, lootHtml, workHtml) {
   .chev{flex:0 0 auto;width:18px;height:18px;color:rgba(235,235,245,.30)}
   .ad{display:flex;justify-content:center;margin:12px 0}
   .wide{display:none}
-  .rail{display:none}
-  @media(min-width:840px){.wide{display:flex;justify-content:center;margin:10px auto}.rail{display:block;position:fixed;top:120px;z-index:1}.rail.l{left:calc(50% - 405px)}.rail.r{right:calc(50% - 405px)}}
+  @media(min-width:840px){.wide{display:flex;justify-content:center;margin:10px auto}}
 
   .vid{margin:0 0 20px}
   .vid h2{font-size:19px;font-weight:600;letter-spacing:-.01em;margin:0 0 10px;display:flex;align-items:center;gap:10px}
@@ -111,8 +110,6 @@ function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt
 </head>
 <body>
 <div class="bg"><div class="orb a"></div><div class="orb b"></div></div>
-<div class="rail l"><script>adBanner('980accb5247e3b507876a5598c5dac63',160,600,840)</script></div>
-<div class="rail r"><script>adBanner('e7d297afa4abe6d8e9ae4b6d4a9e413e',160,300,840)</script></div>
 <div class="wide"><script>adBanner('a973ad4d1946ecff433073faf4287a75',728,90,840)</script></div>
 <main class="screen" style="justify-content:flex-start">
   <div class="ad"><script>adBanner('c1e961c0589310bb251d53941c12fbb1',320,50,0)</script></div>
