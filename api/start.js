@@ -78,12 +78,23 @@ function tutorialPage(hub, lootHtml, workHtml) {
 <style>
   :root{--font:-apple-system,BlinkMacSystemFont,'SF Pro Display','Inter','Segoe UI',Roboto,Helvetica,Arial,sans-serif;--ease:cubic-bezier(.22,1,.36,1)}
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  html{background:#000}
-  body{min-height:100vh;min-height:100dvh;font-family:var(--font);color:#fff;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  
+  /* --- ANTI-SCROLL FIXES --- */
+  html, body {
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden; /* Prevents any scrolling */
+    overscroll-behavior: none; /* Prevents pull-to-refresh bounce */
+    position: fixed; /* Locks the viewport */
+    width: 100%;
+    background: #000;
+  }
+  
+  body{font-family:var(--font);color:#fff;-webkit-font-smoothing:antialiased}
   :focus-visible{outline:3px solid #fff;outline-offset:3px}
 
   /* Continue covers the whole screen */
-  .hero{position:relative;width:100%;height:100vh;height:100dvh;overflow:hidden}
+  .hero{position:absolute;top:0;left:0;width:100%;height:100%;overflow:hidden;z-index:2}
   .cta{position:absolute;top:0;left:0;width:100%;height:100%;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;
     padding:clamp(130px,26vh,210px) 24px 32px;text-align:center;text-decoration:none;color:#fff;
     background:linear-gradient(160deg,#3a8dff 0%,#0a60ff 55%,#3b3bd6 100%);transition:filter .2s}
@@ -93,13 +104,24 @@ function tutorialPage(hub, lootHtml, workHtml) {
   .cta-t .arr{margin-left:.15em}
   .cta-s{font-size:clamp(16px,3.6vw,24px);font-weight:500;color:rgba(255,255,255,.82)}
 
-  /* Ads (same slots as before) */
-  .screen{position:relative;z-index:1;width:100%;max-width:430px;margin:0 auto;display:flex;flex-direction:column;padding:28px 20px calc(env(safe-area-inset-bottom,0px) + 28px)}
-  .ad{display:flex;justify-content:center;margin:12px -22px}
+  /* Ads - Kept for desktop, hidden on mobile to prevent overflow */
+  .screen{position:absolute;z-index:-1;top:0;left:0;width:100%;height:100%;pointer-events:none;display:flex;flex-direction:column;align-items:center;padding-top:20px}
+  .screen .ad, .screen .support, .wide, .rail { pointer-events:auto; }
+  
+  .ad{display:none;} /* Hide mobile banner ads so they don't break the full-screen height */
   .wide{display:none}
   .rail{display:none}
-  .support{display:block;text-align:center;margin:14px 0 4px;font-size:13px;color:rgba(235,235,245,.6);text-decoration:underline}
-  @media(min-width:840px){.wide{display:flex;justify-content:center;margin:10px auto}.rail{display:block;position:absolute;top:60px;z-index:1}.rail.l{left:-190px}.rail.r{right:-190px}}
+  .support{display:none;}
+  
+  @media(min-width:840px){
+    .wide{display:flex;justify-content:center;margin:10px auto;position:absolute;top:0;z-index:3}
+    .rail{display:block;position:absolute;top:60px;z-index:1}
+    .rail.l{left:-190px}
+    .rail.r{right:-190px}
+    .screen{display:flex; position:relative; z-index:1; width:100%; max-width:430px; margin:0 auto; height:auto; padding:28px 20px; pointer-events:auto; background:transparent;}
+    .ad{display:flex; justify-content:center; margin:12px -22px}
+    .support{display:block; text-align:center; margin:14px 0 4px; font-size:13px; color:rgba(235,235,245,.6); text-decoration:underline}
+  }
 
   /* Two tutorial buttons on top of it */
   .tuts{position:absolute;top:0;left:0;right:0;z-index:3;display:flex;flex-wrap:wrap;justify-content:center;gap:12px;
