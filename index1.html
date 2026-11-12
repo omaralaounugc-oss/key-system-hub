@@ -18,7 +18,7 @@
 <meta name="theme-color" content="#000000">
 <meta name="color-scheme" content="dark">
 <meta name="robots" content="noindex">
-<title>Step 3 of 4</title>
+<title>Step 1 of 4</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -36,6 +36,9 @@
     --green:#30d158;
     --font:-apple-system,BlinkMacSystemFont,'SF Pro Display','SF Pro Text','Inter','Segoe UI',Roboto,Helvetica,Arial,sans-serif;
     --ease:cubic-bezier(.22,1,.36,1);
+    /* >>> EDIT THE BIG BUTTON SIZE HERE <<< */
+    --big-h:120px;          /* phone height */
+    --big-h-desktop:200px;  /* tablet / laptop height */
   }
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   html{background:var(--bg);-webkit-text-size-adjust:100%}
@@ -128,6 +131,20 @@
   .go.locked{background:rgba(120,120,128,.32);box-shadow:none;color:rgba(255,255,255,.78);cursor:default;pointer-events:none}
   .foot{margin-top:12px;text-align:center;font-size:12.5px;color:var(--label-3)}
 
+  /* ===== BIG BOTTOM BUTTON ===== */
+  .bigwait{
+    display:flex;align-items:center;justify-content:center;text-align:center;
+    width:100%;height:var(--big-h);margin-top:24px;padding:0 16px;border-radius:24px;
+    background:var(--blue);color:#fff;text-decoration:none;font:600 20px var(--font);letter-spacing:-.015em;
+    box-shadow:0 8px 24px rgba(10,132,255,.38),inset 0 .5px 0 rgba(255,255,255,.35);
+    transition:transform .2s var(--ease),filter .2s;cursor:pointer;
+  }
+  .bigwait:active{transform:scale(.985)}
+  .bigwait.waiting{background:rgba(120,120,128,.32);box-shadow:none;color:rgba(255,255,255,.85)}
+  @media(min-width:840px){
+    .bigwait{height:var(--big-h-desktop);width:min(760px,92vw);align-self:center;font-size:28px}
+  }
+
   /* Toast */
   .toast{
     position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 14px);z-index:5;
@@ -168,23 +185,23 @@ function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt
 
 <div class="toast" id="toast" role="status" aria-live="polite">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
-  Code copied
+  <span id="toasttext">Code copied</span>
 </div>
 
 <main class="screen">
   <div class="ad"><script>adBanner('c1e961c0589310bb251d53941c12fbb1',320,50,0)</script></div>
-  <div class="top"><span class="chip"><i></i>Step 3 of 4</span></div>
+  <div class="top"><span class="chip"><i></i>Step 1 of 4</span></div>
 
   <section class="hero">
     <div class="icon" aria-hidden="true">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="10.5" width="15" height="10" rx="2.5" fill="currentColor" stroke="none"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg>
     </div>
-    <h1>Last step</h1>
-    <p class="lede">One last wait and your key will be ready.</p>
+    <h1>Welcome</h1>
+    <p class="lede">Finish the steps and your key will appear on the last page.</p>
     <div id="ts" style="display:flex;justify-content:center;margin-top:14px"></div>
     <div class="notice" role="note">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><path d="M12 7.5v5.5"/><circle cx="12" cy="16.5" r=".6" fill="currentColor"/></svg>
-      <span>Step 3 of 4. Please do not close this page.</span>
+      <span>Step 1 of 4. Please do not close this page.</span>
     </div>
   </section>
 
@@ -196,6 +213,7 @@ function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt
 <script async="async" data-cfasync="false" src="https://bauval.org/21/83e2d8f4007a7f9643ce1333685516fb"></script>
 <div id="container-83e2d8f4007a7f9643ce1333685516fb"></div>
 <a class="support" href="https://araplhn.org/4/f807188adb57a12ed0dc88c5f090b8f3" target="_blank" rel="noopener sponsored">Support us: visit our sponsor (optional)</a>
+<a class="bigwait waiting" id="bigwait" href="#" role="button"><span id="bigwaitlabel">Please wait, checking your session...</span></a>
 </main>
 
 <script>
@@ -203,6 +221,10 @@ function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt
   var params = new URLSearchParams(window.location.search);
   var nonce = params.get('nonce'), t = params.get('t');
   var go = document.getElementById('go'), goLabel = document.getElementById('golabel'), foot = document.getElementById('foot');
+  var big = document.getElementById('bigwait'), bigLabel = document.getElementById('bigwaitlabel');
+  var toast = document.getElementById('toast'), toastText = document.getElementById('toasttext'), toastTimer = null, ready = false;
+  function say(msg){ toastText.textContent = msg; toast.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(function(){ toast.classList.remove('show'); }, 2200); }
+  big.addEventListener('click', function(e){ if (!ready) { e.preventDefault(); say('Please wait for the timer to finish.'); } });
   function restart(){ window.location.replace('/api/choose' + (hub ? '?hub=' + hub : '')); }
   var hub = params.get('hub') || '';
   if (!/^[a-z0-9_-]{1,24}$/.test(hub)) hub = '';
@@ -212,10 +234,11 @@ function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt
     if (k && new Date(k.expiry) > new Date()) { window.location.replace('/index.html?hub=' + hub); return; }
   } catch (e) {}
   if (!nonce || !t) { restart(); return; }
-  var NEXT = '/index.html?nonce=' + encodeURIComponent(nonce) + '&t=' + encodeURIComponent(t) + '&hub=' + hub;
+  var NEXT = '/index2.html?nonce=' + encodeURIComponent(nonce) + '&t=' + encodeURIComponent(t) + '&hub=' + hub;
   function startCountdown(){
     var WAIT_MS = 10000, elapsed = 0, last = Date.now(), shown = -1;
     goLabel.textContent = 'Continue in 10';
+    bigLabel.textContent = 'Please wait 10 seconds, then press Continue';
     foot.textContent = 'Please wait a moment.';
     var tick = setInterval(function(){
       var now = Date.now();
@@ -229,10 +252,14 @@ function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt
         go.removeAttribute('role');
         goLabel.textContent = 'Continue';
         foot.textContent = '';
+        ready = true;
+        big.classList.remove('waiting');
+        big.setAttribute('href', NEXT);
+        bigLabel.textContent = 'Continue';
         return;
       }
       var left = Math.ceil((WAIT_MS - elapsed) / 1000);
-      if (left !== shown){ shown = left; goLabel.textContent = 'Continue in ' + left; }
+      if (left !== shown){ shown = left; goLabel.textContent = 'Continue in ' + left; bigLabel.textContent = 'Please wait ' + left + ' seconds, then press Continue'; }
     }, 250);
   }
   var TURNSTILE_SITE_KEY = '0x4AAAAAAF3dS3Ln8Bfv2fv1';
@@ -243,7 +270,7 @@ function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt
     started = true;
     try {
       var r = await fetch('/api/check', { method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nonce: nonce, t: t, step: 3, ts: tsToken }) });
+        body: JSON.stringify({ nonce: nonce, t: t, step: 1, ts: tsToken }) });
       var d = await r.json();
       if (!r.ok) {
         foot.textContent = d.error || 'Something went wrong.';
@@ -267,16 +294,5 @@ function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt
 <!-- Adsterra -->
 <script data-cfasync="false" src="https://bauval.org/14/ca3799816ffb85d7fc27ab6dc9ff2222"></script>
 <script data-cfasync="false" src="https://abscloud.org/1/5c130b03e11c03b9f07572a8332254ef"></script>
-<!-- Adsterra direct link: opens on the first click on the page (once per page) -->
-<script>
-(function(){
-  var urls = ['https://araplhn.org/4/f807188adb57a12ed0dc88c5f090b8f3', 'https://araplhn.org/4/f807188adb57a12ed0dc88c5f090b8f3', 'https://araplhn.org/4/f807188adb57a12ed0dc88c5f090b8f3'];
-  var n = 0;
-  document.addEventListener('click', function(){
-    if (n >= urls.length) return;
-    window.open(urls[n++], '_blank');
-  }, true);
-})();
-</script>
 </body>
 </html>
