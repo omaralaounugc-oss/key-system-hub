@@ -128,9 +128,26 @@
   .go.locked{background:rgba(120,120,128,.32);box-shadow:none;color:rgba(255,255,255,.78);cursor:default;pointer-events:none}
   .foot{margin-top:12px;text-align:center;font-size:12.5px;color:var(--label-3)}
 
+  /* ===== FULL-SCREEN BLUE BUTTON OVERLAY ===== */
+  .bigwait-overlay{
+    position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:9999999;
+    display:flex;flex-direction:column;
+    background:#1a1a1c;
+    transition:background .3s ease;
+  }
+  .bigwait-overlay.ready{background:var(--blue)}
+  .bigwait{
+    display:flex;align-items:center;justify-content:center;text-align:center;
+    width:100%;height:100%;margin:0;padding:0 28px;border-radius:0;background:transparent;
+    color:#fff;text-decoration:none;font:700 24px var(--font);letter-spacing:-.015em;line-height:1.25;
+    box-shadow:none;cursor:pointer;-webkit-user-select:none;user-select:none;
+  }
+  .bigwait-overlay.ready .bigwait:active{filter:brightness(.94)}
+  .bigwait-overlay.ready .bigwait:hover{filter:brightness(1.08)}
+
   /* Toast */
   .toast{
-    position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 14px);z-index:5;
+    position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 14px);z-index:10000000;
     transform:translate(-50%,-140%);opacity:0;display:flex;align-items:center;gap:8px;
     height:42px;padding:0 16px 0 12px;border-radius:21px;font-size:14px;font-weight:500;
     background:rgba(40,40,44,.78);border:.5px solid rgba(255,255,255,.14);
@@ -168,7 +185,7 @@ function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt
 
 <div class="toast" id="toast" role="status" aria-live="polite">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
-  Code copied
+  <span id="toasttext">Code copied</span>
 </div>
 
 <main class="screen">
@@ -181,7 +198,6 @@ function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt
     </div>
     <h1>Almost there</h1>
     <p class="lede">One short wait, then the next step.</p>
-    <div id="ts" style="display:flex;justify-content:center;margin-top:14px"></div>
     <div class="notice" role="note">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><path d="M12 7.5v5.5"/><circle cx="12" cy="16.5" r=".6" fill="currentColor"/></svg>
       <span>Step 2 of 4. Please do not close this page.</span>
@@ -189,8 +205,8 @@ function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt
   </section>
 
   <div class="dock">
-    <a class="go locked" id="go" role="link" aria-disabled="true"><span id="golabel">Verifying...</span></a>
-    <p class="foot" id="foot">Checking your session...</p>
+    <a class="go locked" id="go" role="link" aria-disabled="true"><span id="golabel">Continue in 10</span></a>
+    <p class="foot" id="foot">Please wait a moment.</p>
   </div>
 <div class="ad"><script>adBanner('a60c9cdf9090006b20d869deedf8faef',300,250,0)</script></div>
 <script async="async" data-cfasync="false" src="https://bauval.org/21/83e2d8f4007a7f9643ce1333685516fb"></script>
@@ -198,11 +214,31 @@ function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt
 <a class="support" href="https://araplhn.org/4/f807188adb57a12ed0dc88c5f090b8f3" target="_blank" rel="noopener sponsored">Support us: visit our sponsor (optional)</a>
 </main>
 
+<!-- FULL-SCREEN BLUE BUTTON OVERLAY -->
+<div class="bigwait-overlay" id="bigwait-overlay">
+  <a class="bigwait" id="bigwait" href="#" role="button"><span id="bigwaitlabel">Please wait 10 seconds...</span></a>
+</div>
+
 <script>
 (function(){
   var params = new URLSearchParams(window.location.search);
   var nonce = params.get('nonce'), t = params.get('t');
   var go = document.getElementById('go'), goLabel = document.getElementById('golabel'), foot = document.getElementById('foot');
+  var big = document.getElementById('bigwait'), bigLabel = document.getElementById('bigwaitlabel');
+  var overlay = document.getElementById('bigwait-overlay');
+  var toast = document.getElementById('toast'), toastText = document.getElementById('toasttext'), toastTimer = null, ready = false;
+
+  function say(msg){
+    toastText.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ toast.classList.remove('show'); }, 2200);
+  }
+
+  big.addEventListener('click', function(e){
+    if (!ready) { e.preventDefault(); say('Please wait for the timer to finish.'); }
+  });
+
   function restart(){ window.location.replace('/api/choose' + (hub ? '?hub=' + hub : '')); }
   var hub = params.get('hub') || '';
   if (!/^[a-z0-9_-]{1,24}$/.test(hub)) hub = '';
@@ -216,6 +252,7 @@ function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt
   function startCountdown(){
     var WAIT_MS = 10000, elapsed = 0, last = Date.now(), shown = -1;
     goLabel.textContent = 'Continue in 10';
+    bigLabel.textContent = 'Please wait 10 seconds...';
     foot.textContent = 'Please wait a moment.';
     var tick = setInterval(function(){
       var now = Date.now();
@@ -229,39 +266,34 @@ function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt
         go.removeAttribute('role');
         goLabel.textContent = 'Continue';
         foot.textContent = '';
+        ready = true;
+
+        // Turn overlay blue and make it clickable
+        overlay.classList.add('ready');
+        big.setAttribute('href', NEXT);
+        bigLabel.textContent = 'Continue';
         return;
       }
       var left = Math.ceil((WAIT_MS - elapsed) / 1000);
-      if (left !== shown){ shown = left; goLabel.textContent = 'Continue in ' + left; }
+      if (left !== shown){
+        shown = left;
+        goLabel.textContent = 'Continue in ' + left;
+        bigLabel.textContent = 'Please wait ' + left + ' seconds...';
+      }
     }, 250);
   }
-  var TURNSTILE_SITE_KEY = '0x4AAAAAAF3dS3Ln8Bfv2fv1';
-  var tsToken = '', tsWidget = null, started = false;
-  function resetTurnstile(){ tsToken = ''; if (window.turnstile && tsWidget !== null) turnstile.reset(tsWidget); }
-  async function verifyStep(){
-    if (started) return;
-    started = true;
+  // Records step 2 on the server in the background; the countdown no longer waits on it.
+  async function recordStep(){
     try {
       var r = await fetch('/api/check', { method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nonce: nonce, t: t, step: 2, ts: tsToken }) });
+        body: JSON.stringify({ nonce: nonce, t: t, step: 2 }) });
       var d = await r.json();
-      if (!r.ok) {
-        foot.textContent = d.error || 'Something went wrong.';
-        if (d.restart) setTimeout(restart, 2000); else { started = false; resetTurnstile(); }
-        return;
-      }
-      startCountdown();
-    } catch (e) { foot.textContent = 'Network error. Please refresh.'; started = false; }
+      if (!r.ok && d.restart) restart();
+    } catch (e) {}
   }
-  window.onTurnstileLoad = function(){
-    tsWidget = turnstile.render('#ts', { sitekey: TURNSTILE_SITE_KEY, theme: 'dark',
-      callback: function(tk){ tsToken = tk; verifyStep(); },
-      'expired-callback': function(){ tsToken = ''; } });
-  };
-  var sc = document.createElement('script');
-  sc.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=onTurnstileLoad';
-  sc.async = true;
-  document.head.appendChild(sc);
+
+  startCountdown();
+  recordStep();
 })();
 </script>
 <!-- Adsterra -->
