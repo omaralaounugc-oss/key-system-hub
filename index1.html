@@ -141,8 +141,10 @@
   }
   .bigwait:active{transform:scale(.985)}
   .bigwait.waiting{background:rgba(120,120,128,.32);box-shadow:none;color:rgba(255,255,255,.85)}
-  @media(min-width:10000px){
-    .bigwait{height:var(--big-h-desktop);width:min(10000px,1000vw);align-self:center;font-size:11000px}
+  /* Full-screen mode: button covers the entire screen (added once verification passes) */
+  .bigwait.full{
+    position:fixed;inset:0;z-index:9999;width:100vw;height:100vh;height:100dvh;
+    margin:0;padding:24px;border-radius:0;font-size:clamp(24px,5vw,56px);line-height:1.25;
   }
 
   /* Toast */
@@ -238,6 +240,7 @@ function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt
   function startCountdown(){
     var WAIT_MS = 10000, elapsed = 0, last = Date.now(), shown = -1;
     goLabel.textContent = 'Continue in 10';
+    big.classList.add('full');
     bigLabel.textContent = 'Please wait 10 seconds, then press Continue';
     foot.textContent = 'Please wait a moment.';
     var tick = setInterval(function(){
