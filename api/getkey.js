@@ -5,6 +5,9 @@ const sql = neon(process.env.DATABASE_URL);
 // Any hub name works: it comes from the link (?hub=NAME). Letters, numbers, - and _ only.
 const isHub = (h) => typeof h === 'string' && /^[a-z0-9_-]{1,24}$/.test(h);
 
+// Only these hubs can get a key. To add a new hub later, add its name here.
+const ALLOWED_HUBS = ['hub1', 'hub2', 'hub3'];
+
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -37,6 +40,11 @@ export default async function handler(req, res) {
     if (!isHub(hub)) {
       await sql`UPDATE sessions SET used = false WHERE nonce = ${nonce}`;
       return res.status(400).json({ error: 'Unknown hub. Please start again.' });
+    }
+
+    // Any other hub can do all the steps, but gets an error at the end.
+    if (!ALLOWED_HUBS.includes(hub)) {
+      return res.status(400).json({ error: 'Invalid hub link.' });
     }
 
     const now = new Date();
