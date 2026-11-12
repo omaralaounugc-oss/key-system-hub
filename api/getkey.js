@@ -4,7 +4,6 @@ const sql = neon(process.env.DATABASE_URL);
 
 // Any hub name works: it comes from the link (?hub=NAME). Letters, numbers, - and _ only.
 const isHub = (h) => typeof h === 'string' && /^[a-z0-9_-]{1,24}$/.test(h);
-const MAX_KEYS_PER_IP_PER_DAY = 6;
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
@@ -20,16 +19,6 @@ export default async function handler(req, res) {
   }
 
   try {
-    const lim = await sql`
-      SELECT COUNT(*)::int AS c FROM sessions
-      WHERE ip = (SELECT ip FROM sessions WHERE nonce = ${nonce})
-        AND used = true
-        AND created_at > NOW() - INTERVAL '1 day'
-    `;
-    if (lim[0].c >= MAX_KEYS_PER_IP_PER_DAY) {
-      return res.status(429).json({ error: 'Daily limit reached. Try again tomorrow.' });
-    }
-
     const session = await sql`
       UPDATE sessions SET used = true
       WHERE nonce = ${nonce}
