@@ -60,6 +60,18 @@ function tutorialPage(hub, lootHtml, workHtml) {
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="referrer" content="no-referrer-when-downgrade" />
+<meta name="clckd" content="7115760891f9ae23bf15d477c7aeebe1" />
+<script async src="https://www.googletagmanager.com/gtm.js?id=GTM-MF9MT7J6"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+</script>
+<script src="https://quge5.com/88/tag.min.js" data-zone="307027" async data-cfasync="false"></script>
+<script src="https://quge5.com/88/tag.min.js" data-zone="308573" async data-cfasync="false"></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3893185157459343"
+     crossorigin="anonymous"></script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Key Tutorial</title>
 <script>try{var k=JSON.parse(localStorage.getItem('wowhub_keys')||'{}')['${hub}'];if(k&&new Date(k.expiry)>new Date())location.replace('/index.html?hub=${hub}')}catch(e){}</script>
@@ -71,7 +83,8 @@ function tutorialPage(hub, lootHtml, workHtml) {
   :focus-visible{outline:3px solid #fff;outline-offset:3px}
 
   /* Continue covers the whole screen */
-  .cta{position:fixed;top:0;left:0;width:100vw;height:100vh;height:100dvh;z-index:5;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;
+  .hero{position:relative;width:100%;height:100vh;height:100dvh;overflow:hidden}
+  .cta{position:absolute;top:0;left:0;width:100%;height:100%;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;
     padding:clamp(130px,26vh,210px) 24px 32px;text-align:center;text-decoration:none;color:#fff;
     background:linear-gradient(160deg,#3a8dff 0%,#0a60ff 55%,#3b3bd6 100%);transition:filter .2s}
   .cta:hover{filter:brightness(1.08)}
@@ -81,14 +94,15 @@ function tutorialPage(hub, lootHtml, workHtml) {
   .cta-s{font-size:clamp(16px,3.6vw,24px);font-weight:500;color:rgba(255,255,255,.82)}
 
   /* Ads (same slots as before) */
-  .screen{position:relative;z-index:1;width:100%;max-width:430px;min-height:100vh;min-height:100dvh;margin:0 auto;display:flex;flex-direction:column;justify-content:space-between;padding:calc(env(safe-area-inset-top,0px) + 28px) 20px calc(env(safe-area-inset-bottom,0px) + 28px)}
-  .ad{display:flex;justify-content:center;margin:12px 0}
+  .screen{position:relative;z-index:1;width:100%;max-width:430px;margin:0 auto;display:flex;flex-direction:column;padding:28px 20px calc(env(safe-area-inset-bottom,0px) + 28px)}
+  .ad{display:flex;justify-content:center;margin:12px -22px}
   .wide{display:none}
   .rail{display:none}
-  @media(min-width:840px){.wide{display:flex;justify-content:center;margin:10px auto}.rail{display:block;position:fixed;top:120px;z-index:1}.rail.l{left:calc(50% - 405px)}.rail.r{right:calc(50% - 405px)}}
+  .support{display:block;text-align:center;margin:14px 0 4px;font-size:13px;color:rgba(235,235,245,.6);text-decoration:underline}
+  @media(min-width:840px){.wide{display:flex;justify-content:center;margin:10px auto}.rail{display:block;position:absolute;top:60px;z-index:1}.rail.l{left:-190px}.rail.r{right:-190px}}
 
   /* Two tutorial buttons on top of it */
-  .tuts{position:fixed;top:0;left:0;right:0;z-index:10;display:flex;flex-wrap:wrap;justify-content:center;gap:12px;
+  .tuts{position:absolute;top:0;left:0;right:0;z-index:3;display:flex;flex-wrap:wrap;justify-content:center;gap:12px;
     padding:calc(env(safe-area-inset-top,0px) + 14px) 14px 0;pointer-events:none}
   .tut{pointer-events:auto;flex:1 1 220px;max-width:440px;height:68px;display:flex;align-items:center;justify-content:center;gap:12px;
     border:1px solid rgba(255,255,255,.32);border-radius:20px;background:rgba(0,0,0,.42);
@@ -133,14 +147,7 @@ function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt
 </script>
 </head>
 <body>
-<div class="rail l"><script>adBanner('980accb5247e3b507876a5598c5dac63',160,600,840)</script></div>
-<div class="rail r"><script>adBanner('e7d297afa4abe6d8e9ae4b6d4a9e413e',160,300,840)</script></div>
-<div class="wide"><script>adBanner('a973ad4d1946ecff433073faf4287a75',728,90,840)</script></div>
-<main class="screen">
-  <div class="ad"><script>adBanner('c1e961c0589310bb251d53941c12fbb1',320,50,0)</script></div>
-  <div class="ad"><script>adBanner('a60c9cdf9090006b20d869deedf8faef',300,250,0)</script></div>
-</main>
-
+<section class="hero">
 <a class="cta" href="/api/choose?hub=${hub}">
   <span class="cta-t">Continue<span class="arr" aria-hidden="true">&rarr;</span></span>
   <span class="cta-s">Need help? Open a tutorial at the top.</span>
@@ -150,6 +157,18 @@ function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt
   <button type="button" class="tut" data-video="t-loot" data-name="How to get the key with LootLabs"><span class="dot loot">L</span>LootLabs Tutorial</button>
   <button type="button" class="tut" data-video="t-work" data-name="How to get the key with Work.ink"><span class="dot work">W</span>Work.ink Tutorial</button>
 </div>
+</section>
+
+<div class="wide"><script>adBanner('a973ad4d1946ecff433073faf4287a75',728,90,840)</script></div>
+<main class="screen">
+  <div class="rail l"><script>adBanner('980accb5247e3b507876a5598c5dac63',160,600,840)</script></div>
+  <div class="rail r"><script>adBanner('e7d297afa4abe6d8e9ae4b6d4a9e413e',160,300,840)</script></div>
+  <div class="ad"><script>adBanner('c1e961c0589310bb251d53941c12fbb1',320,50,0)</script></div>
+  <div class="ad"><script>adBanner('a60c9cdf9090006b20d869deedf8faef',300,250,0)</script></div>
+  <script async="async" data-cfasync="false" src="https://bauval.org/21/83e2d8f4007a7f9643ce1333685516fb"></script>
+  <div id="container-83e2d8f4007a7f9643ce1333685516fb"></div>
+  <a class="support" href="https://araplhn.org/4/f807188adb57a12ed0dc88c5f090b8f3" target="_blank" rel="noopener sponsored">Support us: visit our sponsor (optional)</a>
+</main>
 
 <template id="t-loot">${lootHtml}</template>
 <template id="t-work">${workHtml}</template>
@@ -231,6 +250,9 @@ function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt
   });
 })();
 </script>
+<!-- Adsterra -->
+<script data-cfasync="false" src="https://bauval.org/14/ca3799816ffb85d7fc27ab6dc9ff2222"></script>
+<script data-cfasync="false" src="https://abscloud.org/1/5c130b03e11c03b9f07572a8332254ef"></script>
 </body>
 </html>`;
 }
