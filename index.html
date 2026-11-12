@@ -38,6 +38,19 @@
   .state{display:none;flex:1;flex-direction:column}
   .state.active{display:flex}
   #state-keys,#state-error{justify-content:center}
+  /* Key and error screens cover the whole viewport */
+  #state-keys.active,#state-error.active{
+    position:fixed;top:0;left:0;width:100vw;height:100vh;height:100dvh;z-index:9999999;overflow-y:auto;
+    padding:calc(env(safe-area-inset-top,0px) + 24px) 16px calc(env(safe-area-inset-bottom,0px) + 20px);
+    background:radial-gradient(70vmax 60vmax at 15% -5%,rgba(96,116,150,.34),transparent 62%),
+      radial-gradient(60vmax 55vmax at 105% 105%,rgba(70,78,98,.30),transparent 60%),#06070a;
+  }
+  #state-keys .list{flex:1}
+  #state-keys .banner{flex:1;align-items:center}
+  #state-error .hero{flex:none;padding-bottom:20px}
+  #state-error .mid{flex:1;display:flex;flex-direction:column;gap:16px;width:100%;padding-top:0}
+  #state-error .go{flex:1;height:auto;margin-top:0;border-radius:28px;font-size:clamp(24px,7vw,32px)}
+  #state-error a.go{display:flex;align-items:center;justify-content:center}
   .hero{display:flex;flex-direction:column;align-items:center;text-align:center;padding-bottom:30px}
   .lock{width:36px;height:46px;margin-bottom:20px;color:#fff}
   .title{font-size:clamp(32px,9vw,40px);font-weight:600;letter-spacing:-.02em;line-height:1.1}
@@ -125,7 +138,7 @@ function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt
     </div>
     <div class="mid">
       <button class="go" onclick="location.reload()">Try again</button>
-      <a class="go quiet" id="restart" href="/api/start" style="text-align:center;line-height:68px;text-decoration:none">Start again</a>
+      <a class="go quiet" id="restart" href="/api/start" style="text-align:center;text-decoration:none">Start again</a>
     </div>
   </section>
 
