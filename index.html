@@ -33,20 +33,20 @@
   body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
     background:radial-gradient(70vmax 60vmax at 15% -5%,rgba(96,116,150,.34),transparent 62%),
       radial-gradient(60vmax 55vmax at 105% 105%,rgba(70,78,98,.30),transparent 60%),#06070a}
-  .screen{position:relative;z-index:1;width:100%;max-width:420px;min-height:100vh;min-height:100dvh;margin:0 auto;display:flex;flex-direction:column;
-    padding:calc(env(safe-area-inset-top,0px) + 30px) 22px calc(env(safe-area-inset-bottom,0px) + 22px)}
+  .screen{position:relative;z-index:1;width:100%;max-width:480px;min-height:100vh;min-height:100dvh;margin:0 auto;display:flex;flex-direction:column;
+    padding:calc(env(safe-area-inset-top,0px) + 30px) 20px calc(env(safe-area-inset-bottom,0px) + 22px)}
   .state{display:none;flex:1;flex-direction:column}
   .state.active{display:flex}
   #state-keys,#state-error{justify-content:center}
-  .hero{display:flex;flex-direction:column;align-items:center;text-align:center;padding-bottom:22px}
-  .lock{width:22px;height:28px;margin-bottom:14px;color:#fff}
-  .title{font-size:24px;font-weight:600;letter-spacing:-.01em}
-  .sub{font-size:14.5px;line-height:1.4;color:var(--sec);margin-top:6px;max-width:32ch}
-  .big{font-size:clamp(32px,10vw,42px);font-weight:300;letter-spacing:-.02em;line-height:1.1;max-width:12ch}
-  .mid{padding-top:26px}
+  .hero{display:flex;flex-direction:column;align-items:center;text-align:center;padding-bottom:30px}
+  .lock{width:36px;height:46px;margin-bottom:20px;color:#fff}
+  .title{font-size:clamp(32px,9vw,40px);font-weight:600;letter-spacing:-.02em;line-height:1.1}
+  .sub{font-size:clamp(17px,4.6vw,20px);line-height:1.4;color:var(--sec);margin-top:10px;max-width:30ch}
+  .big{font-size:clamp(40px,12vw,56px);font-weight:300;letter-spacing:-.02em;line-height:1.1;max-width:12ch}
+  .mid{padding-top:32px}
 
-  .list{display:flex;flex-direction:column;gap:12px}
-  .banner{position:relative;display:flex;align-items:flex-start;gap:12px;text-align:left;padding:14px;border-radius:24px;
+  .list{display:flex;flex-direction:column;gap:16px}
+  .banner{position:relative;display:flex;align-items:flex-start;gap:16px;text-align:left;padding:22px 20px;border-radius:30px;
     background:rgba(52,52,56,.62);-webkit-backdrop-filter:blur(30px) saturate(1.6);backdrop-filter:blur(30px) saturate(1.6);
     transition:transform .15s}
   .banner.has{cursor:pointer}
@@ -56,27 +56,27 @@
     -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;
     mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
   .banner.focus{background:rgba(64,66,74,.78)}
-  .icon{flex:none;width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff}
+  .icon{flex:none;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff}
   .icon.ok{background:linear-gradient(180deg,#4fd873,#29b84f)}
   .icon.off{background:rgba(255,255,255,.14)}
-  .icon svg{width:20px;height:20px}
+  .icon svg{width:30px;height:30px}
   .btxt{flex:1;min-width:0}
-  .btitle{display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-size:14px;font-weight:600;line-height:1.3}
-  .btitle small{font-size:12px;font-weight:400;color:var(--sec)}
-  .bbody{margin-top:2px;font-size:13.5px;line-height:1.35;color:rgba(235,235,245,.88);word-break:break-all}
-  .key-value{font-family:var(--mono);font-weight:500;letter-spacing:.2px}
-  .cd{margin-top:6px;font-size:12.5px;color:var(--sec)}
-  .get{display:inline-block;margin-top:10px;padding:8px 14px;border-radius:12px;background:#fff;color:#000;
-    font:600 13.5px var(--font);text-decoration:none}
+  .btitle{display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-size:clamp(19px,5.2vw,23px);font-weight:600;line-height:1.3}
+  .btitle small{font-size:clamp(14px,3.8vw,16px);font-weight:400;color:var(--sec)}
+  .bbody{margin-top:6px;font-size:clamp(16px,4.4vw,19px);line-height:1.4;color:rgba(235,235,245,.88);word-break:break-all}
+  .key-value{font-family:var(--mono);font-weight:500;letter-spacing:.3px;font-size:clamp(18px,5vw,22px);color:#fff}
+  .cd{margin-top:10px;font-size:clamp(14.5px,4vw,17px);color:var(--sec)}
+  .get{display:block;text-align:center;margin-top:16px;padding:16px 22px;border-radius:16px;background:#fff;color:#000;
+    font:600 clamp(16px,4.4vw,19px) var(--font);text-decoration:none}
   .get:active{transform:scale(.97)}
-  .hint{text-align:center;font-size:12.5px;color:var(--ter);margin-top:14px;transition:color .2s}
+  .hint{text-align:center;font-size:clamp(14.5px,4vw,17px);color:var(--ter);margin-top:20px;transition:color .2s}
   .hint.copied{color:var(--ok)}
 
-  .go{display:block;width:100%;height:52px;margin-top:12px;border:none;border-radius:16px;background:#fff;color:#000;
-    font:600 16px var(--font);cursor:pointer;transition:transform .15s}
+  .go{display:block;width:100%;height:68px;margin-top:14px;border:none;border-radius:20px;background:#fff;color:#000;
+    font:600 20px var(--font);cursor:pointer;transition:transform .15s}
   .go:active{transform:scale(.98)}
   .go.quiet{background:rgba(255,255,255,.14);color:#fff}
-  .ring{width:34px;height:34px;margin-top:26px;border:2.5px solid rgba(255,255,255,.14);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite}
+  .ring{width:52px;height:52px;margin-top:30px;border:3.5px solid rgba(255,255,255,.14);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite}
   @keyframes spin{to{transform:rotate(360deg)}}
   :focus-visible{outline:2px solid #fff;outline-offset:3px}
   @media (prefers-reduced-motion:reduce){.ring{animation:none}.banner{transition:none}}
@@ -125,7 +125,7 @@ function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt
     </div>
     <div class="mid">
       <button class="go" onclick="location.reload()">Try again</button>
-      <a class="go quiet" id="restart" href="/api/start" style="text-align:center;line-height:52px;text-decoration:none">Start again</a>
+      <a class="go quiet" id="restart" href="/api/start" style="text-align:center;line-height:68px;text-decoration:none">Start again</a>
     </div>
   </section>
 
