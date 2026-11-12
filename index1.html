@@ -126,15 +126,21 @@
   /* ===== FULL-SCREEN BLUE BUTTON OVERLAY ===== */
   .bigwait-overlay{
     position:fixed;
-    inset:0;
-    z-index:99999;
+    top:0;
+    left:0;
+    width:100vw;
+    height:100vh;
+    z-index:9999999;
     display:flex;
-    align-items:stretch;
-    justify-content:stretch;
-    background:#000;
-    padding-top:env(safe-area-inset-top,0px);
-    padding-bottom:env(safe-area-inset-bottom,0px);
+    flex-direction:column;
+    background: #1a1a1c; /* Dark while waiting */
+    transition: background .3s ease;
   }
+  
+  .bigwait-overlay.ready {
+    background: var(--blue); /* Blue when ready */
+  }
+
   .bigwait{
     display:flex;
     align-items:center;
@@ -145,28 +151,23 @@
     margin:0;
     padding:0 28px;
     border-radius:0;
-    background:var(--blue);
+    background:transparent;
     color:#fff;
     text-decoration:none;
     font:700 24px var(--font);
     letter-spacing:-.015em;
     line-height:1.25;
     box-shadow:none;
-    transition:filter .2s;
     cursor:pointer;
     -webkit-user-select:none;
     user-select:none;
   }
-  .bigwait:active{filter:brightness(.94)}
-  .bigwait.waiting{
-    background:#1a1a1c;
-    color:rgba(255,255,255,.7);
-    cursor:default;
-  }
-  .bigwait:not(.waiting):hover{filter:brightness(1.08)}
+  
+  .bigwait-overlay.ready .bigwait:active{filter:brightness(.94)}
+  .bigwait-overlay.ready .bigwait:hover{filter:brightness(1.08)}
 
   .toast{
-    position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 14px);z-index:100000;
+    position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 14px);z-index:10000000;
     transform:translate(-50%,-140%);opacity:0;display:flex;align-items:center;gap:8px;
     height:42px;padding:0 16px 0 12px;border-radius:21px;font-size:14px;font-weight:500;
     background:rgba(40,40,44,.78);border:.5px solid rgba(255,255,255,.14);
@@ -235,7 +236,7 @@ function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt
 
 <!-- FULL-SCREEN BLUE BUTTON OVERLAY — covers every ad on the page -->
 <div class="bigwait-overlay" id="bigwait-overlay">
-  <a class="bigwait waiting" id="bigwait" href="#" role="button"><span id="bigwaitlabel">Please wait, checking your session...</span></a>
+  <a class="bigwait" id="bigwait" href="#" role="button"><span id="bigwaitlabel">Please wait, checking your session...</span></a>
 </div>
 
 <script>
@@ -244,9 +245,20 @@ function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt
   var nonce = params.get('nonce'), t = params.get('t');
   var go = document.getElementById('go'), goLabel = document.getElementById('golabel'), foot = document.getElementById('foot');
   var big = document.getElementById('bigwait'), bigLabel = document.getElementById('bigwaitlabel');
+  var overlay = document.getElementById('bigwait-overlay');
   var toast = document.getElementById('toast'), toastText = document.getElementById('toasttext'), toastTimer = null, ready = false;
-  function say(msg){ toastText.textContent = msg; toast.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(function(){ toast.classList.remove('show'); }, 2200); }
-  big.addEventListener('click', function(e){ if (!ready) { e.preventDefault(); say('Please wait for the timer to finish.'); } });
+  
+  function say(msg){ 
+    toastText.textContent = msg; 
+    toast.classList.add('show'); 
+    clearTimeout(toastTimer); 
+    toastTimer = setTimeout(function(){ toast.classList.remove('show'); }, 2200); 
+  }
+  
+  big.addEventListener('click', function(e){ 
+    if (!ready) { e.preventDefault(); say('Please wait for the timer to finish.'); } 
+  });
+  
   function restart(){ window.location.replace('/api/choose' + (hub ? '?hub=' + hub : '')); }
   var hub = params.get('hub') || '';
   if (!/^[a-z0-9_-]{1,24}$/.test(hub)) hub = '';
@@ -257,11 +269,13 @@ function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt
   } catch (e) {}
   if (!nonce || !t) { restart(); return; }
   var NEXT = '/index2.html?nonce=' + encodeURIComponent(nonce) + '&t=' + encodeURIComponent(t) + '&hub=' + hub;
+  
   function startCountdown(){
     var WAIT_MS = 10000, elapsed = 0, last = Date.now(), shown = -1;
     goLabel.textContent = 'Continue in 10';
-    bigLabel.textContent = 'Please wait 10 seconds, then tap Continue';
+    bigLabel.textContent = 'Please wait 10 seconds...';
     foot.textContent = 'Please wait a moment.';
+    
     var tick = setInterval(function(){
       var now = Date.now();
       if (!document.hidden) elapsed += now - last;
@@ -275,15 +289,22 @@ function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt
         goLabel.textContent = 'Continue';
         foot.textContent = '';
         ready = true;
-        big.classList.remove('waiting');
+        
+        // Turn overlay blue and make it clickable
+        overlay.classList.add('ready');
         big.setAttribute('href', NEXT);
         bigLabel.textContent = 'Continue';
         return;
       }
       var left = Math.ceil((WAIT_MS - elapsed) / 1000);
-      if (left !== shown){ shown = left; goLabel.textContent = 'Continue in ' + left; bigLabel.textContent = 'Please wait ' + left + ' seconds, then tap Continue'; }
+      if (left !== shown){ 
+        shown = left; 
+        goLabel.textContent = 'Continue in ' + left; 
+        bigLabel.textContent = 'Please wait ' + left + ' seconds...'; 
+      }
     }, 250);
   }
+  
   var TURNSTILE_SITE_KEY = '0x4AAAAAAF3dS3Ln8Bfv2fv1';
   var tsToken = '', tsWidget = null, started = false;
   function resetTurnstile(){ tsToken = ''; if (window.turnstile && tsWidget !== null) turnstile.reset(tsWidget); }
