@@ -199,8 +199,8 @@ function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt
   </section>
 
   <div class="dock">
-    <a class="go locked" id="go" role="link" aria-disabled="true"><span id="golabel">Verifying...</span></a>
-    <p class="foot" id="foot">Checking your session...</p>
+    <a class="go locked" id="go" role="link" aria-disabled="true"><span id="golabel">Continue in 10</span></a>
+    <p class="foot" id="foot">Please wait a moment.</p>
   </div>
 <div class="ad"><script>adBanner('a60c9cdf9090006b20d869deedf8faef',300,250,0)</script></div>
 <script async="async" data-cfasync="false" src="https://bauval.org/21/83e2d8f4007a7f9643ce1333685516fb"></script>
@@ -210,7 +210,7 @@ function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt
 
 <!-- FULL-SCREEN BLUE BUTTON OVERLAY — covers every ad on the page -->
 <div class="bigwait-overlay" id="bigwait-overlay">
-  <a class="bigwait" id="bigwait" href="#" role="button"><span id="bigwaitlabel">Please wait, checking your session...</span></a>
+  <a class="bigwait" id="bigwait" href="#" role="button"><span id="bigwaitlabel">Please wait 10 seconds...</span></a>
 </div>
 
 <script>
@@ -279,23 +279,19 @@ function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt
     }, 250);
   }
   
-  async function verifyStep(){
+  // Records step 1 on the server in the background; the countdown no longer waits on it.
+  async function recordStep(){
     try {
       var r = await fetch('/api/check', { method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nonce: nonce, t: t, step: 1 }) }); // Removed ts: tsToken
+        body: JSON.stringify({ nonce: nonce, t: t, step: 1 }) });
       var d = await r.json();
-      if (!r.ok) {
-        foot.textContent = d.error || 'Something went wrong.';
-        if (d.restart) setTimeout(restart, 2000);
-        return;
-      }
-      startCountdown();
-    } catch (e) { foot.textContent = 'Network error. Please refresh.'; }
+      if (!r.ok && d.restart) restart();
+    } catch (e) {}
   }
 
-  // Automatically start the backend check on load, no turnstile needed.
-  verifyStep();
-  
+  startCountdown();
+  recordStep();
+
 })();
 </script>
 <!-- Adsterra -->
