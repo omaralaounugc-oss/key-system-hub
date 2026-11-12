@@ -42,19 +42,19 @@ export default async function handler(req, res) {
     const now = new Date();
     const expires = new Date(now.getTime() + 12 * 60 * 60 * 1000);
 
-    // Only keys that belong to this session's hub.
+    // One shared pool: take any random unused key and bind it to this session's hub.
     const rows = await sql`
       UPDATE keys
       SET used = true,
+          hub = ${hub},
           activated_at = ${now.toISOString()},
           expires_at = ${expires.toISOString()}
       WHERE key = (
         SELECT key FROM keys
         WHERE used = false
           AND hwid IS NULL
-          AND hub = ${hub}
           AND expires_at > ${now.toISOString()}
-        ORDER BY expires_at ASC
+        ORDER BY RANDOM()
         LIMIT 1
         FOR UPDATE SKIP LOCKED
       )
