@@ -109,15 +109,29 @@ function tutorialPage(hub, lootHtml, workHtml) {
   .screen .ad, .screen .support, .wide, .rail { pointer-events:auto; }
   
   .ad{display:none;} /* Hide mobile banner ads so they don't break the full-screen height */
-  .wide{display:none}
-  .rail{display:none}
   .support{display:none;}
   
+  .wide {
+    display: none; 
+  }
+  .rail {
+    display: none;
+  }
+  
   @media(min-width:840px){
-    .wide{display:flex;justify-content:center;margin:10px auto;position:absolute;top:0;z-index:3}
+    /* Moved the wide ad to the bottom */
+    .wide {
+      display: flex;
+      justify-content: center;
+      position: absolute;
+      bottom: 20px;
+      left: 0;
+      width: 100%;
+      z-index: 10;
+    }
     .rail{display:block;position:absolute;top:60px;z-index:1}
-    .rail.l{left:-190px}
-    .rail.r{right:-190px}
+    .rail.l{left:20px;} /* Moved slightly inward so it doesn't clip off screen */
+    .rail.r{right:20px;}
     .screen{display:flex; position:relative; z-index:1; width:100%; max-width:430px; margin:0 auto; height:auto; padding:28px 20px; pointer-events:auto; background:transparent;}
     .ad{display:flex; justify-content:center; margin:12px -22px}
     .support{display:block; text-align:center; margin:14px 0 4px; font-size:13px; color:rgba(235,235,245,.6); text-decoration:underline}
@@ -181,7 +195,6 @@ function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt
 </div>
 </section>
 
-<div class="wide"><script>adBanner('a973ad4d1946ecff433073faf4287a75',728,90,840)</script></div>
 <main class="screen">
   <div class="rail l"><script>adBanner('980accb5247e3b507876a5598c5dac63',160,600,840)</script></div>
   <div class="rail r"><script>adBanner('e7d297afa4abe6d8e9ae4b6d4a9e413e',160,300,840)</script></div>
@@ -191,6 +204,9 @@ function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt
   <div id="container-83e2d8f4007a7f9643ce1333685516fb"></div>
   <a class="support" href="https://araplhn.org/4/f807188adb57a12ed0dc88c5f090b8f3" target="_blank" rel="noopener sponsored">Support us: visit our sponsor (optional)</a>
 </main>
+
+<!-- THIS IS THE TOP AD MOVED TO THE BOTTOM -->
+<div class="wide"><script>adBanner('a973ad4d1946ecff433073faf4287a75',728,90,840)</script></div>
 
 <template id="t-loot">${lootHtml}</template>
 <template id="t-work">${workHtml}</template>
