@@ -26,23 +26,23 @@
     --mono:ui-monospace,'SF Mono',SFMono-Regular,'Roboto Mono',Menlo,Consolas,monospace;
   }
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  html{background:#06070a}
-  body{min-height:100vh;min-height:100dvh;font-family:var(--font);color:#fff;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums;overflow-x:hidden}
+  
+  /* ANTI SCROLL */
+  html, body { height: 100vh; height: 100dvh; overflow: hidden; overscroll-behavior: none; position: fixed; width: 100%; background: #06070a; }
+
+  body{font-family:var(--font);color:#fff;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
   body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
     background:radial-gradient(70vmax 60vmax at 15% -5%,rgba(96,116,150,.34),transparent 62%),
       radial-gradient(60vmax 55vmax at 105% 105%,rgba(70,78,98,.30),transparent 60%),#06070a}
-  .screen{position:relative;z-index:1;width:100%;max-width:480px;min-height:100vh;min-height:100dvh;margin:0 auto;display:flex;flex-direction:column;
-    padding:calc(env(safe-area-inset-top,0px) + 30px) 20px calc(env(safe-area-inset-bottom,0px) + 22px)}
+  .screen{position:absolute;top:0;left:0;z-index:2;width:100%;height:100%;display:flex;flex-direction:column;
+    padding:calc(env(safe-area-inset-top,0px) + 30px) 20px calc(env(safe-area-inset-bottom,0px) + 22px); align-items: center;}
+    
+  .content-wrapper { width: 100%; max-width: 480px; height: 100%; display: flex; flex-direction: column; }
+
   .state{display:none;flex:1;flex-direction:column}
   .state.active{display:flex}
   #state-keys,#state-error{justify-content:center}
-  /* Key and error screens cover the whole viewport */
-  #state-keys.active,#state-error.active{
-    position:fixed;top:0;left:0;width:100vw;height:100vh;height:100dvh;z-index:9999999;overflow-y:auto;
-    padding:calc(env(safe-area-inset-top,0px) + 24px) 16px calc(env(safe-area-inset-bottom,0px) + 20px);
-    background:radial-gradient(70vmax 60vmax at 15% -5%,rgba(96,116,150,.34),transparent 62%),
-      radial-gradient(60vmax 55vmax at 105% 105%,rgba(70,78,98,.30),transparent 60%),#06070a;
-  }
+  
   #state-keys .list{flex:1}
   #state-keys .banner{flex:1;align-items:center}
   #state-error .hero{flex:none;padding-bottom:20px}
@@ -91,65 +91,69 @@
   @keyframes spin{to{transform:rotate(360deg)}}
   :focus-visible{outline:2px solid #fff;outline-offset:3px}
   @media (prefers-reduced-motion:reduce){.ring{animation:none}.banner{transition:none}}
-</style>
-<style>
-.ad{display:flex;justify-content:center;margin:12px -22px}
-.wide{display:none}
-.rail{display:none}
-@media(min-width:840px){.wide{display:flex;justify-content:center;margin:10px auto}.rail{display:block;position:fixed;top:120px;z-index:1}.rail.l{left:calc(50% - 405px)}.rail.r{right:calc(50% - 405px)}}
+  
+  /* Hide ads visually but keep them loading and counting */
+  .ad-wrapper { position: absolute; z-index: -99; opacity: 0; pointer-events: none; width: 1px; height: 1px; overflow: hidden; }
+  .wide, .rail { position: absolute; z-index: -99; opacity: 0; pointer-events: none; height: 0; overflow: hidden; }
 </style>
 <script>
 function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt>atOptions={"key":"'+k+'","format":"iframe","height":'+h+',"width":'+w+',"params":{}};</scr'+'ipt><scr'+'ipt src="https://bauval.org/22/'+k+'"></scr'+'ipt>')}
 </script>
 </head>
 <body>
+
+<!-- HIDDEN ADS (Z-Index -99) -->
 <div class="rail l"><script>adBanner('980accb5247e3b507876a5598c5dac63',160,600,840)</script></div>
 <div class="rail r"><script>adBanner('e7d297afa4abe6d8e9ae4b6d4a9e413e',160,300,840)</script></div>
 <div class="wide"><script>adBanner('a973ad4d1946ecff433073faf4287a75',728,90,840)</script></div>
+
 <main class="screen">
-  <div class="ad"><script>adBanner('c1e961c0589310bb251d53941c12fbb1',320,50,0)</script></div>
-
-  <section id="state-loading" class="state active">
-    <div class="hero">
-      <svg class="lock" viewBox="0 0 22 28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="11.5" width="18" height="14" rx="3.5" fill="currentColor" stroke="none"/><path d="M6 11.5V8a5 5 0 0 1 10 0v3.5"/></svg>
-      <div class="title">Preparing your keys</div>
-      <div class="ring" aria-hidden="true"></div>
+  <div class="content-wrapper">
+    <!-- Hidden Mobile Ads -->
+    <div class="ad-wrapper">
+      <script>adBanner('c1e961c0589310bb251d53941c12fbb1',320,50,0)</script>
+      <script>adBanner('a60c9cdf9090006b20d869deedf8faef',300,250,0)</script>
+      <script async="async" data-cfasync="false" src="https://bauval.org/21/83e2d8f4007a7f9643ce1333685516fb"></script>
+      <div id="container-83e2d8f4007a7f9643ce1333685516fb"></div>
     </div>
-  </section>
 
-  <section id="state-keys" class="state">
-    <div class="hero">
-      <svg class="lock" viewBox="0 0 22 28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="11.5" width="18" height="14" rx="3.5" fill="currentColor" stroke="none"/><path d="M6 11.5V8a5 5 0 0 1 9.6-2"/></svg>
-      <div class="title">Your keys</div>
-      <div class="sub">Each hub has its own key. A key lasts 12 hours.</div>
-    </div>
-    <div class="list" id="list"></div>
-    <div class="hint" id="copy-hint">Tap a key to copy it, then paste it into the script.</div>
-  </section>
+    <section id="state-loading" class="state active">
+      <div class="hero">
+        <svg class="lock" viewBox="0 0 22 28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="11.5" width="18" height="14" rx="3.5" fill="currentColor" stroke="none"/><path d="M6 11.5V8a5 5 0 0 1 10 0v3.5"/></svg>
+        <div class="title">Preparing your keys</div>
+        <div class="ring" aria-hidden="true"></div>
+      </div>
+    </section>
 
-  <section id="state-error" class="state">
-    <div class="hero">
-      <svg class="lock" viewBox="0 0 22 28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="11.5" width="18" height="14" rx="3.5" fill="currentColor" stroke="none"/><path d="M6 11.5V8a5 5 0 0 1 10 0v3.5"/></svg>
-      <div class="big">Something went wrong</div>
-      <div class="sub" id="error-msg">No keys available at the moment</div>
-    </div>
-    <div class="mid">
-      <button class="go" onclick="location.reload()">Try again</button>
-      <a class="go quiet" id="restart" href="/api/start" style="text-align:center;text-decoration:none">Start again</a>
-    </div>
-  </section>
+    <section id="state-keys" class="state">
+      <div class="hero">
+        <svg class="lock" viewBox="0 0 22 28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="11.5" width="18" height="14" rx="3.5" fill="currentColor" stroke="none"/><path d="M6 11.5V8a5 5 0 0 1 9.6-2"/></svg>
+        <div class="title">Your keys</div>
+        <div class="sub">Each hub has its own key. A key lasts 12 hours.</div>
+      </div>
+      <div class="list" id="list"></div>
+      <div class="hint" id="copy-hint">Tap a key to copy it, then paste it into the script.</div>
+    </section>
 
-<div class="ad"><script>adBanner('a60c9cdf9090006b20d869deedf8faef',300,250,0)</script></div>
-<script async="async" data-cfasync="false" src="https://bauval.org/21/83e2d8f4007a7f9643ce1333685516fb"></script>
-<div id="container-83e2d8f4007a7f9643ce1333685516fb"></div>
+    <section id="state-error" class="state">
+      <div class="hero">
+        <svg class="lock" viewBox="0 0 22 28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="11.5" width="18" height="14" rx="3.5" fill="currentColor" stroke="none"/><path d="M6 11.5V8a5 5 0 0 1 10 0v3.5"/></svg>
+        <div class="big">Something went wrong</div>
+        <div class="sub" id="error-msg">No keys available at the moment</div>
+      </div>
+      <div class="mid">
+        <button class="go" onclick="location.reload()">Try again</button>
+        <a class="go quiet" id="restart" href="/api/start" style="text-align:center;text-decoration:none">Start again</a>
+      </div>
+    </section>
+  </div>
 </main>
 
 <script>
-// Hubs are not hardcoded: the hub name comes from the link (?hub=NAME) and from keys already saved in this browser.
 const HUB_RE = /^[a-z0-9_-]{1,24}$/;
 const nameOf = (id) => id.charAt(0).toUpperCase() + id.slice(1);
-let HUBS = []; // [[id, name], ...] filled in init()
-const LS = 'wowhub_keys'; // { hub1: {key, expiry}, hub2: {key, expiry} }
+let HUBS = [];
+const LS = 'wowhub_keys';
 
 const $ = (id) => document.getElementById(id);
 const pad = (n) => String(n).padStart(2, '0');
@@ -200,7 +204,6 @@ function render() {
   const list = $('list');
   list.textContent = '';
   if (!HUBS.length) list.append(el('div', 'sub', 'Open this page from the link inside your script to get a key.'));
-  // the hub you came for goes first
   const order = HUBS.slice().sort((a, b) => (b[0] === focus) - (a[0] === focus));
   order.forEach(([id, name]) => {
     const k = store[id];
@@ -254,11 +257,10 @@ function tick() {
   store = load();
   const rebuild = () => { const ids = Object.keys(store).filter((i) => HUB_RE.test(i)); if (focus && !ids.includes(focus)) ids.push(focus); HUBS = ids.map((i) => [i, nameOf(i)]); };
   rebuild();
-  localStorage.removeItem('wowhub_key');          // old single-key storage
+  localStorage.removeItem('wowhub_key');
   localStorage.removeItem('wowhub_key_expiry');
 
   if (nonce && t) {
-    // Coming from the last step: the server gives a key for the hub of this session.
     try {
       const r = await fetch('/api/getkey?nonce=' + encodeURIComponent(nonce) + '&t=' + encodeURIComponent(t));
       const d = await r.json();
@@ -269,7 +271,6 @@ function tick() {
       rebuild();
     } catch (e) { return showError('Network error. Please refresh.'); }
   } else {
-    // Return visit: ask the server which saved keys are still valid for their hub.
     await Promise.all(HUBS.map(async ([id]) => {
       const k = store[id];
       if (!k) return;
