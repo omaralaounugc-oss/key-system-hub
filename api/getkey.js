@@ -6,7 +6,7 @@ const sql = neon(process.env.DATABASE_URL);
 const isHub = (h) => typeof h === 'string' && /^[a-z0-9_-]{1,24}$/.test(h);
 
 // Only these hubs can get a key. To add a new hub later, add its name here.
-const ALLOWED_HUBS = ['hub1', 'hub2', 'hub3'];
+const ALLOWED_HUBS = ['hub1', 'hub2', 'hub3', 'hub4'];
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
