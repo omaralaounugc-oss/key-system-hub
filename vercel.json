@@ -14,6 +14,7 @@
     { "src": "/api/begin", "dest": "/api/begin.js" },
     { "src": "/api/check", "dest": "/api/check.js" },
     { "src": "/api/start", "dest": "/api/start.js" },
+    { "src": "/api/step", "dest": "/api/step.js" },
     { "src": "/api/choose", "dest": "/api/choose.js" },
     { "src": "/api/verify", "dest": "/api/verify.js" },
     { "src": "/api/getkey", "dest": "/api/getkey.js" },
