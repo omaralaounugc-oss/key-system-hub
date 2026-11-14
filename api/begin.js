@@ -6,8 +6,7 @@ const sql = neon(process.env.DATABASE_URL);
 // Any hub name works: it comes from the link (?hub=NAME). Letters, numbers, - and _ only.
 const isHub = (h) => typeof h === 'string' && /^[a-z0-9_-]{1,24}$/.test(h);
 
-// Work.ink destination: https://keyhub-system.vercel.app/api/begin
-// The hub comes from ?hub=... or from the "hub" cookie that /api/choose sets.
+// Creates a session and sends the player to step 1 (/api/step).
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -29,15 +28,16 @@ export default async function handler(req, res) {
 
     const nonce = randomBytes(16).toString('hex');
     const token = randomBytes(16).toString('hex');
+    const stepToken = randomBytes(16).toString('hex');
     const code = String(randomInt(100000, 1000000));
 
     await sql`
-      INSERT INTO sessions (nonce, ip, code, continued_at, token, hub)
-      VALUES (${nonce}, ${ip}, ${code}, NOW(), ${token}, ${hub})
+      INSERT INTO sessions (nonce, ip, code, continued_at, token, hub, step, step_token, step_at)
+      VALUES (${nonce}, ${ip}, ${code}, NOW(), ${token}, ${hub}, 1, ${stepToken}, NOW())
     `;
 
     res.setHeader('Cache-Control', 'no-store');
-    return res.redirect(302, `/index1.html?nonce=${nonce}&t=${token}&hub=${hub}`);
+    return res.redirect(302, `/api/step?nonce=${nonce}&k=${stepToken}`);
   } catch (err) {
     return res.status(500).send('Server error');
   }
