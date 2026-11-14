@@ -4,7 +4,7 @@ import { randomBytes } from 'crypto';
 const sql = neon(process.env.DATABASE_URL);
 
 // ================= SETTINGS (change only these) =================
-const TOTAL_STEPS = 46;      // how many steps before the key (30 to 51 is fine)
+const TOTAL_STEPS = 56;      // how many steps before the key (30 to 51 is fine)
 const WAIT_SECONDS = 5;      // wait on every step
 const MIN_SERVER_WAIT = 4.5; // server-side check (seconds), a little below WAIT_SECONDS
 // ================================================================
