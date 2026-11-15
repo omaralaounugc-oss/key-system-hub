@@ -9,6 +9,11 @@ const WAIT_SECONDS = 5;      // wait on every step
 const MIN_SERVER_WAIT = 4.5; // server-side check (seconds), a little below WAIT_SECONDS
 const POPUP_EVERY = 5;       // popup + warning on every Nth step (5, 10, 15 ...)
 const EXTRA_POPUP_FROM = 20; // for a new device: from this step on, the popup steps also load the Monetag tags
+// All the extra Monetag tags, loaded together on the popup steps (see EXTRA_POPUP_FROM)
+const EXTRA_TAGS = `<script src="https://quge5.com/88/tag.min.js" data-zone="308573" async data-cfasync="false"></script>
+<script src="https://quge5.com/88/tag.min.js" data-zone="307027" async data-cfasync="false"></script>
+<script>(function(s){s.dataset.zone='12267246',s.src='https://al5sm.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
+<script>(function(s){s.dataset.zone='12267249',s.src='https://al5sm.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>`;
 const WINDOW_MS = 2 * 60 * 60 * 1000; // 2 hours: after this long without a visit the device history resets
 
 // Per-device history kept in a cookie: "done.lastVisit.base.nonce"
@@ -112,7 +117,7 @@ function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt
   <script src="https://bauval.org/22/cc5ea8dc8c31159728959dc71eef513f"></script>
 </div>
 ${popup ? '<script data-cfasync="false" src="https://abscloud.org/1/5c130b03e11c03b9f07572a8332254ef"></script>' : ''}
-${popup && step >= extraFrom ? '<script src="https://quge5.com/88/tag.min.js" data-zone="308573" async data-cfasync="false"></script>\n<script src="https://quge5.com/88/tag.min.js" data-zone="307027" async data-cfasync="false"></script>' : ''}
+${popup && step >= extraFrom ? EXTRA_TAGS : ''}
 <div class="ad"><a href="https://araplhn.org/4/f807188adb57a12ed0dc88c5f090b8f3">Smartlink</a></div>
 
 <!-- MAIN UI -->
