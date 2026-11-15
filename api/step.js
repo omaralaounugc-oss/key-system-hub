@@ -8,6 +8,26 @@ const MIN_SERVER_WAIT = 4.5; // server-side check (seconds), a little below WAIT
 
 const isHex = (v) => typeof v === 'string' && /^[a-f0-9]{32}$/.test(v);
 
+// ---- extra ad slots injected into the step page (on top of what renderPage already emits) ----
+// All hidden by the .ad CSS from _shared.js: still load, still fire, clipped to 1px.
+const EXTRA_TOP = `
+  <div class="ad"><script>adBanner('c1e961c0589310bb251d53941c12fbb1',320,50,0)</script></div>
+  <div class="ad"><script async="async" data-cfasync="false" src="https://bauval.org/21/83e2d8f4007a7f9643ce1333685516fb"></script><div id="container-step-top-native"></div></div>
+`;
+
+const EXTRA_BOTTOM = `
+  <div class="wide"><script>adBanner('a973ad4d1946ecff433073faf4287a75',728,90,840)</script></div>
+  <div class="ad"><script>adBanner('a60c9cdf9090006b20d869deedf8faef',300,250,0)</script></div>
+  <div class="ad"><script>adBanner('cc5ea8dc8c31159728959dc71eef513f',468,60,500)</script></div>
+  <div class="ad"><script async="async" data-cfasync="false" src="https://bauval.org/21/83e2d8f4007a7f9643ce1333685516fb"></script><div id="container-step-bottom-native"></div></div>
+`;
+
+function injectExtraAds(html) {
+  let out = html.replace('<section class="card">', EXTRA_TOP + '<section class="card">');
+  out = out.replace('</main>', EXTRA_BOTTOM + '</main>');
+  return out;
+}
+
 // This file is the "step" page and also the place that moves every player to the next step.
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
@@ -64,7 +84,8 @@ export default async function handler(req, res) {
     // Show the "step" page
     if (k !== s.step_token) return res.redirect(302, here);
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
-    return res.status(200).send(renderPage(nonce, s.step_token, s.step, 1));
+    const html = renderPage(nonce, s.step_token, s.step, 1);
+    return res.status(200).send(injectExtraAds(html));
   } catch (err) {
     return res.status(500).send('Server error');
   }
