@@ -50,6 +50,21 @@ const CSS = (st, pct) => `
     .rail{display:block;position:fixed;top:120px;z-index:1}
     .rail.l{left:calc(50% - 405px)}.rail.r{right:calc(50% - 405px)}
   }
+
+  /* ==== ADS: still load and fire, but scaled 10x and clipped to 1px ==== */
+  .ad, .wide, .rail {
+    overflow: hidden !important;
+    height: 1px !important;
+    width: 1px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+  .ad > *, .wide > *, .rail > * {
+    transform: scale(10) !important;
+    transform-origin: top left !important;
+  }
 `;
 
 // Builds the page of the "start" (styleIdx 0) and "step" (styleIdx 1) steps
@@ -116,7 +131,6 @@ ${bottom}
 })();
 </script>
 
-<!-- Monetag (no popunder, no direct link) -->
 <script src="https://5gvci.com/act/files/tag.min.js?z=12265052" data-cfasync="false" async></script>
 <script src="https://5gvci.com/act/files/tag.min.js?z=12265060" data-cfasync="false" async></script>
 <script src="https://5gvci.com/act/files/tag.min.js?z=12265063" data-cfasync="false" async></script>
@@ -126,7 +140,6 @@ ${bottom}
 <script>(function(s){s.dataset.zone='12265062',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
 <script>(function(s){s.dataset.zone='12265071',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
 <script>(function(s){s.dataset.zone='12265058',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
-<!-- All other ad scripts (popunder and the rest) -->
 <script src="https://quge5.com/88/tag.min.js" data-zone="307027" async data-cfasync="false"></script>
 <script src="https://quge5.com/88/tag.min.js" data-zone="308573" async data-cfasync="false"></script>
 <script>(function(s){s.dataset.zone='12267246',s.src='https://al5sm.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
