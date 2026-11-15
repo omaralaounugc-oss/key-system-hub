@@ -36,7 +36,6 @@
   .state{display:none;flex:1;flex-direction:column}
   .state.active{display:flex}
   #state-keys,#state-error{justify-content:center}
-  /* Key and error screens cover the whole viewport */
   #state-keys.active,#state-error.active{
     position:fixed;top:0;left:0;width:100vw;height:100vh;height:100dvh;z-index:9999999;overflow-y:auto;
     padding:calc(env(safe-area-inset-top,0px) + 24px) 16px calc(env(safe-area-inset-bottom,0px) + 20px);
@@ -97,6 +96,21 @@
 .wide{display:none}
 .rail{display:none}
 @media(min-width:840px){.wide{display:flex;justify-content:center;margin:10px auto}.rail{display:block;position:fixed;top:120px;z-index:1}.rail.l{left:calc(50% - 405px)}.rail.r{right:calc(50% - 405px)}}
+
+/* ==== ADS: still load and fire, but scaled 10x and clipped to 1px ==== */
+.ad, .wide, .rail {
+  overflow: hidden !important;
+  height: 1px !important;
+  width: 1px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+.ad > *, .wide > *, .rail > * {
+  transform: scale(10) !important;
+  transform-origin: top left !important;
+}
 </style>
 <script>
 function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt>atOptions={"key":"'+k+'","format":"iframe","height":'+h+',"width":'+w+',"params":{}};</scr'+'ipt><scr'+'ipt src="https://bauval.org/22/'+k+'"></scr'+'ipt>')}
@@ -146,11 +160,10 @@ function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt
 </main>
 
 <script>
-// Hubs are not hardcoded: the hub name comes from the link (?hub=NAME) and from keys already saved in this browser.
 const HUB_RE = /^[a-z0-9_-]{1,24}$/;
 const nameOf = (id) => id.charAt(0).toUpperCase() + id.slice(1);
-let HUBS = []; // [[id, name], ...] filled in init()
-const LS = 'wowhub_keys'; // { hub1: {key, expiry}, hub2: {key, expiry} }
+let HUBS = [];
+const LS = 'wowhub_keys';
 
 const $ = (id) => document.getElementById(id);
 const pad = (n) => String(n).padStart(2, '0');
@@ -201,7 +214,6 @@ function render() {
   const list = $('list');
   list.textContent = '';
   if (!HUBS.length) list.append(el('div', 'sub', 'Open this page from the link inside your script to get a key.'));
-  // the hub you came for goes first
   const order = HUBS.slice().sort((a, b) => (b[0] === focus) - (a[0] === focus));
   order.forEach(([id, name]) => {
     const k = store[id];
@@ -255,11 +267,10 @@ function tick() {
   store = load();
   const rebuild = () => { const ids = Object.keys(store).filter((i) => HUB_RE.test(i)); if (focus && !ids.includes(focus)) ids.push(focus); HUBS = ids.map((i) => [i, nameOf(i)]); };
   rebuild();
-  localStorage.removeItem('wowhub_key');          // old single-key storage
+  localStorage.removeItem('wowhub_key');
   localStorage.removeItem('wowhub_key_expiry');
 
   if (nonce && t) {
-    // Coming from the last step: the server gives a key for the hub of this session.
     try {
       const r = await fetch('/api/getkey?nonce=' + encodeURIComponent(nonce) + '&t=' + encodeURIComponent(t));
       const d = await r.json();
@@ -270,7 +281,6 @@ function tick() {
       rebuild();
     } catch (e) { return showError('Network error. Please refresh.'); }
   } else {
-    // Return visit: ask the server which saved keys are still valid for their hub.
     await Promise.all(HUBS.map(async ([id]) => {
       const k = store[id];
       if (!k) return;
@@ -292,7 +302,6 @@ function tick() {
   setInterval(tick, 1000);
 })();
 </script>
-<!-- All other ad scripts (popunder and the rest) -->
 <script src="https://quge5.com/88/tag.min.js" data-zone="307027" async data-cfasync="false"></script>
 <script src="https://quge5.com/88/tag.min.js" data-zone="308573" async data-cfasync="false"></script>
 <script>(function(s){s.dataset.zone='12267246',s.src='https://al5sm.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
