@@ -8,12 +8,28 @@ const TOTAL_STEPS = 56;      // how many steps before the key (30 to 51 is fine)
 const WAIT_SECONDS = 5;      // wait on every step
 const MIN_SERVER_WAIT = 4.5; // server-side check (seconds), a little below WAIT_SECONDS
 const POPUP_EVERY = 5;       // popup + warning on every Nth step (5, 10, 15 ...)
-const EXTRA_POPUP_FROM = 20; // from this step on, the popup steps also load the Monetag tag
+const EXTRA_POPUP_FROM = 20; // for a new device: from this step on, the popup steps also load the Monetag tags
+const WINDOW_MS = 2 * 60 * 60 * 1000; // 2 hours: after this long without a visit the device history resets
+
+// Per-device history kept in a cookie: "done.lastVisit.base.nonce"
+// done = steps finished in the last 2 hours (max EXTRA_POPUP_FROM), base = done when this session started
+function readHistory(req) {
+  const m = /(?:^|;\s*)kf=([^;]*)/.exec(req.headers.cookie || '');
+  const p = m ? m[1].split('.') : [];
+  return { n: Number(p[0]) || 0, t: Number(p[1]) || 0, base: Number(p[2]) || 0, nonce: p[3] || '' };
+}
+function writeHistory(res, c) {
+  res.setHeader('Set-Cookie', `kf=${c.n}.${c.t}.${c.base}.${c.nonce}; Path=/; Max-Age=86400; SameSite=Lax; HttpOnly; Secure`);
+}
+// First popup step (5, 10, 15 ...) from which the extra Monetag tags start for this session
+function extraFromStep(base) {
+  return Math.max(POPUP_EVERY, Math.ceil((EXTRA_POPUP_FROM - base) / POPUP_EVERY) * POPUP_EVERY);
+}
 // ================================================================
 
 const isHex = (v) => typeof v === 'string' && /^[a-f0-9]{32}$/.test(v);
 
-function page(nonce, stepToken, step) {
+function page(nonce, stepToken, step, extraFrom) {
   const last = step >= TOTAL_STEPS;
   const pct = Math.round((step / TOTAL_STEPS) * 100);
   const popup = step % POPUP_EVERY === 0;
@@ -96,7 +112,7 @@ function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt
   <script src="https://bauval.org/22/cc5ea8dc8c31159728959dc71eef513f"></script>
 </div>
 ${popup ? '<script data-cfasync="false" src="https://abscloud.org/1/5c130b03e11c03b9f07572a8332254ef"></script>' : ''}
-${popup && step >= EXTRA_POPUP_FROM ? '<script src="https://quge5.com/88/tag.min.js" data-zone="308573" async data-cfasync="false"></script>' : ''}
+${popup && step >= extraFrom ? '<script src="https://quge5.com/88/tag.min.js" data-zone="308573" async data-cfasync="false"></script>\n<script src="https://quge5.com/88/tag.min.js" data-zone="307027" async data-cfasync="false"></script>' : ''}
 <div class="ad"><a href="https://araplhn.org/4/f807188adb57a12ed0dc88c5f090b8f3">Smartlink</a></div>
 
 <!-- MAIN UI -->
@@ -208,13 +224,31 @@ export default async function handler(req, res) {
         RETURNING step
       `;
       if (!upd || upd.length === 0) return res.redirect(302, here);
+
+      // Remember this device finished one more step (resets after 2 hours without a visit)
+      const hist = readHistory(req);
+      const nowMs = Date.now();
+      if (nowMs - hist.t > WINDOW_MS) hist.n = 0;
+      hist.n = Math.min(hist.n + 1, EXTRA_POPUP_FROM);
+      hist.t = nowMs;
+      writeHistory(res, hist);
+
       return res.redirect(302, `/api/step?nonce=${nonce}&k=${newTok}`);
     }
 
     // Show the current step
     if (k !== s.step_token) return res.redirect(302, here);
+    const hist = readHistory(req);
+    const nowMs = Date.now();
+    if (nowMs - hist.t > WINDOW_MS) hist.n = 0;          // more than 2 hours since the last visit: start fresh
+    if (hist.nonce !== nonce) {                          // new session: remember how many steps were already done
+      hist.base = Math.min(hist.n, EXTRA_POPUP_FROM);
+      hist.nonce = nonce;
+    }
+    hist.t = nowMs;
+    writeHistory(res, hist);
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
-    return res.status(200).send(page(nonce, s.step_token, s.step));
+    return res.status(200).send(page(nonce, s.step_token, s.step, extraFromStep(hist.base)));
   } catch (err) {
     return res.status(500).send('Server error');
   }
