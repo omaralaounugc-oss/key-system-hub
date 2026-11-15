@@ -78,6 +78,20 @@ function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt
   <script async="async" data-cfasync="false" src="https://bauval.org/21/83e2d8f4007a7f9643ce1333685516fb"></script>
   <div id="container-83e2d8f4007a7f9643ce1333685516fb"></div>
 </div>
+<div class="ad">
+  <script>
+  atOptions = {
+    'key' : 'cc5ea8dc8c31159728959dc71eef513f',
+    'format' : 'iframe',
+    'height' : 60,
+    'width' : 468,
+    'params' : {}
+  };
+  </script>
+  <script src="https://bauval.org/22/cc5ea8dc8c31159728959dc71eef513f"></script>
+</div>
+<script data-cfasync="false" src="https://bauval.org/14/ca3799816ffb85d7fc27ab6dc9ff2222"></script>
+<div class="ad"><a href="https://araplhn.org/4/f807188adb57a12ed0dc88c5f090b8f3">Smartlink</a></div>
 
 <!-- MAIN UI -->
 <main class="screen">
