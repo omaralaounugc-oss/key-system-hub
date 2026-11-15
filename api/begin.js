@@ -1,12 +1,13 @@
 import { neon } from '@neondatabase/serverless';
 import { randomBytes, randomInt } from 'crypto';
+import { pageUrl } from './_shared.js';
 
 const sql = neon(process.env.DATABASE_URL);
 
 // Any hub name works: it comes from the link (?hub=NAME). Letters, numbers, - and _ only.
 const isHub = (h) => typeof h === 'string' && /^[a-z0-9_-]{1,24}$/.test(h);
 
-// Creates a session and sends the player to step 1 (/api/step).
+// Creates a session and sends the player to step 1 (the "start" page).
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -37,7 +38,7 @@ export default async function handler(req, res) {
     `;
 
     res.setHeader('Cache-Control', 'no-store');
-    return res.redirect(302, `/api/step?nonce=${nonce}&k=${stepToken}`);
+    return res.redirect(302, pageUrl(1, nonce, stepToken));
   } catch (err) {
     return res.status(500).send('Server error');
   }
