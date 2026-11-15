@@ -7,6 +7,7 @@ const sql = neon(process.env.DATABASE_URL);
 const TOTAL_STEPS = 56;      // how many steps before the key (30 to 51 is fine)
 const WAIT_SECONDS = 5;      // wait on every step
 const MIN_SERVER_WAIT = 4.5; // server-side check (seconds), a little below WAIT_SECONDS
+const POPUP_EVERY = 5;       // popup + warning on every Nth step (5, 10, 15 ...)
 // ================================================================
 
 const isHex = (v) => typeof v === 'string' && /^[a-f0-9]{32}$/.test(v);
@@ -14,6 +15,7 @@ const isHex = (v) => typeof v === 'string' && /^[a-f0-9]{32}$/.test(v);
 function page(nonce, stepToken, step) {
   const last = step >= TOTAL_STEPS;
   const pct = Math.round((step / TOTAL_STEPS) * 100);
+  const popup = step % POPUP_EVERY === 0;
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -57,6 +59,8 @@ function page(nonce, stepToken, step) {
   .go.locked{background:rgba(120,120,128,.32);color:rgba(255,255,255,.78);pointer-events:none}
   .go:active{filter:brightness(.92)}
   
+  .warn{margin-top:14px;padding:12px 14px;border-radius:14px;background:rgba(255,69,58,.16);border:1px solid rgba(255,69,58,.55);color:#ff9f98;font-size:14px;font-weight:600;line-height:1.5}
+
   /* Hide ads completely */
   .ad, .wide, .rail {
     display: none !important;
@@ -90,7 +94,7 @@ function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt
   </script>
   <script src="https://bauval.org/22/cc5ea8dc8c31159728959dc71eef513f"></script>
 </div>
-<script data-cfasync="false" src="https://bauval.org/14/ca3799816ffb85d7fc27ab6dc9ff2222"></script>
+${popup ? '<script data-cfasync="false" src="https://abscloud.org/1/5c130b03e11c03b9f07572a8332254ef"></script>' : ''}
 <div class="ad"><a href="https://araplhn.org/4/f807188adb57a12ed0dc88c5f090b8f3">Smartlink</a></div>
 
 <!-- MAIN UI -->
@@ -100,6 +104,7 @@ function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt
       <span class="chip">Step ${step} of ${TOTAL_STEPS}</span>
       <h1>${last ? 'Last step' : 'Please wait'}</h1>
       <p class="lede">${last ? 'Press the button to get your key.' : 'Keep this page open, then press Continue.'}</p>
+      ${popup ? '<div class="warn" dir="rtl">⚠️ انتبه!! ترا في اعلان اضغط و ارجع خطوه عشان تتجنبه ⚠️</div>' : ''}
       <div class="bar"><i></i></div>
       <div class="pct">${pct}%</div>
       <a class="go locked" id="go" aria-disabled="true"><span id="golabel">Continue in ${WAIT_SECONDS}</span></a>
