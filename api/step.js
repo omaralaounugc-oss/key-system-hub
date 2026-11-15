@@ -127,7 +127,7 @@ ${popup && step >= extraFrom ? EXTRA_TAGS : ''}
       <span class="chip">Step ${step} of ${TOTAL_STEPS}</span>
       <h1>${last ? 'Last step' : 'Please wait'}</h1>
       <p class="lede">${last ? 'Press the button to get your key.' : 'Keep this page open, then press Continue.'}</p>
-      ${popup ? '<div class="warn" dir="rtl">⚠️ انتبه!! ترا في اعلان اضغط و ارجع خطوه عشان تتجنبه ⚠️</div>' : ''}
+      ${popup ? `<div class="warn" dir="rtl">⚠️ انتبه!! ترا في اعلان من 1-2 اضغط و ارجع خطوه عشان تتجنبه ركز على الرابط لازم يكون <span dir="ltr">${step + 1} of ${TOTAL_STEPS}</span> ⚠️</div>` : ''}
       <div class="bar"><i></i></div>
       <div class="pct">${pct}%</div>
       <a class="go locked" id="go" aria-disabled="true"><span id="golabel">Continue in ${WAIT_SECONDS}</span></a>
