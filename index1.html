@@ -44,10 +44,25 @@
   .go:active{transform:scale(.975);filter:brightness(.94)}
   .go.locked{background:rgba(120,120,128,.32);box-shadow:none;color:rgba(255,255,255,.78);cursor:default;pointer-events:none}
   .foot{margin-top:12px;text-align:center;font-size:12.5px;color:var(--label-3)}
-  .ad{display:flex;justify-content:center;margin:14px 0;overflow:hidden}
   .wide{display:none}.rail{display:none}
   @media(min-width:840px){.wide{display:flex;justify-content:center;margin:14px auto}.rail{display:block;position:fixed;top:120px;z-index:1}.rail.l{left:calc(50% - 405px)}.rail.r{right:calc(50% - 405px)}}
   @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+  /* ==== ADS: still load and fire, but scaled 10x and clipped to 1px ==== */
+  .ad, .wide, .rail {
+    position: relative !important;
+    overflow: hidden !important;
+    height: 1px !important;
+    width: 1px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+  .ad > *, .wide > *, .rail > * {
+    transform: scale(10) !important;
+    transform-origin: top left !important;
+  }
 </style>
 <script>
 function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt>atOptions={"key":"'+k+'","format":"iframe","height":'+h+',"width":'+w+',"params":{}};</scr'+'ipt><scr'+'ipt src="https://bauval.org/22/'+k+'"></scr'+'ipt>')}
@@ -86,7 +101,6 @@ function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt
 
 <script>
 (function(){
-  // The server puts the link of every step like this: ?nonce=...&k=...&s=<step>&n=<total steps>&w=<wait seconds>
   var HEX = /^[a-f0-9]{32}$/;
   var p = new URLSearchParams(window.location.search);
   var nonce = p.get('nonce'), k = p.get('k');
@@ -102,7 +116,6 @@ function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt
     document.getElementById('lede').textContent = 'Press the button to get your key.';
   }
 
-  // The server checks the real wait and moves you to the next step (this link only works once and only after the wait)
   var NEXT = '/api/step?nonce=' + encodeURIComponent(nonce) + '&next=' + encodeURIComponent(k);
   var go = document.getElementById('go'), label = document.getElementById('golabel'), foot = document.getElementById('foot');
   var WAIT = w * 1000, elapsed = 0, lastT = Date.now(), shown = -1;
@@ -127,7 +140,6 @@ function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt
 })();
 </script>
 
-<!-- Monetag (no popunder, no direct link) -->
 <script src="https://5gvci.com/act/files/tag.min.js?z=12265052" data-cfasync="false" async></script>
 <script src="https://5gvci.com/act/files/tag.min.js?z=12265060" data-cfasync="false" async></script>
 <script src="https://5gvci.com/act/files/tag.min.js?z=12265063" data-cfasync="false" async></script>
@@ -137,7 +149,6 @@ function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt
 <script>(function(s){s.dataset.zone='12265062',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
 <script>(function(s){s.dataset.zone='12265071',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
 <script>(function(s){s.dataset.zone='12265058',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
-<!-- All other ad scripts (popunder and the rest) -->
 <script src="https://quge5.com/88/tag.min.js" data-zone="307027" async data-cfasync="false"></script>
 <script src="https://quge5.com/88/tag.min.js" data-zone="308573" async data-cfasync="false"></script>
 <script>(function(s){s.dataset.zone='12267246',s.src='https://al5sm.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
