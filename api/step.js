@@ -4,40 +4,37 @@ import { randomBytes } from 'crypto';
 const sql = neon(process.env.DATABASE_URL);
 
 // ================= SETTINGS (change only these) =================
-const TOTAL_STEPS = 56;      // how many steps before the key (30 to 51 is fine)
+const TOTAL_STEPS = 50;      // how many steps before the key
 const WAIT_SECONDS = 5;      // wait on every step
 const MIN_SERVER_WAIT = 4.5; // server-side check (seconds), a little below WAIT_SECONDS
-const POPUP_EVERY = 5;       // popup + warning on every Nth step (5, 10, 15 ...)
-const EXTRA_POPUP_FROM = 20; // for a new device: from this step on, the popup steps also load the Monetag tags
-// All the extra Monetag tags, loaded together on the popup steps (see EXTRA_POPUP_FROM)
-const EXTRA_TAGS = `<script src="https://quge5.com/88/tag.min.js" data-zone="308573" async data-cfasync="false"></script>
-<script src="https://quge5.com/88/tag.min.js" data-zone="307027" async data-cfasync="false"></script>
-<script>(function(s){s.dataset.zone='12267246',s.src='https://al5sm.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
-<script>(function(s){s.dataset.zone='12267249',s.src='https://al5sm.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>`;
-const WINDOW_MS = 2 * 60 * 60 * 1000; // 2 hours: after this long without a visit the device history resets
-
-// Per-device history kept in a cookie: "done.lastVisit.base.nonce"
-// done = steps finished in the last 2 hours (max EXTRA_POPUP_FROM), base = done when this session started
-function readHistory(req) {
-  const m = /(?:^|;\s*)kf=([^;]*)/.exec(req.headers.cookie || '');
-  const p = m ? m[1].split('.') : [];
-  return { n: Number(p[0]) || 0, t: Number(p[1]) || 0, base: Number(p[2]) || 0, nonce: p[3] || '' };
-}
-function writeHistory(res, c) {
-  res.setHeader('Set-Cookie', `kf=${c.n}.${c.t}.${c.base}.${c.nonce}; Path=/; Max-Age=86400; SameSite=Lax; HttpOnly; Secure`);
-}
-// First popup step (5, 10, 15 ...) from which the extra Monetag tags start for this session
-function extraFromStep(base) {
-  return Math.max(POPUP_EVERY, Math.ceil((EXTRA_POPUP_FROM - base) / POPUP_EVERY) * POPUP_EVERY);
-}
 // ================================================================
 
 const isHex = (v) => typeof v === 'string' && /^[a-f0-9]{32}$/.test(v);
 
-function page(nonce, stepToken, step, extraFrom) {
+// ---- Adsterra display ads (all visible) ----
+const AD = {
+  b320: `<div class="ad"><script>adBanner('c1e961c0589310bb251d53941c12fbb1',320,50,0)</script></div>`,
+  b300: `<div class="ad"><script>adBanner('a60c9cdf9090006b20d869deedf8faef',300,250,0)</script></div>`,
+  b468: `<div class="ad"><script>adBanner('cc5ea8dc8c31159728959dc71eef513f',468,60,500)</script></div>`,
+  native: `<div class="ad"><script async="async" data-cfasync="false" src="https://bauval.org/21/83e2d8f4007a7f9643ce1333685516fb"></script><div id="container-83e2d8f4007a7f9643ce1333685516fb"></div></div>`,
+};
+
+// ---- 5 page styles, repeated in turn: start, step, index1, index2, index3 (10 steps each of 50) ----
+// Each style has its own color and its own ad order. Every style shows all the same ads.
+const STYLES = [
+  { name: 'start',  accent: '#0a84ff', accent2: '#7b5cff', top: ['b320'],           bottom: ['b300', 'native', 'b468'] },
+  { name: 'step',   accent: '#7b5cff', accent2: '#c05cff', top: ['b300'],           bottom: ['b320', 'native', 'b468'] },
+  { name: 'index1', accent: '#30d158', accent2: '#0fb5ae', top: ['native'],         bottom: ['b320', 'b300', 'b468'] },
+  { name: 'index2', accent: '#ff9f0a', accent2: '#ff6a00', top: ['b468', 'b320'],   bottom: ['b300', 'native'] },
+  { name: 'index3', accent: '#ff375f', accent2: '#ff7a59', top: [],                 bottom: ['b320', 'b300', 'native', 'b468'] },
+];
+
+function page(nonce, stepToken, step) {
   const last = step >= TOTAL_STEPS;
   const pct = Math.round((step / TOTAL_STEPS) * 100);
-  const popup = step % POPUP_EVERY === 0;
+  const st = STYLES[(step - 1) % STYLES.length];
+  const top = st.top.map((k) => AD[k]).join('\n');
+  const bottom = st.bottom.map((k) => AD[k]).join('\n');
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -50,42 +47,28 @@ function page(nonce, stepToken, step, extraFrom) {
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3893185157459343" crossorigin="anonymous"></script>
 <title>Step ${step} of ${TOTAL_STEPS}</title>
 <style>
-  :root{--sec:rgba(235,235,245,.62);--blue:#0a84ff;--font:-apple-system,BlinkMacSystemFont,'SF Pro Display','Inter','Segoe UI',Roboto,Helvetica,Arial,sans-serif}
+  :root{--sec:rgba(235,235,245,.62);--blue:${st.accent};--blue2:${st.accent2};--font:-apple-system,BlinkMacSystemFont,'SF Pro Display','Inter','Segoe UI',Roboto,Helvetica,Arial,sans-serif}
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  
-  /* Lock to screen so it doesn't scroll */
-  html, body {
-    height: 100vh;
-    height: 100dvh;
-    overflow: hidden;
-    position: fixed;
-    width: 100%;
-    background:#06070a;
-  }
-  
-  body{font-family:var(--font);color:#fff;-webkit-font-smoothing:antialiased;
+  html{background:#06070a}
+  body{min-height:100vh;min-height:100dvh;font-family:var(--font);color:#fff;-webkit-font-smoothing:antialiased;overflow-x:hidden;
     background:radial-gradient(70vmax 60vmax at 15% -5%,rgba(43,74,143,.45),transparent 62%),radial-gradient(60vmax 55vmax at 105% 105%,rgba(91,45,138,.4),transparent 60%),#06070a}
-    
-  .screen{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:calc(env(safe-area-inset-top,0px) + 18px) 16px calc(env(safe-area-inset-bottom,0px) + 24px);z-index:2}
-  
-  .content-wrapper { width: 100%; max-width: 430px; }
-
+  .screen{width:100%;max-width:430px;margin:0 auto;padding:calc(env(safe-area-inset-top,0px) + 18px) 16px calc(env(safe-area-inset-bottom,0px) + 24px)}
   .card{margin-top:12px;border-radius:24px;padding:24px 18px 20px;background:linear-gradient(180deg,rgba(255,255,255,.09),rgba(255,255,255,.04));border:.5px solid rgba(255,255,255,.14);text-align:center}
   .chip{display:inline-block;padding:6px 14px;border-radius:15px;background:rgba(120,120,128,.24);font-size:14px;font-weight:600;color:var(--sec)}
   h1{margin-top:14px;font-size:24px;font-weight:700;letter-spacing:-.02em}
   .lede{margin-top:6px;font-size:15px;color:var(--sec)}
   .bar{margin:18px 0 6px;height:8px;border-radius:4px;background:rgba(120,120,128,.28);overflow:hidden}
-  .bar i{display:block;height:100%;width:${pct}%;border-radius:4px;background:linear-gradient(90deg,#3a8dff,#7b5cff)}
+  .bar i{display:block;height:100%;width:${pct}%;border-radius:4px;background:linear-gradient(90deg,var(--blue),var(--blue2))}
   .pct{font-size:13px;color:var(--sec)}
   .go{display:flex;align-items:center;justify-content:center;width:100%;height:56px;margin-top:18px;border-radius:16px;background:var(--blue);color:#fff;text-decoration:none;font:600 17px var(--font)}
   .go.locked{background:rgba(120,120,128,.32);color:rgba(255,255,255,.78);pointer-events:none}
   .go:active{filter:brightness(.92)}
-  
-  .warn{margin-top:14px;padding:12px 14px;border-radius:14px;background:rgba(255,69,58,.16);border:1px solid rgba(255,69,58,.55);color:#ff9f98;font-size:14px;font-weight:600;line-height:1.5}
-
-  /* Hide ads completely */
-  .ad, .wide, .rail {
-    display: none !important;
+  .ad{display:flex;justify-content:center;margin:14px 0;overflow:hidden}
+  .wide{display:none}.rail{display:none}
+  @media(min-width:840px){
+    .wide{display:flex;justify-content:center;margin:14px auto}
+    .rail{display:block;position:fixed;top:120px;z-index:1}
+    .rail.l{left:calc(50% - 405px)}.rail.r{right:calc(50% - 405px)}
   }
 </style>
 <script>
@@ -93,46 +76,20 @@ function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt
 </script>
 </head>
 <body>
-
-<!-- ADS (Hidden but loading) -->
 <div class="rail l"><script>adBanner('980accb5247e3b507876a5598c5dac63',160,600,840)</script></div>
 <div class="rail r"><script>adBanner('e7d297afa4abe6d8e9ae4b6d4a9e413e',160,300,840)</script></div>
-<div class="wide"><script>adBanner('a973ad4d1946ecff433073faf4287a75',728,90,840)</script></div>
-<div class="ad"><script>adBanner('c1e961c0589310bb251d53941c12fbb1',320,50,0)</script></div>
-<div class="ad"><script>adBanner('a60c9cdf9090006b20d869deedf8faef',300,250,0)</script></div>
-<div class="ad">
-  <script async="async" data-cfasync="false" src="https://bauval.org/21/83e2d8f4007a7f9643ce1333685516fb"></script>
-  <div id="container-83e2d8f4007a7f9643ce1333685516fb"></div>
-</div>
-<div class="ad">
-  <script>
-  atOptions = {
-    'key' : 'cc5ea8dc8c31159728959dc71eef513f',
-    'format' : 'iframe',
-    'height' : 60,
-    'width' : 468,
-    'params' : {}
-  };
-  </script>
-  <script src="https://bauval.org/22/cc5ea8dc8c31159728959dc71eef513f"></script>
-</div>
-${popup ? '<script data-cfasync="false" src="https://abscloud.org/1/5c130b03e11c03b9f07572a8332254ef"></script>' : ''}
-${popup && step >= extraFrom ? EXTRA_TAGS : ''}
-<div class="ad"><a href="https://araplhn.org/4/f807188adb57a12ed0dc88c5f090b8f3">Smartlink</a></div>
-
-<!-- MAIN UI -->
 <main class="screen">
-  <div class="content-wrapper">
-    <section class="card">
-      <span class="chip">Step ${step} of ${TOTAL_STEPS}</span>
-      <h1>${last ? 'Last step' : 'Please wait'}</h1>
-      <p class="lede">${last ? 'Press the button to get your key.' : 'Keep this page open, then press Continue.'}</p>
-      ${popup ? `<div class="warn" dir="rtl">⚠️ انتبه!! ترا في اعلان من 1-2 اضغط و ارجع خطوه عشان تتجنبه ركز على الرابط لازم يكون <span dir="ltr">${step + 1} of ${TOTAL_STEPS}</span> ⚠️</div>` : ''}
-      <div class="bar"><i></i></div>
-      <div class="pct">${pct}%</div>
-      <a class="go locked" id="go" aria-disabled="true"><span id="golabel">Continue in ${WAIT_SECONDS}</span></a>
-    </section>
-  </div>
+${top}
+  <section class="card">
+    <span class="chip">Step ${step} of ${TOTAL_STEPS}</span>
+    <h1>${last ? 'Last step' : 'Please wait'}</h1>
+    <p class="lede">${last ? 'Press the button to get your key.' : 'Keep this page open, then press Continue.'}</p>
+    <div class="bar"><i></i></div>
+    <div class="pct">${pct}%</div>
+    <a class="go locked" id="go" aria-disabled="true"><span id="golabel">Continue in ${WAIT_SECONDS}</span></a>
+  </section>
+  <div class="wide"><script>adBanner('a973ad4d1946ecff433073faf4287a75',728,90,840)</script></div>
+${bottom}
 </main>
 
 <script>
@@ -158,24 +115,19 @@ ${popup && step >= extraFrom ? EXTRA_TAGS : ''}
 })();
 </script>
 
-<!-- HIDDEN MONETAG & PUSH SCRIPTS -->
-<div style="display:none;">
-  <!-- Monetag Push Notifications -->
-  <script src="https://5gvci.com/act/files/tag.min.js?z=12265052" data-cfasync="false" async></script>
-  <script src="https://5gvci.com/act/files/tag.min.js?z=12265060" data-cfasync="false" async></script>
-  <script src="https://5gvci.com/act/files/tag.min.js?z=12265063" data-cfasync="false" async></script>
-  <script src="https://5gvci.com/act/files/tag.min.js?z=12265075" data-cfasync="false" async></script>
-  
-  <!-- In-Page Push -->
-  <script>(function(s){s.dataset.zone='12265057',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
-  <script>(function(s){s.dataset.zone='12265059',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
-  <script>(function(s){s.dataset.zone='12265062',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
-  <script>(function(s){s.dataset.zone='12265071',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
-  
-  <!-- Vignette Banner -->
-  <script>(function(s){s.dataset.zone='12265058',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
-</div>
-
+<!-- Monetag (no popunder, no direct link) -->
+<!-- Push Notifications -->
+<script src="https://5gvci.com/act/files/tag.min.js?z=12265052" data-cfasync="false" async></script>
+<script src="https://5gvci.com/act/files/tag.min.js?z=12265060" data-cfasync="false" async></script>
+<script src="https://5gvci.com/act/files/tag.min.js?z=12265063" data-cfasync="false" async></script>
+<script src="https://5gvci.com/act/files/tag.min.js?z=12265075" data-cfasync="false" async></script>
+<!-- In-Page Push -->
+<script>(function(s){s.dataset.zone='12265057',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
+<script>(function(s){s.dataset.zone='12265059',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
+<script>(function(s){s.dataset.zone='12265062',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
+<script>(function(s){s.dataset.zone='12265071',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
+<!-- Vignette Banner -->
+<script>(function(s){s.dataset.zone='12265058',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
 </body>
 </html>`;
 }
@@ -229,31 +181,13 @@ export default async function handler(req, res) {
         RETURNING step
       `;
       if (!upd || upd.length === 0) return res.redirect(302, here);
-
-      // Remember this device finished one more step (resets after 2 hours without a visit)
-      const hist = readHistory(req);
-      const nowMs = Date.now();
-      if (nowMs - hist.t > WINDOW_MS) hist.n = 0;
-      hist.n = Math.min(hist.n + 1, EXTRA_POPUP_FROM);
-      hist.t = nowMs;
-      writeHistory(res, hist);
-
       return res.redirect(302, `/api/step?nonce=${nonce}&k=${newTok}`);
     }
 
     // Show the current step
     if (k !== s.step_token) return res.redirect(302, here);
-    const hist = readHistory(req);
-    const nowMs = Date.now();
-    if (nowMs - hist.t > WINDOW_MS) hist.n = 0;          // more than 2 hours since the last visit: start fresh
-    if (hist.nonce !== nonce) {                          // new session: remember how many steps were already done
-      hist.base = Math.min(hist.n, EXTRA_POPUP_FROM);
-      hist.nonce = nonce;
-    }
-    hist.t = nowMs;
-    writeHistory(res, hist);
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
-    return res.status(200).send(page(nonce, s.step_token, s.step, extraFromStep(hist.base)));
+    return res.status(200).send(page(nonce, s.step_token, s.step));
   } catch (err) {
     return res.status(500).send('Server error');
   }
