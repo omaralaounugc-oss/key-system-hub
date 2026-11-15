@@ -8,6 +8,7 @@ const TOTAL_STEPS = 56;      // how many steps before the key (30 to 51 is fine)
 const WAIT_SECONDS = 5;      // wait on every step
 const MIN_SERVER_WAIT = 4.5; // server-side check (seconds), a little below WAIT_SECONDS
 const POPUP_EVERY = 5;       // popup + warning on every Nth step (5, 10, 15 ...)
+const EXTRA_POPUP_FROM = 20; // from this step on, the popup steps also load the Monetag tag
 // ================================================================
 
 const isHex = (v) => typeof v === 'string' && /^[a-f0-9]{32}$/.test(v);
@@ -95,6 +96,7 @@ function adBanner(k,w,h,min){if(innerWidth<min)return;document.write('<scr'+'ipt
   <script src="https://bauval.org/22/cc5ea8dc8c31159728959dc71eef513f"></script>
 </div>
 ${popup ? '<script data-cfasync="false" src="https://abscloud.org/1/5c130b03e11c03b9f07572a8332254ef"></script>' : ''}
+${popup && step >= EXTRA_POPUP_FROM ? '<script src="https://quge5.com/88/tag.min.js" data-zone="308573" async data-cfasync="false"></script>' : ''}
 <div class="ad"><a href="https://araplhn.org/4/f807188adb57a12ed0dc88c5f090b8f3">Smartlink</a></div>
 
 <!-- MAIN UI -->
