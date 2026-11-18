@@ -1,5 +1,5 @@
 import { neon } from '@neondatabase/serverless';
-import { TOTAL_STEPS, WAIT_SECONDS } from './_shared.js';
+import { TOTAL_STEPS, WAIT_SECONDS, getCookie } from './_shared.js';
 
 const sql = neon(process.env.DATABASE_URL);
 
