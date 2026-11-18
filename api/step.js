@@ -1,6 +1,6 @@
 import { neon } from '@neondatabase/serverless';
 import { randomBytes } from 'crypto';
-import { pageUrl, TOTAL_STEPS, WAIT_SECONDS } from './_shared.js';
+import { pageUrl, getCookie, TOTAL_STEPS, WAIT_SECONDS } from './_shared.js';
 
 const sql = neon(process.env.DATABASE_URL);
 const HEX = /^[a-f0-9]{32}$/;
@@ -18,6 +18,10 @@ export default async function handler(req, res) {
     return res.redirect(302, '/api/start');
   }
 
+  // the browser that started the session must be the one that continues it
+  const sid = getCookie(req, 'sid');
+  if (!HEX.test(sid)) return res.redirect(302, '/api/start');
+
   try {
     const newTok = randomBytes(16).toString('hex');
 
@@ -27,6 +31,7 @@ export default async function handler(req, res) {
       SET step = step + 1, step_token = ${newTok}, step_at = NOW()
       WHERE nonce = ${nonce}
         AND step_token = ${next}
+        AND token = ${sid}
         AND used = false
         AND created_at > NOW() - INTERVAL '1 hour'
         AND step_at < NOW() - (${WAIT_SECONDS}::int * INTERVAL '1 second')
@@ -43,6 +48,7 @@ export default async function handler(req, res) {
       SET verified = true, step_token = ${newTok}
       WHERE nonce = ${nonce}
         AND step_token = ${next}
+        AND token = ${sid}
         AND used = false
         AND created_at > NOW() - INTERVAL '1 hour'
         AND step_at < NOW() - (${WAIT_SECONDS}::int * INTERVAL '1 second')
@@ -59,7 +65,7 @@ export default async function handler(req, res) {
     // 3) Neither worked. If the token is still valid the player was just too early: send back to the same page.
     const cur = await sql`
       SELECT step, hub FROM sessions
-      WHERE nonce = ${nonce} AND step_token = ${next} AND used = false
+      WHERE nonce = ${nonce} AND step_token = ${next} AND token = ${sid} AND used = false
         AND created_at > NOW() - INTERVAL '1 hour'
     `;
     if (cur.length) return res.redirect(302, pageUrl(cur[0].step, nonce, next));
