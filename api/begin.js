@@ -39,6 +39,7 @@ export default async function handler(req, res) {
     `;
 
     res.setHeader('Cache-Control', 'no-store');
+    res.setHeader('Set-Cookie', sidCookie(token));
     return res.redirect(302, pageUrl(1, nonce, stepToken));
   } catch (err) {
     return res.status(500).send('Server error');
