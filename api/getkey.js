@@ -26,6 +26,11 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Invalid session' });
   }
 
+  // must be the same browser that did the steps
+  if (getCookie(req, 'sid') !== t) {
+    return res.status(403).json({ error: 'Open the link in the same browser you started with. Please start again.' });
+  }
+
   try {
     const session = await sql`
       UPDATE sessions SET used = true
