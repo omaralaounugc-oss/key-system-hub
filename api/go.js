@@ -1,6 +1,6 @@
 import { neon } from '@neondatabase/serverless';
 import { randomBytes, randomInt } from 'crypto';
-import { pageUrl } from './_shared.js';
+import { pageUrl, sidCookie } from './_shared.js';
 
 const sql = neon(process.env.DATABASE_URL);
 
