@@ -14,7 +14,8 @@ export default async function handler(req, res) {
   }
 
   try {
-    const fromCookie = ((req.headers.cookie || '').match(/(?:^|;\s*)hub=([a-z0-9]+)/) || [])[1];
+    // FIX: the cookie pattern now allows _ and - (before, "my-hub" was cut to "my")
+    const fromCookie = ((req.headers.cookie || '').match(/(?:^|;\s*)hub=([a-z0-9_-]{1,24})/) || [])[1];
     const hub = String(req.query.hub || fromCookie || '').toLowerCase();
     if (!isHub(hub)) return res.redirect(302, '/api/start');
 
